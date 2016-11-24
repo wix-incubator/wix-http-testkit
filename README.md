@@ -1,4 +1,4 @@
-# http-testkit
+# Wix HTTP Testkit
 
 ##Mock Web Server
 Server created in order to simulate a simple web server with specific behavior.
