@@ -8,9 +8,7 @@ import com.wix.e2e.BaseUri
 import com.wix.hoopoe.http.server.BaseWebServer
 import com.wix.hoopoe.http.server.WebServerFactory.RequestHandler
 import com.wix.hoopoe.http.server.exceptions.PortUnknownYetException
-
-import scala.concurrent.Await
-import scala.concurrent.duration._
+import com.wix.hoopoe.http.server.utils._
 
 abstract class AkkaHttpMockWebServer(specificPort: Option[Int]) extends BaseWebServer {
   implicit val system = AkkaServerResources.system
@@ -19,13 +17,15 @@ abstract class AkkaHttpMockWebServer(specificPort: Option[Int]) extends BaseWebS
   protected def serverBehavior: RequestHandler
 
   def start() = {
-    val s = Await.result( Http().bindAndHandleSync(serverBehavior, "localhost", specificPort.getOrElse( AllocateDynamicPort )), 5.seconds )
+    val s = waitFor( Http().bindAndHandleSync(handler = serverBehavior,
+                                              interface = "localhost",
+                                              port = specificPort.getOrElse( AllocateDynamicPort )) )
     serverBinding = Option(s)
   }
 
   def stop() = {
     serverBinding.foreach{ s =>
-      Await.result( s.unbind(), 5.seconds )
+      waitFor( s.unbind() )
     }
     serverBinding = None
   }
