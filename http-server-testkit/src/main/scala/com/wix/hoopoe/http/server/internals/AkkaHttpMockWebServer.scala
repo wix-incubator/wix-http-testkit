@@ -15,7 +15,7 @@ abstract class AkkaHttpMockWebServer(specificPort: Option[Int]) extends BaseWebS
 
   protected def serverBehavior: RequestHandler
 
-  def start() = {
+  def start() = this.synchronized {
     val s = waitFor( Http().bindAndHandleSync(handler = serverBehavior,
                                               interface = "localhost",
                                               port = specificPort.getOrElse( AllocateDynamicPort )) )
@@ -23,7 +23,7 @@ abstract class AkkaHttpMockWebServer(specificPort: Option[Int]) extends BaseWebS
     println(s"Web server started on port: ${baseUri.port}.")
   }
 
-  def stop() = {
+  def stop() = this.synchronized {
     serverBinding.foreach{ s =>
       waitFor( s.unbind() )
     }
@@ -35,7 +35,7 @@ abstract class AkkaHttpMockWebServer(specificPort: Option[Int]) extends BaseWebS
                 .orElse( serverBinding.map( s => BaseUri(port = s.localAddress.getPort) ))
                 .getOrElse( throw new IllegalStateException("Server port and baseUri will have value after server is started") )
 
-  @volatile private var serverBinding: Option[ServerBinding] = None
+  private var serverBinding: Option[ServerBinding] = None
   private val AllocateDynamicPort = 0
 }
 
