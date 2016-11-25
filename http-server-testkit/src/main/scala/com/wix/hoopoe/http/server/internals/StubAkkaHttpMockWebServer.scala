@@ -13,7 +13,7 @@ class StubAkkaHttpMockWebServer(handlers: Seq[RequestHandler], specificPort: Opt
   private val requests = ListBuffer.empty[HttpRequest]
 
   def recordedRequests = this.synchronized {
-    requests
+    requests.toList
   }
 
   def clearRecordedRequests() = this.synchronized {
@@ -21,12 +21,13 @@ class StubAkkaHttpMockWebServer(handlers: Seq[RequestHandler], specificPort: Opt
   }
 
 
-  private val SuccessfulHandler: RequestHandler = { case _: HttpRequest => HttpResponse(status = StatusCodes.OK) }
-  private val RequestRecorderHandler: RequestHandler = { case r: HttpRequest =>
+  private val SuccessfulHandler: RequestHandler = { case _ => HttpResponse(status = StatusCodes.OK) }
+  private val MockServerHandlers = (handlers :+ SuccessfulHandler).reduce(_ orElse _)
+  private val RequestRecorderHandler: RequestHandler = { case r =>
     this.synchronized {
       requests.append(r)
     }
-    (handlers :+ SuccessfulHandler).reduce(_ orElse _).apply(r)
+    MockServerHandlers.apply(r)
   }
 
   protected val serverBehavior = RequestRecorderHandler
@@ -34,6 +35,6 @@ class StubAkkaHttpMockWebServer(handlers: Seq[RequestHandler], specificPort: Opt
 
 class MockAkkaHttpWebServer(handlers: Seq[RequestHandler], specificPort: Option[Int]) extends AkkaHttpMockWebServer(specificPort) with MockWebServer {
 
-  private val NotFoundHandler: RequestHandler = { case _: HttpRequest => HttpResponse(status = StatusCodes.NotFound) }
+  private val NotFoundHandler: RequestHandler = { case _ => HttpResponse(status = StatusCodes.NotFound) }
   protected def serverBehavior: RequestHandler = (handlers :+ NotFoundHandler).reduce(_ orElse _)
 }

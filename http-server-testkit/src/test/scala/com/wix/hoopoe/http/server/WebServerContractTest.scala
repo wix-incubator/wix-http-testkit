@@ -5,7 +5,6 @@ import com.wix.e2e.BaseUri
 import com.wix.e2e.ResponseMatchers._
 import com.wix.e2e.http.sync._
 import com.wix.hoopoe.http.server.WebServerFactory._
-import com.wix.hoopoe.http.server.exceptions.PortUnknownYetException
 import com.wixpress.hoopoe.test._
 import org.specs2.matcher.Matcher
 import org.specs2.matcher.Matchers._
@@ -39,7 +38,7 @@ class WebServerContractTest extends SpecWithJUnit {
     "throw an exception is server did not explicitly define a port and is queried for port or baseUri" in new ctx {
       val server = aStubWebServer.build
 
-      server.baseUri must throwA[PortUnknownYetException]
+      server.baseUri must throwA[IllegalStateException]
     }
 
     "return port and base uri if server was created with explicit port" in new ctx {
@@ -64,7 +63,7 @@ class WebServerContractTest extends SpecWithJUnit {
       server.stop()
 
       get("/")(sut) must beConnectFailure
-      server.baseUri must throwA[PortUnknownYetException]
+      server.baseUri must throwA[IllegalStateException]
     }
   }
 
