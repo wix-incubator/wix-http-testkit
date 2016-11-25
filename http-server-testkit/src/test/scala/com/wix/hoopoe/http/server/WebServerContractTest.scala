@@ -4,6 +4,7 @@ import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import com.wix.e2e.BaseUri
 import com.wix.e2e.ResponseMatchers._
 import com.wix.e2e.http.sync._
+import com.wix.hoopoe.http.server.RequestMatchers._
 import com.wix.hoopoe.http.server.WebServerFactory._
 import com.wixpress.hoopoe.test._
 import org.specs2.matcher.Matcher
@@ -133,9 +134,10 @@ class WebServerContractTest extends SpecWithJUnit {
       get(anotherPath) must beNotFound
     }
   }
+}
 
+object RequestMatchers {
   def beGetRequestWith(path: String): Matcher[HttpRequest] =
     be_===( path ) ^^ { (_: HttpRequest).uri.path.toString() aka "request path" }
-
 }
 
