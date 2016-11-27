@@ -1,7 +1,7 @@
 package com.wix.hoopoe.http.server.internals
 
-import akka.http.scaladsl.model.{HttpRequest, HttpResponse, StatusCodes}
-import com.wix.hoopoe.http.RequestHandler
+import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
+import com.wix.hoopoe.http._
 import com.wix.hoopoe.http.api.{MockWebServer, StubWebServer}
 
 import scala.collection.mutable.ListBuffer

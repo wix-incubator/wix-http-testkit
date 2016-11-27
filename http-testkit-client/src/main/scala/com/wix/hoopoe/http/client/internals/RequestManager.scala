@@ -1,9 +1,8 @@
 package com.wix.hoopoe.http.client.internals
 
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.client.RequestBuilding.RequestTransformer
-import akka.http.scaladsl.model.{HttpRequest, HttpResponse, Uri}
-import com.wix.hoopoe.http.{BaseUri, WixHttpTestkitResources}
+import akka.http.scaladsl.model.Uri
+import com.wix.hoopoe.http._
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}

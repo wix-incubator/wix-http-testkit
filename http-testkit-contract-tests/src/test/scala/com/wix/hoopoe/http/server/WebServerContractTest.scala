@@ -1,10 +1,10 @@
 package com.wix.hoopoe.http.server
 
-import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
+import akka.http.scaladsl.model.HttpResponse
 import com.wix.e2e.BaseUri
 import com.wix.e2e.ResponseMatchers._
 import com.wix.e2e.http.sync._
-import com.wix.hoopoe.http.RequestHandler
+import com.wix.hoopoe.http._
 import com.wix.hoopoe.http.server.RequestMatchers._
 import com.wix.hoopoe.http.server.WebServerFactory._
 import com.wixpress.hoopoe.test._

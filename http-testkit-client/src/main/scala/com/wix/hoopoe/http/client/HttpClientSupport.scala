@@ -2,7 +2,7 @@ package com.wix.hoopoe.http.client
 
 import akka.http.scaladsl.client.RequestBuilding.{Delete, Get, Head, Options, Patch, Post, Put, RequestBuilder}
 import akka.http.scaladsl.model.HttpMethods.TRACE
-import akka.http.scaladsl.model.HttpResponse
+import com.wix.hoopoe.http.HttpResponse
 import com.wix.hoopoe.http.client.internals.{BlockingRequestManager, NonBlockingRequestManager, RequestManager}
 import com.wix.hoopoe.http.client.transformers.HttpClientRequestTransformers
 

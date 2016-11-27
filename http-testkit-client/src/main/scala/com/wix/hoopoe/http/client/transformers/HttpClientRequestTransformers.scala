@@ -1,10 +1,9 @@
 package com.wix.hoopoe.http.client.transformers
 
-import akka.http.scaladsl.client.RequestBuilding.RequestTransformer
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{Cookie, RawHeader}
-import com.wix.hoopoe.http.WixHttpTestkitResources
+import com.wix.hoopoe.http.{RequestTransformer, WixHttpTestkitResources}
 
 import scala.xml.Node
 

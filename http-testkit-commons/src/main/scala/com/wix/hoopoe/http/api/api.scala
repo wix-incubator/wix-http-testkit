@@ -1,7 +1,6 @@
 package com.wix.hoopoe.http.api
 
-import akka.http.scaladsl.model.HttpRequest
-import com.wix.hoopoe.http.BaseUri
+import com.wix.hoopoe.http.{BaseUri, HttpRequest}
 
 trait MockWebServer extends BaseWebServer
 trait StubWebServer extends BaseWebServer with RequestRecordSupport
