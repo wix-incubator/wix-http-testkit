@@ -10,7 +10,8 @@
 
     <groupId>com.wixpress.hoopoe</groupId>
     <artifactId>http-testkit-specs2</artifactId>
-    <description>Simple Wix module</description>
+    <name>Wix HTTP Testkit - Specs2 Matchers</name>
+    <description>Specs2 matchers and test helper</description>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 

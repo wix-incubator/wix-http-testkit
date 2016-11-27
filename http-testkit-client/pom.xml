@@ -10,7 +10,8 @@
 
     <groupId>com.wixpress.hoopoe</groupId>
     <artifactId>http-testkit-client</artifactId>
-    <description>Simple Wix module</description>
+    <name>Wix HTTP Testkit - Client</name>
+    <description>Client to be used in tests</description>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 

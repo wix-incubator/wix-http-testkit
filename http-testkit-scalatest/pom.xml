@@ -10,7 +10,8 @@
 
     <groupId>com.wixpress.hoopoe</groupId>
     <artifactId>http-testkit-scalatest</artifactId>
-    <description>Simple Wix module</description>
+    <name>Wix HTTP Testkit - ScalaTest</name>
+    <description>ScalaTest matchers and test helpers</description>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
