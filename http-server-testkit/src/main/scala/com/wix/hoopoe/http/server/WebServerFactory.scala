@@ -10,8 +10,8 @@ trait StubWebServer extends BaseWebServer with RequestRecordSupport
 trait BaseWebServer {
   def baseUri: BaseUri
 
-  def start(): Unit
-  def stop(): Unit
+  def start(): this.type
+  def stop(): this.type
 }
 
 
@@ -24,9 +24,9 @@ trait RequestRecordSupport {
 object WebServerFactory {
   type RequestHandler = PartialFunction[HttpRequest, HttpResponse]
 
-  def aStubWebServer: StubWebServerBuilder = StubWebServerBuilder(Seq.empty, None)
+  def aStubWebServer: StubWebServerBuilder = new StubWebServerBuilder(Seq.empty, None)
   def aMockWebServerWith(handler: RequestHandler, handlers: RequestHandler*): MockWebServerBuilder =
-    MockWebServerBuilder(handler +: handlers, None)
+    new MockWebServerBuilder(handler +: handlers, None)
 }
 
 

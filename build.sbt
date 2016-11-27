@@ -30,7 +30,7 @@ lazy val compileOptions = Seq(
   resolvers := wixArtifactory,
 
   scalaVersion := "2.11.8",
-  crossScalaVersions := Seq("2.11.8"),
+  crossScalaVersions := Seq("2.11.8", "2.12.0"),
   scalacOptions ++= Seq(
     "-language:reflectiveCalls",
     "-feature",
@@ -40,7 +40,7 @@ lazy val compileOptions = Seq(
   )
 )
 
-val fwVersion = "2.1018.0-SNAPSHOT"
+val fwVersion = "2.1019.0-SNAPSHOT"
 
 lazy val noPublish = Seq( publish := {}, publishLocal := {}, publishArtifact := false )
 
@@ -71,10 +71,38 @@ lazy val httpServerTestkit =
     ) ++ baseSettings
   )
 
+lazy val httpClientTestkit =
+  Project(
+    id = "http-client-testkit",
+    base = file( "http-client-testkit" ),
+    //    .crossType( CrossType.Pure )
+    //    .in( file( "http-server-testkit" ) )
+    settings = Seq(
+      name := "http-client-testkit",
+      libraryDependencies ++= akkaHttp ++ specs2 ++ wixFWDependenciesFor(fwVersion),
+      description :=
+        "Some crap i need to describe the library"
+    ) ++ baseSettings
+  )
+
+lazy val httpTestkitContractTests =
+  Project(
+    id = "http-testkit-constrct-tests",
+    base = file( "http-testkit-constrct-tests" ),
+    //    .crossType( CrossType.Pure )
+    //    .in( file( "http-server-testkit" ) )
+    settings = Seq(
+      name := "http-testkit-constrct-tests",
+      libraryDependencies ++= akkaHttp ++ specs2 ++ wixFWDependenciesFor(fwVersion),
+      description :=
+        "Some crap i need to describe the library"
+    ) ++ baseSettings
+  ).dependsOn( httpServerTestkit, httpClientTestkit)
+
 
 lazy val root =
   Project(
     id = "root",
     base = file( "." ),
     settings = baseSettings ++ noPublish
-  ).aggregate( httpServerTestkit )
+  ).aggregate( httpServerTestkit, httpClientTestkit, httpTestkitContractTests )

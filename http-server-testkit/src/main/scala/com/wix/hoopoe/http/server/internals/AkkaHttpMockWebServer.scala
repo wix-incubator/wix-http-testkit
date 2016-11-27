@@ -21,6 +21,7 @@ abstract class AkkaHttpMockWebServer(specificPort: Option[Int]) extends BaseWebS
                                               port = specificPort.getOrElse( AllocateDynamicPort )) )
     serverBinding = Option(s)
     println(s"Web server started on port: ${baseUri.port}.")
+    this
   }
 
   def stop() = this.synchronized {
@@ -28,6 +29,7 @@ abstract class AkkaHttpMockWebServer(specificPort: Option[Int]) extends BaseWebS
       waitFor( s.unbind() )
     }
     serverBinding = None
+    this
   }
 
   def baseUri =

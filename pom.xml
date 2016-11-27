@@ -20,5 +20,7 @@
 
     <modules>
         <module>http-server-testkit</module>
-    </modules>
+        <module>http-client-testkit</module>
+        <module>http-testkit-contract-tests</module>
+  </modules>
 </project>
