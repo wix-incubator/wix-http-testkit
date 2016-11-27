@@ -19,8 +19,8 @@
     </developers>
 
     <modules>
-        <module>http-server-testkit</module>
-        <module>http-client-testkit</module>
+        <module>http-testkit-server</module>
+        <module>http-testkit-client</module>
         <module>http-testkit-contract-tests</module>
   </modules>
 </project>
