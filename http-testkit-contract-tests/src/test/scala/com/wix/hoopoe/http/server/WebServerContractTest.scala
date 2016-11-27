@@ -37,7 +37,8 @@ class WebServerContractTest extends SpecWithJUnit {
 
   "Embedded Web Server lifecycle" should {
     "be not available until started" in new ctx {
-      val server = aStubWebServer.onPort(somePort).build
+      val server = aStubWebServer.onPort(somePort)
+                                 .build
 
       get("/")(server.baseUri.asFW) must beConnectFailure
     }
@@ -49,14 +50,15 @@ class WebServerContractTest extends SpecWithJUnit {
     }
 
     "return port and base uri if server was created with explicit port" in new ctx {
-      val server = aStubWebServer.onPort(somePort).build
+      val server = aStubWebServer.onPort(somePort)
+                                 .build
 
       server.baseUri.asFW must_=== BaseUri(port = somePort)
     }
 
     "allocate port for server once it's started" in new ctx {
       val server = aStubWebServer.build
-      server.start()
+                                 .start()
 
       server.baseUri
 
@@ -65,7 +67,7 @@ class WebServerContractTest extends SpecWithJUnit {
 
     "once server is stopped it will not be available" in new ctx {
       val server = aStubWebServer.build
-      server.start()
+                                 .start()
       val sut = server.baseUri
       server.stop()
 
@@ -78,24 +80,20 @@ class WebServerContractTest extends SpecWithJUnit {
   "Stub web server" should {
     "return 200Ok on all non defined handlers" in new ctx {
       val server = aStubWebServer.build
-      server.start()
+                                 .start()
 
       implicit lazy val sut = server.baseUri.asFW
 
-      get(somePath) must beSuccessful
-      post(somePath) must beSuccessful
-      put(somePath) must beSuccessful
-      delete(somePath) must beSuccessful
-      patch(somePath) must beSuccessful
-      options(somePath) must beSuccessful
-      head(somePath) must beSuccessful
-      trace(somePath) must beSuccessful
+      Seq(get, post, put, delete, patch, options, head, trace)
+          .foreach { method =>
+            method(somePath) must beSuccessful
+          }
     }
 
 
     "record all incoming requests" in new ctx {
       val server = aStubWebServer.build
-      server.start()
+                                 .start()
       get(somePath)(server.baseUri.asFW)
 
       server.recordedRequests must contain( beGetRequestWith(path = somePath) )
@@ -103,7 +101,7 @@ class WebServerContractTest extends SpecWithJUnit {
 
     "reset recorded requests" in new ctx {
       val server = aStubWebServer.build
-      server.start()
+                                 .start()
       get(somePath)(server.baseUri.asFW)
 
       server.clearRecordedRequests()
@@ -114,7 +112,7 @@ class WebServerContractTest extends SpecWithJUnit {
     "allow to define custom handlers" in new ctx {
       val server = aStubWebServer.addHandler(handlerFor(somePath, returnsBody = content))
                                  .build
-      server.start()
+                                 .start()
 
       get(somePath)(server.baseUri.asFW) must beSuccessfulWith(content)
     }
@@ -124,7 +122,7 @@ class WebServerContractTest extends SpecWithJUnit {
 
     "define at least one handler and respond according to the defined behavior" in new ctx {
       val server = aMockWebServerWith(handlerFor(somePath, returnsBody = content)).build
-      server.start()
+                                                                                  .start()
 
       implicit lazy val sut = server.baseUri.asFW
 
@@ -133,7 +131,7 @@ class WebServerContractTest extends SpecWithJUnit {
 
     "return 404 if no handler is found to handle the request" in new ctx {
       val server = aMockWebServerWith(handlerFor(somePath, returnsBody = content)).build
-      server.start()
+                                                                                  .start()
 
       implicit lazy val sut = server.baseUri.asFW
 

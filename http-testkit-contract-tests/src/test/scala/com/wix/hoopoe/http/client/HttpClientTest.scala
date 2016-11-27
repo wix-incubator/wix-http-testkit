@@ -43,8 +43,8 @@ abstract class HttpClientTest extends SpecWithJUnit { self: HttpClientSupport[_]
 
     "throw timeout if response takes more than default timeout" in {
       val server = aStubWebServer.addHandler( { case _ => Thread.sleep(100); HttpResponse() } )
-        .build
-      server.start()
+                                 .build
+                                 .start()
 
       get("/somePath", withTimeout = 5.millis)(server.baseUri) must throwA[AskTimeoutException]
 
