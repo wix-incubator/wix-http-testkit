@@ -4,7 +4,7 @@
 
     <groupId>com.wixpress.hoopoe</groupId>
     <artifactId>http-testkit-modules</artifactId>
-    <name>Wix Http Testkit</name>
+    <name>Wix Http Testkit Modules</name>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
