@@ -4,7 +4,7 @@ import akka.http.scaladsl.client.RequestBuilding.RequestTransformer
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{Cookie, RawHeader}
-import com.wix.hoopoe.http.client.internals.AkkaClientResources
+import com.wix.hoopoe.http.WixHttpTestkitResources
 
 import scala.xml.Node
 
@@ -26,8 +26,8 @@ trait HttpClientRequestTransformers extends HttpClientContentTypes {
 
   def withPayload(body: String, contentType: ContentType = TextPlain): RequestTransformer = setBody(body)
   def withPayload(bytes: Array[Byte], contentType: ContentType): RequestTransformer = setBody(HttpEntity(contentType, bytes))
-  def withPayload(xml: Node): RequestTransformer = setBody(HttpEntity(XmlContent, AkkaClientResources.xmlPrinter.format(xml)))
-  def withPayload(entity: AnyRef): RequestTransformer = setBody(HttpEntity(JsonContent, AkkaClientResources.jsonMapper.writeValueAsString(entity)))
+  def withPayload(xml: Node): RequestTransformer = setBody(HttpEntity(XmlContent, WixHttpTestkitResources.xmlPrinter.format(xml)))
+  def withPayload(entity: AnyRef): RequestTransformer = setBody(HttpEntity(JsonContent, WixHttpTestkitResources.jsonMapper.writeValueAsString(entity)))
 
   def withFormData(formParams: (String, String)*): RequestTransformer = identity
 //  { r: HttpRequest =>

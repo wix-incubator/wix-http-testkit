@@ -19,8 +19,16 @@
     </developers>
 
     <modules>
+        <module>wix-http-testkit</module>
+
         <module>http-testkit-server</module>
         <module>http-testkit-client</module>
+
+        <module>http-testkit-commons</module>
+
+        <module>http-testkit-specs2</module>
+        <module>http-testkit-scalatest</module>
+
         <module>http-testkit-contract-tests</module>
-  </modules>
+    </modules>
 </project>

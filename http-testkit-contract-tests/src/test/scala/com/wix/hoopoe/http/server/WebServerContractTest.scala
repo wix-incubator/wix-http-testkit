@@ -4,6 +4,7 @@ import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import com.wix.e2e.BaseUri
 import com.wix.e2e.ResponseMatchers._
 import com.wix.e2e.http.sync._
+import com.wix.hoopoe.http.RequestHandler
 import com.wix.hoopoe.http.server.RequestMatchers._
 import com.wix.hoopoe.http.server.WebServerFactory._
 import com.wixpress.hoopoe.test._
@@ -14,6 +15,11 @@ import org.specs2.specification.Scope
 
 
 class WebServerContractTest extends SpecWithJUnit {
+
+  // remove this once client/server are working together !!!
+  implicit class `TK.BaseUri --> FW.BaseUri`(b: com.wix.hoopoe.http.BaseUri) {
+    def asFW = BaseUri(b.host, b.port)
+  }
 
   trait ctx extends Scope {
     private def randomPort = randomInt(0, 65535)
@@ -33,7 +39,7 @@ class WebServerContractTest extends SpecWithJUnit {
     "be not available until started" in new ctx {
       val server = aStubWebServer.onPort(somePort).build
 
-      get("/")(server.baseUri) must beConnectFailure
+      get("/")(server.baseUri.asFW) must beConnectFailure
     }
 
     "throw an exception is server did not explicitly define a port and is queried for port or baseUri" in new ctx {
@@ -45,7 +51,7 @@ class WebServerContractTest extends SpecWithJUnit {
     "return port and base uri if server was created with explicit port" in new ctx {
       val server = aStubWebServer.onPort(somePort).build
 
-      server.baseUri must_=== BaseUri(port = somePort)
+      server.baseUri.asFW must_=== BaseUri(port = somePort)
     }
 
     "allocate port for server once it's started" in new ctx {
@@ -63,7 +69,7 @@ class WebServerContractTest extends SpecWithJUnit {
       val sut = server.baseUri
       server.stop()
 
-      get("/")(sut) must beConnectFailure
+      get("/")(sut.asFW) must beConnectFailure
       server.baseUri must throwA[IllegalStateException]
     }
   }
@@ -74,7 +80,7 @@ class WebServerContractTest extends SpecWithJUnit {
       val server = aStubWebServer.build
       server.start()
 
-      implicit lazy val sut = server.baseUri
+      implicit lazy val sut = server.baseUri.asFW
 
       get(somePath) must beSuccessful
       post(somePath) must beSuccessful
@@ -90,7 +96,7 @@ class WebServerContractTest extends SpecWithJUnit {
     "record all incoming requests" in new ctx {
       val server = aStubWebServer.build
       server.start()
-      get(somePath)(server.baseUri)
+      get(somePath)(server.baseUri.asFW)
 
       server.recordedRequests must contain( beGetRequestWith(path = somePath) )
     }
@@ -98,7 +104,7 @@ class WebServerContractTest extends SpecWithJUnit {
     "reset recorded requests" in new ctx {
       val server = aStubWebServer.build
       server.start()
-      get(somePath)(server.baseUri)
+      get(somePath)(server.baseUri.asFW)
 
       server.clearRecordedRequests()
 
@@ -110,7 +116,7 @@ class WebServerContractTest extends SpecWithJUnit {
                                  .build
       server.start()
 
-      get(somePath)(server.baseUri) must beSuccessfulWith(content)
+      get(somePath)(server.baseUri.asFW) must beSuccessfulWith(content)
     }
   }
 
@@ -120,7 +126,7 @@ class WebServerContractTest extends SpecWithJUnit {
       val server = aMockWebServerWith(handlerFor(somePath, returnsBody = content)).build
       server.start()
 
-      implicit lazy val sut = server.baseUri
+      implicit lazy val sut = server.baseUri.asFW
 
       get(somePath) must beSuccessfulWith(content)
     }
@@ -129,7 +135,7 @@ class WebServerContractTest extends SpecWithJUnit {
       val server = aMockWebServerWith(handlerFor(somePath, returnsBody = content)).build
       server.start()
 
-      implicit lazy val sut = server.baseUri
+      implicit lazy val sut = server.baseUri.asFW
 
       get(anotherPath) must beNotFound
     }

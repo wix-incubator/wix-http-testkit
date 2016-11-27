@@ -1,8 +1,8 @@
 package com.wix.hoopoe.http.server.internals
 
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse, StatusCodes}
-import com.wix.hoopoe.http.server.WebServerFactory.RequestHandler
-import com.wix.hoopoe.http.server.{MockWebServer, StubWebServer}
+import com.wix.hoopoe.http.RequestHandler
+import com.wix.hoopoe.http.api.{MockWebServer, StubWebServer}
 
 import scala.collection.mutable.ListBuffer
 
@@ -33,7 +33,9 @@ class StubAkkaHttpMockWebServer(handlers: Seq[RequestHandler], specificPort: Opt
   protected val serverBehavior = RequestRecorderHandler
 }
 
-class MockAkkaHttpWebServer(handlers: Seq[RequestHandler], specificPort: Option[Int]) extends AkkaHttpMockWebServer(specificPort) with MockWebServer {
+class MockAkkaHttpWebServer(handlers: Seq[RequestHandler], specificPort: Option[Int])
+  extends AkkaHttpMockWebServer(specificPort)
+  with MockWebServer {
 
   private val NotFoundHandler: RequestHandler = { case _ => HttpResponse(status = StatusCodes.NotFound) }
   protected def serverBehavior: RequestHandler = (handlers :+ NotFoundHandler).reduce(_ orElse _)

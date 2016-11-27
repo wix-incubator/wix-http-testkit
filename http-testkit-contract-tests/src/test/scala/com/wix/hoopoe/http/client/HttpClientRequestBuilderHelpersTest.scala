@@ -2,8 +2,8 @@ package com.wix.hoopoe.http.client
 
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{HttpCookiePair, RawHeader}
+import com.wix.hoopoe.http.WixHttpTestkitResources
 import com.wix.hoopoe.http.client.HttpRequestMatchers._
-import com.wix.hoopoe.http.client.internals.AkkaClientResources
 import com.wix.hoopoe.http.client.sync._
 import com.wixpress.hoopoe.test._
 import org.specs2.matcher.Matcher
@@ -73,7 +73,7 @@ class HttpClientRequestTransformersTest extends SpecWithJUnit {
     }
 
     "added objects will be converted to json" in new ctx {
-      withPayload(payload)(request) must beRequestWithBody(HttpEntity(JsonContent, AkkaClientResources.jsonMapper.writeValueAsString(payload)))
+      withPayload(payload)(request) must beRequestWithBody(HttpEntity(JsonContent, WixHttpTestkitResources.jsonMapper.writeValueAsString(payload)))
     }
 
     "add XML as payload" in new ctx {
@@ -96,7 +96,7 @@ class HttpClientRequestTransformersTest extends SpecWithJUnit {
         beRequestWith(url = s"http://localhost?${keyValue1._1}=${keyValue1._2}") and
         beRequestWith(headers = keyValue2) and
         beRequestWithCookies(keyValue3) and
-        beRequestWithBody(HttpEntity(JsonContent, AkkaClientResources.jsonMapper.writeValueAsString(payload)))
+        beRequestWithBody(HttpEntity(JsonContent, WixHttpTestkitResources.jsonMapper.writeValueAsString(payload)))
     }
   }
 

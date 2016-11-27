@@ -14,40 +14,18 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <properties>
-        <akka-http.version>10.0.0</akka-http.version>
-        <akka-actor.version>2.4.14</akka-actor.version>
-    </properties>
+    <!--<properties>-->
+        <!--<akka-http.version>10.0.0</akka-http.version>-->
+        <!--<akka-actor.version>2.4.14</akka-actor.version>-->
+    <!--</properties>-->
 
 
     <dependencies>
         <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-http_${scala.dependencies.version}</artifactId>
-            <version>${akka-http.version}</version>
+            <groupId>com.wixpress.hoopoe</groupId>
+            <artifactId>http-testkit-commons</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-actor_${scala.dependencies.version}</artifactId>
-            <version>${akka-actor.version}</version>
-        </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>com.typesafe.akka</groupId>-->
-            <!--<artifactId>akka-http-spray-json_${scala.dependencies.version}</artifactId>-->
-            <!--<version>${akka-http.version}</version>-->
-        <!--</dependency>-->
-
-        <!--&lt;!&ndash; https://mvnrepository.com/artifact/io.spray/spray-json_2.11 &ndash;&gt;-->
-        <!--<dependency>-->
-            <!--<groupId>io.spray</groupId>-->
-            <!--<artifactId>spray-json_2.11</artifactId>-->
-            <!--<version>1.3.2</version>-->
-        <!--</dependency>-->
-
-
-
 
         <dependency>
             <groupId>com.wixpress.common</groupId>
@@ -57,15 +35,8 @@
         <dependency>
             <groupId>com.wixpress.common</groupId>
             <artifactId>wix-framework-scala-test-dependencies</artifactId>
-            <!--<scope>test</scope>-->
+            <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
     </dependencies>
 
 </project>

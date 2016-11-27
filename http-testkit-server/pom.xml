@@ -15,33 +15,18 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <properties>
-        <akka-http.version>10.0.0</akka-http.version>
-        <akka-actor.version>2.4.14</akka-actor.version>
-    </properties>
-
     <dependencies>
         <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-http_${scala.dependencies.version}</artifactId>
-            <version>${akka-http.version}</version>
+            <groupId>com.wixpress.hoopoe</groupId>
+            <artifactId>http-testkit-commons</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-actor_${scala.dependencies.version}</artifactId>
-            <version>${akka-actor.version}</version>
-        </dependency>
-
-
-        <!-- not in testscope only for base uri, once i move the client module here it can be removed. -->
-        <dependency>
-            <groupId>com.wixpress.common</groupId>
-            <artifactId>wix-framework-scala-test-dependencies</artifactId>
+        <!--<dependency>-->
+            <!--<groupId>com.wixpress.common</groupId>-->
+            <!--<artifactId>wix-framework-scala-test-dependencies</artifactId>-->
             <!--<scope>test</scope>-->
-        </dependency>
-
-
+        <!--</dependency>-->
     </dependencies>
 
 </project>

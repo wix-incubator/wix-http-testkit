@@ -2,9 +2,9 @@ package com.wix.hoopoe.http.client
 
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import akka.pattern.AskTimeoutException
-import com.wix.e2e.BaseUri
+import com.wix.hoopoe.http.BaseUri
+import com.wix.hoopoe.http.api.StubWebServer
 import com.wix.hoopoe.http.client.StubWebServerMatchers._
-import com.wix.hoopoe.http.server.StubWebServer
 import com.wix.hoopoe.http.server.WebServerFactory.aStubWebServer
 import com.wixpress.hoopoe.test._
 import org.specs2.matcher.Matcher

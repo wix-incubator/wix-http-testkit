@@ -1,8 +1,8 @@
 package com.wix.hoopoe.http.server.builders
 
-import com.wix.hoopoe.http.server.WebServerFactory.RequestHandler
+import com.wix.hoopoe.http.RequestHandler
+import com.wix.hoopoe.http.api.{MockWebServer, StubWebServer}
 import com.wix.hoopoe.http.server.internals.{MockAkkaHttpWebServer, StubAkkaHttpMockWebServer}
-import com.wix.hoopoe.http.server.{MockWebServer, StubWebServer}
 
 class StubWebServerBuilder(handlers: Seq[RequestHandler], port: Option[Int]) {
 
