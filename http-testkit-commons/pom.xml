@@ -38,16 +38,9 @@
             <version>${akka-actor.version}</version>
         </dependency>
 
-
         <dependency>
             <groupId>com.wixpress.common</groupId>
             <artifactId>wix-framework-scala-dependencies</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wixpress.common</groupId>
-            <artifactId>wix-framework-scala-test-dependencies</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

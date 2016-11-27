@@ -14,12 +14,6 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <!--<properties>-->
-        <!--<akka-http.version>10.0.0</akka-http.version>-->
-        <!--<akka-actor.version>2.4.14</akka-actor.version>-->
-    <!--</properties>-->
-
-
     <dependencies>
         <dependency>
             <groupId>com.wixpress.hoopoe</groupId>
@@ -30,12 +24,6 @@
         <dependency>
             <groupId>com.wixpress.common</groupId>
             <artifactId>wix-framework-scala-dependencies</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wixpress.common</groupId>
-            <artifactId>wix-framework-scala-test-dependencies</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
