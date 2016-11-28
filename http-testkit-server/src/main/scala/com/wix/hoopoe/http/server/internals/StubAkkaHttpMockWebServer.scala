@@ -10,16 +10,16 @@ class StubAkkaHttpMockWebServer(handlers: Seq[RequestHandler], specificPort: Opt
   extends AkkaHttpMockWebServer(specificPort)
   with StubWebServer {
 
-  private val requests = ListBuffer.empty[HttpRequest]
 
   def recordedRequests = this.synchronized {
-    requests.toList
+    requests
   }
 
   def clearRecordedRequests() = this.synchronized {
     requests.clear()
   }
 
+  private val requests = ListBuffer.empty[HttpRequest]
 
   private val SuccessfulHandler: RequestHandler = { case _ => HttpResponse(status = StatusCodes.OK) }
   private val MockServerHandlers = (handlers :+ SuccessfulHandler).reduce(_ orElse _)

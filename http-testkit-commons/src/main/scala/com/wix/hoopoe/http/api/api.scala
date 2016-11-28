@@ -14,6 +14,6 @@ trait BaseWebServer {
 
 
 trait RequestRecordSupport {
-  def recordedRequests: List[HttpRequest]
+  def recordedRequests: Seq[HttpRequest]
   def clearRecordedRequests(): Unit
 }
