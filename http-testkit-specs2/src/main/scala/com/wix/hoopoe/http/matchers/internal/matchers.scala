@@ -8,7 +8,7 @@ import com.wix.hoopoe.http.matchers.ResponseMatcher
 import com.wix.hoopoe.http.utils._
 import com.wix.hoopoe.http.{HttpResponse, WixHttpTestkitResources}
 import org.specs2.matcher.Matchers._
-import org.specs2.matcher.{Expectable, FutureMatchers, MatchResult, Matcher}
+import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 
 import scala.concurrent.ExecutionContext
 
@@ -127,7 +127,7 @@ trait ResponseHeadersMatchers {
   private case class HeaderComparisonResult(identical: Seq[(String, String)], missing: Seq[(String, String)], extra: Seq[(String, String)])
 }
 
-trait ResponseBodyMatchers extends FutureMatchers {
+trait ResponseBodyMatchers {
   import WixHttpTestkitResources.materializer
   import ExecutionContext.Implicits.global
 
@@ -138,7 +138,57 @@ trait ResponseBodyMatchers extends FutureMatchers {
   def haveBodyWith(data: Array[Byte]): ResponseMatcher = haveBodyDataThat( must = be_===(data) )
   def haveBodyDataThat(must: Matcher[Array[Byte]]): ResponseMatcher = must ^^ httpResponseAsBinary
 
+  // ResponseBodyUnmarshallingMatchers
+
+  /*
+  trait ResponseBodyUnmarshallingMatchers {
+  import com.wixpress.hoopoe.json.JsonMapper.Implicits.{global => mapper}
+  import com.wixpress.hoopoe.json._
+
+  def haveBody[T : Manifest](entity: T): ResponseMatcher = haveBody(entityThatIs = typedEqualTo(entity))
+  def haveBody[T : Manifest](entityThatIs: Matcher[T]): ResponseMatcher = entityThatIs ^^ httpResponseAs[T]
+
+  private def httpResponseAs[T : Manifest] = (_: HttpResponse).entity.asString(`UTF-8`).as[T] aka "Body content"
+}
+
+   */
 
   private def httpResponseAsString = (r: HttpResponse) => waitFor( Unmarshal(r.entity).to[String] ) aka "Body content as string"
   private def httpResponseAsBinary = (r: HttpResponse) => waitFor( Unmarshal(r.entity).to[Array[Byte]] ) aka "Body content as bytes"
+
+
 }
+
+trait ResponseBodyAndStatusMatchers { self: ResponseBodyMatchers with ResponseStatusMatchers with ResponseHeadersMatchers with ResponseCookiesMatchers =>
+
+  def beSuccessfulWith(bodyContent: String): ResponseMatcher = beSuccessful and haveBodyWith(bodyContent)
+  def beSuccessfulWithBodyThat(must: Matcher[String]): ResponseMatcher = beSuccessful and haveBodyThat(must)
+
+
+  def beSuccessfulWith(data: Array[Byte]): ResponseMatcher = beSuccessful and haveBodyWith(data)
+  def beSuccessfulWithBodyDataThat(must: Matcher[Array[Byte]]): ResponseMatcher = beSuccessful and haveBodyDataThat(must)
+
+  def beSuccessfulWithHeaders(headers: (String, String)*): ResponseMatcher = beSuccessful and haveAllOf(headers:_*)
+  def beSuccessfulWithHeaderThat(must: Matcher[String], withHeaderName: String): ResponseMatcher = beSuccessful and haveAnyHeaderThat(must, withHeaderName)
+
+  def beSuccessfulWithCookie(cookieName: String): ResponseMatcher = beSuccessful and receivedCookieWith(cookieName)
+  def beSuccessfulWithCookieThat(must: Matcher[HttpCookie]): ResponseMatcher = beSuccessful and receivedCookieThat(must)
+
+  def beInvalidWith(bodyContent: String): ResponseMatcher = beInvalid and haveBodyWith(bodyContent)
+  def beInvalidWithBodyThat(must: Matcher[String]): ResponseMatcher = beInvalid and haveBodyThat(must)
+}
+
+//trait ResponseComposedMatchers { self: ResponseStatusMatchers with ResponseBodyMatchers with ResponseHeadersMatchers =>
+//
+//  def beSuccessfulWith(content: String): ResponseMatcher = beSuccessfulWith(bodyThatIs = equalTo(content))
+//  def beSuccessfulWith(headers: (String, String)*): ResponseMatcher = beSuccessful and haveHeaders(headers:_*)
+//  def beSuccessfulWith(bodyThatIs: Matcher[String]): ResponseMatcher = beSuccessful and haveBody(bodyThatIs)
+//  def beSuccessfulDataWith(data: Array[Byte]): ResponseMatcher = beSuccessful and haveBodyData(data)
+//  def beSuccessfulDataWith(data: Matcher[Array[Byte]]): ResponseMatcher = beSuccessful and haveBodyData(data)
+//
+//  def beSuccessfulWithout(headerNames: String*): ResponseMatcher = beSuccessful and notHaveHeaders(headerNames:_*)
+//
+//  def beConnectFailure: Matcher[HttpResponse] = throwA[ConnectionAttemptFailedException]
+//
+//  def beInvalidWith(bodyThatIs: Matcher[String]): ResponseMatcher = beInvalid and haveBody(bodyThatIs)
+//}

@@ -29,8 +29,8 @@ abstract class HttpClientTest extends SpecWithJUnit { self: HttpClientSupport[_]
 
     "support generating async get, post, put, patch, delete, options and trace request" in new ctx {
       Seq(get -> "Get", post -> "Post", put -> "Put",
-        patch -> "Patch", delete -> "Delete",
-        options -> "Options"/*, head -> "Head"*/, trace -> "Trace")
+          patch -> "Patch", delete -> "Delete",
+          options -> "Options"/*, head -> "Head"*/, trace -> "Trace")
         .foreach { case (method, methodName) =>
           val path = s"$methodName/$randomStr"
           server.clearRecordedRequests()

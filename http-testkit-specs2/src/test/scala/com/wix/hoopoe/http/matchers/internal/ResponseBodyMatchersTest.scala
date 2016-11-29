@@ -33,6 +33,10 @@ class ResponseBodyMatchersTest extends SpecWithJUnit {
       aResponseWith(binaryContent) must haveBodyDataThat(must = be_===( binaryContent ))
       aResponseWith(binaryContent) must not( haveBodyDataThat(must = be_===( anotherBinaryContent )) )
     }
+
+    "handle empty body" in new ctx {
+      aResponseWithoutBody must not( haveBodyWith(content))
+    }
   }
 }
 

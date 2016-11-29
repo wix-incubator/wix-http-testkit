@@ -1,12 +1,14 @@
 package com.wix.hoopoe.http.matchers.drivers
 
-import akka.http.scaladsl.model.HttpResponse
+import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.headers.{HttpCookie, RawHeader, `Set-Cookie`}
+import akka.http.scaladsl.model.{HttpResponse, StatusCode}
 import com.wixpress.hoopoe.test.randomStr
 import org.specs2.matcher.Matcher
 import org.specs2.matcher.Matchers._
 
 import scala.collection.immutable
+import scala.util.Random
 
 trait HttpResponseTestSupport {
 
@@ -26,6 +28,25 @@ trait HttpResponseTestSupport {
   val binaryContent = Array[Byte](1, 1, 1, 1)
   val anotherBinaryContent = Array[Byte](2, 2, 2, 2)
 
+  def randomStatusThatIsNot(status: StatusCode): StatusCode =
+    Random.shuffle(AllResponseStatuses.filterNot(_ == status))
+          .head
+
+  private val AllResponseStatuses =
+    Seq(Continue, SwitchingProtocols, Processing, OK, Created, Accepted, NonAuthoritativeInformation,
+        NoContent, ResetContent, PartialContent, MultiStatus, AlreadyReported, IMUsed, MultipleChoices,
+        MovedPermanently, Found, SeeOther, NotModified, UseProxy, TemporaryRedirect, PermanentRedirect,
+        BadRequest, Unauthorized, PaymentRequired, Forbidden, NotFound, MethodNotAllowed, NotAcceptable,
+        ProxyAuthenticationRequired, RequestTimeout, Conflict, Gone, LengthRequired, PreconditionFailed,
+        RequestEntityTooLarge, RequestUriTooLong, UnsupportedMediaType, RequestedRangeNotSatisfiable,
+        ExpectationFailed, EnhanceYourCalm, UnprocessableEntity, Locked, FailedDependency, UnorderedCollection,
+        UpgradeRequired, PreconditionRequired, TooManyRequests, RequestHeaderFieldsTooLarge, RetryWith,
+        BlockedByParentalControls, UnavailableForLegalReasons, InternalServerError, NotImplemented, BadGateway,
+        ServiceUnavailable, GatewayTimeout, HTTPVersionNotSupported, VariantAlsoNegotiates, InsufficientStorage,
+        LoopDetected, BandwidthLimitExceeded, NotExtended, NetworkAuthenticationRequired, NetworkReadTimeout,
+        NetworkConnectTimeout)
+
+
   private def randomHeader = randomStr -> randomStr
   private def randomCookie = HttpCookie(randomStr, randomStr)
 }
@@ -39,8 +60,18 @@ object HttpResponseFactory {
   def aResponseWithNoHeaders = aResponseWithHeaders()
   def aResponseWithHeaders(headers: (String, String)*) = HttpResponse(headers = immutable.Seq( headers.map{ case (k, v) => RawHeader(k, v) }:_* ) )
 
+  def aSuccessfulResponseWith(body: String) = aResponseWith(body).copy(status = OK)
+  def aSuccessfulResponseWith(binaryBody: Array[Byte]) = aResponseWith(binaryBody).copy(status = OK)
+  def aSuccessfulResponseWith(headers: (String, String)*) = aResponseWithHeaders(headers:_*).copy(status = OK)
+  def aSuccessfulResponseWithCookies(cookies: HttpCookie*) = aResponseWithCookies(cookies:_*).copy(status = OK)
+
+  def aResponseWith(status: StatusCode) = HttpResponse(status)
+
   def aResponseWith(body: String) = HttpResponse(entity = body)
   def aResponseWith(binaryBody: Array[Byte]) = HttpResponse(entity = binaryBody)
+  def aResponseWithoutBody = HttpResponse()
+
+  def anInvalidResponseWith(body: String) = aResponseWith(body).copy(status = BadRequest)
 }
 
 object HttpResponseMatchers {
