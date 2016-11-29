@@ -1,4 +1,4 @@
-package com.wix.hoopoe.http.server
+package com.wix.hoopoe.http
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}

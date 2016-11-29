@@ -3,7 +3,7 @@ package com.wix.hoopoe.http.server.internals
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.Http.ServerBinding
 import com.wix.hoopoe.http.api.BaseWebServer
-import com.wix.hoopoe.http.server.utils._
+import com.wix.hoopoe.http.utils._
 import com.wix.hoopoe.http.{BaseUri, RequestHandler, WixHttpTestkitResources}
 
 abstract class AkkaHttpMockWebServer(specificPort: Option[Int]) extends BaseWebServer {
