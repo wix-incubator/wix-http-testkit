@@ -33,14 +33,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.specs2</groupId>
-            <artifactId>specs2-matcher_{scala.dependencies.version}</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.wixpress.common</groupId>
             <artifactId>wix-framework-scala-test-dependencies</artifactId>
-            <!--<scope>test</scope>-->
+            <scope>test</scope>
         </dependency>
 
         <dependency>
