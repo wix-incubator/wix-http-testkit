@@ -1,7 +1,8 @@
 package com.wix.hoopoe.http.matchers.internal
 
 import com.wix.hoopoe.http.matchers.ResponseMatchers._
-import com.wix.hoopoe.http.matchers.internal.HttpResponseFactory._
+import com.wix.hoopoe.http.matchers.drivers.HttpResponseFactory._
+import com.wix.hoopoe.http.matchers.drivers.{HttpResponseTestSupport, MatchersTestSupport}
 import org.specs2.matcher.AlwaysMatcher
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope

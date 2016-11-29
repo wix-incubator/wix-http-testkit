@@ -3,10 +3,14 @@ package com.wix.hoopoe.http.matchers.internal
 import akka.http.scaladsl.model.StatusCode
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.headers._
-import com.wix.hoopoe.http.HttpResponse
+import akka.http.scaladsl.unmarshalling.Unmarshal
 import com.wix.hoopoe.http.matchers.ResponseMatcher
+import com.wix.hoopoe.http.utils._
+import com.wix.hoopoe.http.{HttpResponse, WixHttpTestkitResources}
 import org.specs2.matcher.Matchers._
-import org.specs2.matcher.{Expectable, MatchResult, Matcher}
+import org.specs2.matcher.{Expectable, FutureMatchers, MatchResult, Matcher}
+
+import scala.concurrent.ExecutionContext
 
 trait ResponseStatusMatchers {
 
@@ -121,4 +125,20 @@ trait ResponseHeadersMatchers {
   }
 
   private case class HeaderComparisonResult(identical: Seq[(String, String)], missing: Seq[(String, String)], extra: Seq[(String, String)])
+}
+
+trait ResponseBodyMatchers extends FutureMatchers {
+  import WixHttpTestkitResources.materializer
+  import ExecutionContext.Implicits.global
+
+
+  def haveBodyWith(bodyContent: String): ResponseMatcher = haveBodyThat( must = be_===(bodyContent) )
+  def haveBodyThat(must: Matcher[String]): ResponseMatcher = must ^^ httpResponseAsString
+
+  def haveBodyWith(data: Array[Byte]): ResponseMatcher = haveBodyDataThat( must = be_===(data) )
+  def haveBodyDataThat(must: Matcher[Array[Byte]]): ResponseMatcher = must ^^ httpResponseAsBinary
+
+
+  private def httpResponseAsString = (r: HttpResponse) => waitFor( Unmarshal(r.entity).to[String] ) aka "Body content as string"
+  private def httpResponseAsBinary = (r: HttpResponse) => waitFor( Unmarshal(r.entity).to[Array[Byte]] ) aka "Body content as bytes"
 }

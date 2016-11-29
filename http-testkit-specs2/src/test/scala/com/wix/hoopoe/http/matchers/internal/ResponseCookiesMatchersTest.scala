@@ -1,16 +1,12 @@
 package com.wix.hoopoe.http.matchers.internal
 
-import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.headers._
 import com.wix.hoopoe.http.matchers.ResponseMatchers._
-import com.wix.hoopoe.http.matchers.internal.HttpResponseFactory._
-import com.wixpress.hoopoe.test._
-import org.specs2.matcher.{Matcher, MustThrownExpectationsCreation}
+import com.wix.hoopoe.http.matchers.drivers.HttpResponseFactory._
+import com.wix.hoopoe.http.matchers.drivers.{HttpResponseTestSupport, MatchersTestSupport}
 import org.specs2.matcher.Matchers._
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
-
-import scala.collection.immutable
 
 
 class ResponseCookiesMatchersTest extends SpecWithJUnit with MatchersTestSupport {
@@ -38,36 +34,4 @@ class ResponseCookiesMatchersTest extends SpecWithJUnit with MatchersTestSupport
       aResponseWithCookies(cookie) must receivedCookieThat(be_===(cookie.value) ^^ { (_: HttpCookie).value aka "cookie value" })
     }
   }
-}
-
-trait MatchersTestSupport { self: MustThrownExpectationsCreation =>
-  def failureMessageFor[T](matcher: Matcher[T], matchedOn: T): String =
-    matcher.apply( createMustExpectable(matchedOn) ).message
-}
-
-trait HttpResponseTestSupport {
-
-  val cookie = randomCookie
-  val anotherCookie = randomCookie
-  val yetAnotherCookie = randomCookie
-
-  val nonExistingHeaderName = randomStr
-  val header = randomHeader
-  val anotherHeader = randomHeader
-  val yetAnotherHeader = randomHeader
-  val andAnotherHeader = randomHeader
-
-
-  private def randomHeader = randomStr -> randomStr
-  private def randomCookie = HttpCookie(randomStr, randomStr)
-}
-
-object HttpResponseFactory {
-
-  def aResponseWithNoCookies = aResponseWithCookies()
-  def aResponseWithCookies(cookies: HttpCookie*) =
-    HttpResponse(headers = immutable.Seq( cookies.map( `Set-Cookie`(_) ):_* ) )
-
-  def aResponseWithNoHeaders = aResponseWithHeaders()
-  def aResponseWithHeaders(headers: (String, String)*) = HttpResponse(headers = immutable.Seq( headers.map{ case (k, v) => RawHeader(k, v) }:_* ) )
 }
