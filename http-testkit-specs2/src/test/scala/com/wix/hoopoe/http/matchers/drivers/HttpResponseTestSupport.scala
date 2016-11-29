@@ -3,6 +3,8 @@ package com.wix.hoopoe.http.matchers.drivers
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.headers.{HttpCookie, RawHeader, `Set-Cookie`}
 import com.wixpress.hoopoe.test.randomStr
+import org.specs2.matcher.Matcher
+import org.specs2.matcher.Matchers._
 
 import scala.collection.immutable
 
@@ -39,4 +41,8 @@ object HttpResponseFactory {
 
   def aResponseWith(body: String) = HttpResponse(entity = body)
   def aResponseWith(binaryBody: Array[Byte]) = HttpResponse(entity = binaryBody)
+}
+
+object HttpResponseMatchers {
+  def cookieWith(value: String): Matcher[HttpCookie] = be_===(value) ^^ { (_: HttpCookie).value aka "cookie value" }
 }
