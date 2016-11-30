@@ -1,13 +1,14 @@
 package com.wix.hoopoe.http.matchers.internal
 
-import akka.http.scaladsl.model.StatusCode
+import akka.http.scaladsl.model.{HttpResponse, StatusCode}
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.unmarshalling.Unmarshal
+import com.wix.hoopoe.http.exceptions.ConnectionRefusedException
 import com.wix.hoopoe.http.matchers.ResponseMatcher
 import com.wix.hoopoe.http.matchers.json.{DefaultMarshaller, Marshaller}
 import com.wix.hoopoe.http.utils._
-import com.wix.hoopoe.http.{HttpResponse, WixHttpTestkitResources}
+import com.wix.hoopoe.http.WixHttpTestkitResources
 import org.specs2.matcher.Matchers._
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 
@@ -47,7 +48,9 @@ trait ResponseStatusMatchers {
   def beInternalServerError: ResponseMatcher = haveStatus(InternalServerError)
   def beNotImplemented: ResponseMatcher = haveStatus(NotImplemented)
 
-  //beConnectFailure
+
+  // client errors
+  def beConnectionRefused: Matcher[HttpResponse] = throwA[ConnectionRefusedException]
 
 
   private def haveStatus(status: StatusCode): ResponseMatcher = be_===(status) ^^ httpResponseStatus

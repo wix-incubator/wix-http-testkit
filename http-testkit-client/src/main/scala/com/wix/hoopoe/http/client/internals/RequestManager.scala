@@ -4,7 +4,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.Uri
 import akka.stream.StreamTcpException
 import com.wix.hoopoe.http._
-import com.wix.hoopoe.http.client.exceptions.ConnectionRefusedException
+import com.wix.hoopoe.http.exceptions.ConnectionRefusedException
 import com.wix.hoopoe.http.utils._
 
 import scala.concurrent.ExecutionContext.Implicits.global

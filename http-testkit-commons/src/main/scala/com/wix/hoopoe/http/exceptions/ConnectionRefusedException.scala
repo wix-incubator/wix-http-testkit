@@ -1,4 +1,4 @@
-package com.wix.hoopoe.http.client.exceptions
+package com.wix.hoopoe.http.exceptions
 
 import com.wix.hoopoe.http.BaseUri
 
