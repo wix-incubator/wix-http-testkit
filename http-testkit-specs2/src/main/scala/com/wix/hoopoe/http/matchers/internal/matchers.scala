@@ -47,6 +47,8 @@ trait ResponseStatusMatchers {
   def beInternalServerError: ResponseMatcher = haveStatus(InternalServerError)
   def beNotImplemented: ResponseMatcher = haveStatus(NotImplemented)
 
+  //beConnectFailure
+
 
   private def haveStatus(status: StatusCode): ResponseMatcher = be_===(status) ^^ httpResponseStatus
   private def httpResponseStatus = (_: HttpResponse).status aka "response status"

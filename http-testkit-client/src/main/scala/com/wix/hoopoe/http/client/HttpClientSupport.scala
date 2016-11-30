@@ -19,7 +19,7 @@ sealed trait HttpClientSupport[T] extends HttpClientRequestTransformers {
   def trace: RequestManager[T]
 }
 
-trait SyncHttpClientSupport extends HttpClientSupport[HttpResponse] {
+trait BlockingHttpClientSupport extends HttpClientSupport[HttpResponse] {
   val get = new BlockingRequestManager(Get())
   val post = new BlockingRequestManager(Post())
   val put = new BlockingRequestManager(Put())
@@ -30,7 +30,7 @@ trait SyncHttpClientSupport extends HttpClientSupport[HttpResponse] {
   val trace = new BlockingRequestManager(new RequestBuilder(TRACE).apply())
 }
 
-trait ASyncHttpClientSupport extends HttpClientSupport[Future[HttpResponse]] {
+trait NonBlockingHttpClientSupport extends HttpClientSupport[Future[HttpResponse]] {
   val get = new NonBlockingRequestManager(Get())
   val post = new NonBlockingRequestManager(Post())
   val put = new NonBlockingRequestManager(Put())
@@ -41,5 +41,5 @@ trait ASyncHttpClientSupport extends HttpClientSupport[Future[HttpResponse]] {
   val trace = new NonBlockingRequestManager(new RequestBuilder(TRACE).apply())
 }
 
-object ASyncHttpClientSupport extends ASyncHttpClientSupport
-object SyncHttpClientSupport extends SyncHttpClientSupport
+object NonBlockingHttpClientSupport$ extends NonBlockingHttpClientSupport
+object BlockingHttpClientSupport$ extends BlockingHttpClientSupport

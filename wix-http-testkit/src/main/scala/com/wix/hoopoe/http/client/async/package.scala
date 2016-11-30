@@ -1,3 +1,3 @@
 package com.wix.hoopoe.http.client
 
-package object async extends ASyncHttpClientSupport
+package object async extends NonBlockingHttpClientSupport

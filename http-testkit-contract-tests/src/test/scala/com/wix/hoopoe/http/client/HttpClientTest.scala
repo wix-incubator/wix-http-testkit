@@ -1,21 +1,21 @@
 package com.wix.hoopoe.http.client
 
 import akka.http.scaladsl.model.HttpResponse
-import akka.pattern.AskTimeoutException
+import com.wix.hoopoe.http.client.exceptions.ConnectionRefusedException
 import com.wix.hoopoe.http.drivers.StubWebServerMatchers._
 import com.wix.hoopoe.http.drivers.StubWebServerProvider
 import com.wix.hoopoe.http.server.WebServerFactory.aStubWebServer
 import com.wixpress.hoopoe.test._
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
-import org.specs2.execute.PendingUntilFixed._
 
+import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
 
 
-class ASyncHttpClientTest extends HttpClientTest with ASyncHttpClientSupport
+class NonBlockingHttpClientTest extends HttpClientTest with NonBlockingHttpClientSupport
 
-class SyncHttpClientTest extends HttpClientTest with SyncHttpClientSupport
+class BlockingHttpClientTest extends HttpClientTest with BlockingHttpClientSupport
 
 abstract class HttpClientTest extends SpecWithJUnit { self: HttpClientSupport[_] =>
 
@@ -40,16 +40,12 @@ abstract class HttpClientTest extends SpecWithJUnit { self: HttpClientSupport[_]
     }
 
     "throw timeout if response takes more than default timeout" in {
-      val server = aStubWebServer.addHandler( { case _ => Thread.sleep(100); HttpResponse() } )
+      val server = aStubWebServer.addHandler( { case _ => Thread.sleep(500); HttpResponse() } )
                                  .build
                                  .start()
 
-      get("/somePath", withTimeout = 5.millis)(server.baseUri) must throwA[AskTimeoutException]
-
-      server.stop()
-      ok
-    }.pendingUntilFixed("find how to define read timeout")
-
+      get("/somePath", withTimeout = 5.millis)(server.baseUri) must throwA[TimeoutException]
+    }
 
     "allow to customize request using request transformers" in new ctx {
       get("/somePath", but = withHeaders("h1" -> "v1") )
@@ -61,6 +57,10 @@ abstract class HttpClientTest extends SpecWithJUnit { self: HttpClientSupport[_]
       get("/somePath", but = withHeaders("Accept" -> XmlContent.toString) )
 
       server must receivedRequestWith("Accept" -> XmlContent.toString)
+    }
+
+    "match connection failed" in new ctx {
+      get("/nowhere")(ClosedPort) must throwA[ConnectionRefusedException]( ClosedPort.port.toString )
     }
   }
 }

@@ -2,10 +2,14 @@ package com.wix.hoopoe.http.client.internals
 
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.Uri
+import akka.stream.StreamTcpException
 import com.wix.hoopoe.http._
+import com.wix.hoopoe.http.client.exceptions.ConnectionRefusedException
+import com.wix.hoopoe.http.utils._
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
 
 
 trait RequestManager[R] {
@@ -14,10 +18,14 @@ trait RequestManager[R] {
 
 class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Future[HttpResponse]] {
 
+
   def apply(path: String, but: RequestTransformer, withTimeout: FiniteDuration)(implicit baseUri: BaseUri): Future[HttpResponse] = {
     val transformed = Seq(composeUrlFor(baseUri, path), but)
                                 .foldLeft(request) { case (r, tr) => tr(r) }
-    Http(WixHttpTestkitResources.system).singleRequest(request = transformed)(WixHttpTestkitResources.materializer)
+    import WixHttpTestkitResources.{materializer, system}
+    Http().singleRequest(request = transformed)
+          .recoverWith( { case _: StreamTcpException => Future.failed(throw new ConnectionRefusedException(baseUri)) } )
+          .withTimeoutOf(duration = withTimeout)
   }
 
   private def composeUrlFor(baseUri: BaseUri, withPath: String): RequestTransformer =
@@ -27,7 +35,7 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
 class BlockingRequestManager(request: HttpRequest) extends RequestManager[HttpResponse] {
 
   def apply(path: String, but: RequestTransformer, withTimeout: FiniteDuration)(implicit baseUri: BaseUri): HttpResponse =
-    Await.result( nonBlockingRequestManager(path, but, withTimeout), Duration.Inf)
+    waitFor( nonBlockingRequestManager(path, but, withTimeout) )
 
   private val nonBlockingRequestManager = new NonBlockingRequestManager(request)
 }

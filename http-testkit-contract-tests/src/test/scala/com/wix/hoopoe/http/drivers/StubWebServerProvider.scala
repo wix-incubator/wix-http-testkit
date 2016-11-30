@@ -13,6 +13,8 @@ trait StubWebServerProvider extends After {
 
   def after = server.stop()
 
+  val ClosedPort =  BaseUri(port = 11111)
+
   lazy implicit val baseUri: BaseUri = server.baseUri
 }
 
