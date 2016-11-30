@@ -1,8 +1,9 @@
 package com.wix.hoopoe.http.matchers.drivers
 
 import akka.http.scaladsl.model.StatusCodes._
+import akka.http.scaladsl.model.Uri.{Path, Query}
 import akka.http.scaladsl.model.headers.{HttpCookie, RawHeader, `Set-Cookie`}
-import akka.http.scaladsl.model.{HttpResponse, StatusCode}
+import akka.http.scaladsl.model._
 import com.wix.hoopoe.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
 import com.wixpress.hoopoe.test._
 import org.specs2.matcher.Matcher
@@ -84,4 +85,14 @@ object HttpResponseMatchers {
 
 object MarshallingTestObjects {
   case class SomeCaseClass(s: String, i: Int)
+}
+
+
+object HttpRequestFactory {
+
+  def aRequestWith(method: HttpMethod) = HttpRequest(method = method)
+  def aRequestWith(path: String) = HttpRequest(uri = Uri().withPath(Path(path)))
+  def aRequestWithParameters(parameters: (String, String)*) = HttpRequest(uri = Uri().withQuery(Query(parameters:_*)))
+  def aRequestWithNoParameters = HttpRequest()
+
 }
