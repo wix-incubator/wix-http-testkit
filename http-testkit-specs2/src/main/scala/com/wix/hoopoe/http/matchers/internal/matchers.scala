@@ -5,7 +5,7 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import com.wix.hoopoe.http.matchers.ResponseMatcher
-import com.wix.hoopoe.http.matchers.json.Marshaller
+import com.wix.hoopoe.http.matchers.json.{DefaultMarshaller, Marshaller}
 import com.wix.hoopoe.http.utils._
 import com.wix.hoopoe.http.{HttpResponse, WixHttpTestkitResources}
 import org.specs2.matcher.Matchers._
@@ -140,8 +140,8 @@ trait ResponseBodyMatchers {
   def haveBodyWith(data: Array[Byte]): ResponseMatcher = haveBodyDataThat( must = be_===(data) )
   def haveBodyDataThat(must: Matcher[Array[Byte]]): ResponseMatcher = must ^^ httpResponseAsBinary
 
-  def havePayloadWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): ResponseMatcher = havePayloadThat[T]( must = be_===(entity) )
-  def havePayloadThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): ResponseMatcher = new ResponseMatcher {
+  def havePayloadWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller = DefaultMarshaller.marshaller): ResponseMatcher = havePayloadThat[T]( must = be_===(entity) )
+  def havePayloadThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller = DefaultMarshaller.marshaller): ResponseMatcher = new ResponseMatcher {
 
     def apply[S <: HttpResponse](t: Expectable[S]): MatchResult[S] = {
       val response = t.value
@@ -150,7 +150,7 @@ trait ResponseBodyMatchers {
       Try( marshaller.unmarshall[T](content) ).toOption match {
         case None => failure(s"Failed to unmarshall: [$content]", t)
         case Some(x) if must.apply(createExpectable(x)).isSuccess => success("ok", t)
-        case Some(x) => failure(s"Failed to match: [${must.apply(createExpectable(x)).message}] with content: [$content]", t)
+        case Some(x) => failure(s"Failed to match: [${must.apply(createExpectable(x)).message.replaceAll("\n", "")}] with content: [$content]", t)
       }
     }
   }
@@ -164,8 +164,8 @@ trait ResponseBodyAndStatusMatchers { self: ResponseBodyMatchers with ResponseSt
   def beSuccessfulWith(bodyContent: String): ResponseMatcher = beSuccessful and haveBodyWith(bodyContent)
   def beSuccessfulWithBodyThat(must: Matcher[String]): ResponseMatcher = beSuccessful and haveBodyThat(must)
 
-  def beSuccessfulWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): ResponseMatcher = beSuccessful and havePayloadWith(entity)
-  def beSuccessfulWithEntityThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): ResponseMatcher = beSuccessful and havePayloadThat(must)
+  def beSuccessfulWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller = DefaultMarshaller.marshaller): ResponseMatcher = beSuccessful and havePayloadWith(entity)
+  def beSuccessfulWithEntityThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller = DefaultMarshaller.marshaller): ResponseMatcher = beSuccessful and havePayloadThat(must)
 
   def beSuccessfulWith(data: Array[Byte]): ResponseMatcher = beSuccessful and haveBodyWith(data)
   def beSuccessfulWithBodyDataThat(must: Matcher[Array[Byte]]): ResponseMatcher = beSuccessful and haveBodyDataThat(must)

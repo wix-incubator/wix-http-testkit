@@ -6,6 +6,7 @@ import com.wix.hoopoe.http.matchers.drivers.HttpResponseTestSupport
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 import com.wix.hoopoe.http.matchers.drivers.HttpResponseMatchers._
+import com.wix.hoopoe.http.matchers.json.DefaultMarshaller
 
 
 class ResponseBodyAndStatusMatchersTest extends SpecWithJUnit {
@@ -46,13 +47,19 @@ class ResponseBodyAndStatusMatchersTest extends SpecWithJUnit {
     }
 
     "match successful request with entity" in new ctx {
-      aSuccessfulResponseWith(jsonMarshaller.marshall(someObject)) must beSuccessfulWith( someObject )
-      aSuccessfulResponseWith(jsonMarshaller.marshall(someObject)) must not( beSuccessfulWith( anotherObject ) )
+      aSuccessfulResponseWith(DefaultMarshaller.marshaller.marshall(someObject)) must beSuccessfulWith( someObject )
+      aSuccessfulResponseWith(DefaultMarshaller.marshaller.marshall(someObject)) must not( beSuccessfulWith( anotherObject ) )
+    }
+
+    "match successful request with entity with custom marshaller" in new ctx {
+      implicit val marshaller = DefaultMarshaller.marshaller
+      aSuccessfulResponseWith(DefaultMarshaller.marshaller.marshall(someObject)) must beSuccessfulWith( someObject )
+      aSuccessfulResponseWith(DefaultMarshaller.marshaller.marshall(someObject)) must not( beSuccessfulWith( anotherObject ) )
     }
 
     "match successful request with entity matcher" in new ctx {
-      aSuccessfulResponseWith(jsonMarshaller.marshall(someObject)) must beSuccessfulWithEntityThat( must = be_===( someObject ) )
-      aSuccessfulResponseWith(jsonMarshaller.marshall(someObject)) must not( beSuccessfulWithEntityThat( must = be_===( anotherObject ) ) )
+      aSuccessfulResponseWith(DefaultMarshaller.marshaller.marshall(someObject)) must beSuccessfulWithEntityThat( must = be_===( someObject ) )
+      aSuccessfulResponseWith(DefaultMarshaller.marshaller.marshall(someObject)) must not( beSuccessfulWithEntityThat( must = be_===( anotherObject ) ) )
     }
 
     "match successful request with headers" in new ctx {

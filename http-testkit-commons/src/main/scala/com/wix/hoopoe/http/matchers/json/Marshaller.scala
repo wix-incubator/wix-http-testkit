@@ -41,6 +41,10 @@ class JsonJacksonMarshaller extends Marshaller {
   }
 }
 
+object DefaultMarshaller {
+  val marshaller: Marshaller = new JsonJacksonMarshaller
+}
+
 
 
 //object HttpTestkitJacksonMarshaller {
