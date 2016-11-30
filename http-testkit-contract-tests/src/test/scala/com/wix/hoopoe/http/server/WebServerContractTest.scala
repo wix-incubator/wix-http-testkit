@@ -20,12 +20,12 @@ class WebServerContractTest extends SpecWithJUnit {
     private def randomPort = randomInt(0, 65535)
 
     val somePort = randomPort
-    val somePath = s"/$randomStr"
-    val anotherPath = s"/$randomStr"
+    val somePath = randomStr
+    val anotherPath = randomStr
     val content = randomStr
 
     def handlerFor(path: String, returnsBody: String): RequestHandler = {
-      case r: HttpRequest if r.uri.path == Path(path) => HttpResponse(entity = returnsBody)
+      case r: HttpRequest if r.uri.path.toString.endsWith(path) => HttpResponse(entity = returnsBody)
     }
   }
 
@@ -136,5 +136,5 @@ class WebServerContractTest extends SpecWithJUnit {
 
 object RequestMatchers {
   def beGetRequestWith(path: String): Matcher[HttpRequest] =
-    be_===( path ) ^^ { (_: HttpRequest).uri.path.toString() aka "request path" }
+    be_===( s"/$path" ) ^^ { (_: HttpRequest).uri.path.toString() aka "request path" }
 }

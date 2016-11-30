@@ -24,11 +24,13 @@
         <module>http-testkit-server</module>
         <module>http-testkit-client</module>
 
-        <module>http-testkit-commons</module>
+        <module>http-testkit-core</module>
 
         <module>http-testkit-specs2</module>
         <!--<module>http-testkit-scalatest</module>-->
 
+        <module>http-testkit-test-commons</module>
+
         <module>http-testkit-contract-tests</module>
-    </modules>
+  </modules>
 </project>

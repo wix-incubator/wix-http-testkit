@@ -9,17 +9,15 @@
     </parent>
 
     <groupId>com.wixpress.hoopoe</groupId>
-    <artifactId>http-testkit-server</artifactId>
-    <name>Wix HTTP Testkit - Server</name>
-    <description>Web Server implementation</description>
+    <artifactId>http-testkit-test-commons</artifactId>
+    <description>Simple Wix module</description>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>com.wixpress.hoopoe</groupId>
-            <artifactId>http-testkit-core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <groupId>com.wixpress.common</groupId>
+            <artifactId>wix-framework-scala-dependencies</artifactId>
         </dependency>
     </dependencies>
 

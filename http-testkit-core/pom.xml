@@ -9,7 +9,7 @@
     </parent>
 
     <groupId>com.wixpress.hoopoe</groupId>
-    <artifactId>http-testkit-commons</artifactId>
+    <artifactId>http-testkit-core</artifactId>
     <name>Wix HTTP Testkit - Commons</name>
     <description>Common Code for both client and server</description>
     <version>1.0.0-SNAPSHOT</version>
