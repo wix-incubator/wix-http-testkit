@@ -3,7 +3,9 @@ package com.wix.hoopoe.http.matchers.drivers
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.headers.{HttpCookie, RawHeader, `Set-Cookie`}
 import akka.http.scaladsl.model.{HttpResponse, StatusCode}
-import com.wixpress.hoopoe.test.randomStr
+import com.wix.hoopoe.http.matchers.json.MarshallingTestObjects.SomeCaseClass
+import com.wix.hoopoe.http.matchers.json.{JsonJacksonMarshaller, Marshaller}
+import com.wixpress.hoopoe.test._
 import org.specs2.matcher.Matcher
 import org.specs2.matcher.Matchers._
 
@@ -27,6 +29,11 @@ trait HttpResponseTestSupport {
 
   val binaryContent = Array[Byte](1, 1, 1, 1)
   val anotherBinaryContent = Array[Byte](2, 2, 2, 2)
+
+  val someObject = SomeCaseClass(randomStr, randomInt)
+  val anotherObject = SomeCaseClass(randomStr, randomInt)
+
+  implicit val jsonMarshaller: Marshaller = new JsonJacksonMarshaller
 
   def randomStatusThatIsNot(status: StatusCode): StatusCode =
     Random.shuffle(AllResponseStatuses.filterNot(_ == status))

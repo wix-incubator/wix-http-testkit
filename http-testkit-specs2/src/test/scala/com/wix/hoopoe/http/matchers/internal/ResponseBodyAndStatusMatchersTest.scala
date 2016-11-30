@@ -45,6 +45,16 @@ class ResponseBodyAndStatusMatchersTest extends SpecWithJUnit {
       aSuccessfulResponseWith(binaryContent) must not( beSuccessfulWithBodyDataThat(must = be_===( anotherBinaryContent )) )
     }
 
+    "match successful request with entity" in new ctx {
+      aSuccessfulResponseWith(jsonMarshaller.marshall(someObject)) must beSuccessfulWith( someObject )
+      aSuccessfulResponseWith(jsonMarshaller.marshall(someObject)) must not( beSuccessfulWith( anotherObject ) )
+    }
+
+    "match successful request with entity matcher" in new ctx {
+      aSuccessfulResponseWith(jsonMarshaller.marshall(someObject)) must beSuccessfulWithEntityThat( must = be_===( someObject ) )
+      aSuccessfulResponseWith(jsonMarshaller.marshall(someObject)) must not( beSuccessfulWithEntityThat( must = be_===( anotherObject ) ) )
+    }
+
     "match successful request with headers" in new ctx {
       aSuccessfulResponseWith(header, anotherHeader) must beSuccessfulWithHeaders(header, anotherHeader)
       aSuccessfulResponseWith(header) must not( beSuccessfulWithHeaders(anotherHeader) )

@@ -2,14 +2,18 @@ package com.wix.hoopoe.http.matchers.internal
 
 import com.wix.hoopoe.http.matchers.ResponseMatchers._
 import com.wix.hoopoe.http.matchers.drivers.HttpResponseFactory._
-import com.wix.hoopoe.http.matchers.drivers.HttpResponseTestSupport
+import com.wix.hoopoe.http.matchers.drivers.{HttpResponseTestSupport, MatchersTestSupport}
+import com.wix.hoopoe.http.matchers.json.Marshaller
+import com.wix.hoopoe.http.matchers.json.MarshallingTestObjects.SomeCaseClass
+import org.specs2.matcher.ThrownExpectations
+import org.specs2.mock.Mockito
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 
 
-class ResponseBodyMatchersTest extends SpecWithJUnit {
+class ResponseBodyMatchersTest extends SpecWithJUnit with MatchersTestSupport {
 
-  trait ctx extends Scope with HttpResponseTestSupport
+  trait ctx extends Scope with HttpResponseTestSupport with Mockito with ThrownExpectations
 
 
   "ResponseBodyMatchers" should {
@@ -37,16 +41,40 @@ class ResponseBodyMatchersTest extends SpecWithJUnit {
     "handle empty body" in new ctx {
       aResponseWithoutBody must not( haveBodyWith(content))
     }
+
+    "support unmarshalling body content with user custom unmarshaller" in new ctx {
+      implicit val marshaller = mock[Marshaller]
+
+      marshaller.unmarshall[SomeCaseClass](content) returns someObject
+
+      aResponseWith(content) must havePayloadWith(entity = someObject)
+      aResponseWith(content) must not( havePayloadWith(entity = anotherObject) )
+    }
+
+    "provide a meaningful explaination why match failed" in new ctx {
+      implicit val marshaller = mock[Marshaller]
+      marshaller.unmarshall[SomeCaseClass](content) throws new RuntimeException
+
+      failureMessageFor(havePayloadWith(entity = someObject), matchedOn = aResponseWith(content)) must_===
+        s"Failed to unmarshall: [$content]"
+    }
+
+    "recover gracefully from a badly behaving marshaller" in new ctx {
+      implicit val marshaller = mock[Marshaller]
+      marshaller.unmarshall[SomeCaseClass](content) returns someObject
+
+      failureMessageFor(havePayloadThat(must = be_===(anotherObject)), matchedOn = aResponseWith(content)) must_===
+        s"Failed to match: ['$someObject' is not equal to '$anotherObject'] with content: [$content]"
+    }
+
+    "support custom matcher for user object" in new ctx {
+      implicit val marshaller = mock[Marshaller]
+      marshaller.unmarshall[SomeCaseClass](content) returns someObject
+
+      aResponseWith(content) must havePayloadThat(must = be_===(someObject))
+      aResponseWith(content) must not( havePayloadThat(must = be_===(anotherObject)) )
+    }
+
+    // add another test for default marshaller
   }
 }
-
-//
-//    "match body entity from json" in new ctx {
-//      HttpResponse(entity = HttpEntity(entity.asJsonStr)) must haveBody(entity = entity)
-//      HttpResponse(entity = HttpEntity(entity.asJsonStr)) must not(haveBody(entity = entity.copy(str = randomContent)))
-//    }
-//
-//    "match body entity from json with custom matcher" in new ctx {
-//      HttpResponse(entity = HttpEntity(entity.asJsonStr)) must haveBody(entityThatIs = typedEqualTo(entity))
-//      HttpResponse(entity = HttpEntity(entity.asJsonStr)) must not(haveBody[SomeEntity](entityThatIs = be_!=(entity)))
-//    }

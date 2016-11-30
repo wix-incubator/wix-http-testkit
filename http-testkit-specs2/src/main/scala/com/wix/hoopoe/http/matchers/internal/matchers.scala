@@ -5,12 +5,14 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import com.wix.hoopoe.http.matchers.ResponseMatcher
+import com.wix.hoopoe.http.matchers.json.Marshaller
 import com.wix.hoopoe.http.utils._
 import com.wix.hoopoe.http.{HttpResponse, WixHttpTestkitResources}
 import org.specs2.matcher.Matchers._
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 
 import scala.concurrent.ExecutionContext
+import scala.util.Try
 
 trait ResponseStatusMatchers {
 
@@ -138,25 +140,23 @@ trait ResponseBodyMatchers {
   def haveBodyWith(data: Array[Byte]): ResponseMatcher = haveBodyDataThat( must = be_===(data) )
   def haveBodyDataThat(must: Matcher[Array[Byte]]): ResponseMatcher = must ^^ httpResponseAsBinary
 
-  // ResponseBodyUnmarshallingMatchers
+  def havePayloadWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): ResponseMatcher = havePayloadThat[T]( must = be_===(entity) )
+  def havePayloadThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): ResponseMatcher = new ResponseMatcher {
 
-  /*
-  trait ResponseBodyUnmarshallingMatchers {
-  import com.wixpress.hoopoe.json.JsonMapper.Implicits.{global => mapper}
-  import com.wixpress.hoopoe.json._
+    def apply[S <: HttpResponse](t: Expectable[S]): MatchResult[S] = {
+      val response = t.value
+      val content = waitFor( Unmarshal(response.entity).to[String] )
 
-  def haveBody[T : Manifest](entity: T): ResponseMatcher = haveBody(entityThatIs = typedEqualTo(entity))
-  def haveBody[T : Manifest](entityThatIs: Matcher[T]): ResponseMatcher = entityThatIs ^^ httpResponseAs[T]
-
-  private def httpResponseAs[T : Manifest] = (_: HttpResponse).entity.asString(`UTF-8`).as[T] aka "Body content"
-}
-
-   */
+      Try( marshaller.unmarshall[T](content) ).toOption match {
+        case None => failure(s"Failed to unmarshall: [$content]", t)
+        case Some(x) if must.apply(createExpectable(x)).isSuccess => success("ok", t)
+        case Some(x) => failure(s"Failed to match: [${must.apply(createExpectable(x)).message}] with content: [$content]", t)
+      }
+    }
+  }
 
   private def httpResponseAsString = (r: HttpResponse) => waitFor( Unmarshal(r.entity).to[String] ) aka "Body content as string"
   private def httpResponseAsBinary = (r: HttpResponse) => waitFor( Unmarshal(r.entity).to[Array[Byte]] ) aka "Body content as bytes"
-
-
 }
 
 trait ResponseBodyAndStatusMatchers { self: ResponseBodyMatchers with ResponseStatusMatchers with ResponseHeadersMatchers with ResponseCookiesMatchers =>
@@ -164,6 +164,8 @@ trait ResponseBodyAndStatusMatchers { self: ResponseBodyMatchers with ResponseSt
   def beSuccessfulWith(bodyContent: String): ResponseMatcher = beSuccessful and haveBodyWith(bodyContent)
   def beSuccessfulWithBodyThat(must: Matcher[String]): ResponseMatcher = beSuccessful and haveBodyThat(must)
 
+  def beSuccessfulWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): ResponseMatcher = beSuccessful and havePayloadWith(entity)
+  def beSuccessfulWithEntityThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): ResponseMatcher = beSuccessful and havePayloadThat(must)
 
   def beSuccessfulWith(data: Array[Byte]): ResponseMatcher = beSuccessful and haveBodyWith(data)
   def beSuccessfulWithBodyDataThat(must: Matcher[Array[Byte]]): ResponseMatcher = beSuccessful and haveBodyDataThat(must)
@@ -177,18 +179,3 @@ trait ResponseBodyAndStatusMatchers { self: ResponseBodyMatchers with ResponseSt
   def beInvalidWith(bodyContent: String): ResponseMatcher = beInvalid and haveBodyWith(bodyContent)
   def beInvalidWithBodyThat(must: Matcher[String]): ResponseMatcher = beInvalid and haveBodyThat(must)
 }
-
-//trait ResponseComposedMatchers { self: ResponseStatusMatchers with ResponseBodyMatchers with ResponseHeadersMatchers =>
-//
-//  def beSuccessfulWith(content: String): ResponseMatcher = beSuccessfulWith(bodyThatIs = equalTo(content))
-//  def beSuccessfulWith(headers: (String, String)*): ResponseMatcher = beSuccessful and haveHeaders(headers:_*)
-//  def beSuccessfulWith(bodyThatIs: Matcher[String]): ResponseMatcher = beSuccessful and haveBody(bodyThatIs)
-//  def beSuccessfulDataWith(data: Array[Byte]): ResponseMatcher = beSuccessful and haveBodyData(data)
-//  def beSuccessfulDataWith(data: Matcher[Array[Byte]]): ResponseMatcher = beSuccessful and haveBodyData(data)
-//
-//  def beSuccessfulWithout(headerNames: String*): ResponseMatcher = beSuccessful and notHaveHeaders(headerNames:_*)
-//
-//  def beConnectFailure: Matcher[HttpResponse] = throwA[ConnectionAttemptFailedException]
-//
-//  def beInvalidWith(bodyThatIs: Matcher[String]): ResponseMatcher = beInvalid and haveBody(bodyThatIs)
-//}
