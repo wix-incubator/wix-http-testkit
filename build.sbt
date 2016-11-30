@@ -27,7 +27,7 @@ lazy val publishSettings = Seq(
 )
 
 lazy val compileOptions = Seq(
-  resolvers := wixArtifactory,
+  //  resolvers := wixArtifactory,
 
   scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.11.8", "2.12.0"),
@@ -40,7 +40,7 @@ lazy val compileOptions = Seq(
   )
 )
 
-val fwVersion = "2.1019.0-SNAPSHOT"
+//val fwVersion = "2.1019.0-SNAPSHOT"
 
 lazy val noPublish = Seq( publish := {}, publishLocal := {}, publishArtifact := false )
 
@@ -57,47 +57,84 @@ lazy val baseSettings =
 
 
 
-lazy val httpServerTestkit =
+lazy val httpTestkitTestCommons =
   Project(
-    id = "http-server-testkit",
-    base = file( "http-server-testkit" ),
-    //    .crossType( CrossType.Pure )
-    //    .in( file( "http-server-testkit" ) )
+    id = "http-testkit-test-commons",
+    base = file( "http-testkit-test-commons" ),
     settings = Seq(
-      name := "http-server-testkit",
-      libraryDependencies ++= akkaHttp ++ specs2 ++ wixFWDependenciesFor(fwVersion),
-      description :=
-        "Some crap i need to describe the library"
+      name := "http-testkit-test-commons",
+      description := "Some crap i need to describe the library"
     ) ++ baseSettings
   )
 
-lazy val httpClientTestkit =
+lazy val httpTestkitCore =
   Project(
-    id = "http-client-testkit",
-    base = file( "http-client-testkit" ),
-    //    .crossType( CrossType.Pure )
-    //    .in( file( "http-server-testkit" ) )
+    id = "http-testkit-core",
+    base = file( "http-testkit-core" ),
     settings = Seq(
-      name := "http-client-testkit",
-      libraryDependencies ++= akkaHttp ++ specs2 ++ wixFWDependenciesFor(fwVersion),
+      name := "http-testkit-core",
+      libraryDependencies ++= akkaHttp ++ jackson ++ joda ++ specs2 :+ scalaXml,
       description :=
         "Some crap i need to describe the library"
     ) ++ baseSettings
-  )
+  ).dependsOn(httpTestkitTestCommons)
+
+lazy val httpTestkitClient =
+  Project(
+    id = "http-testkit-client",
+    base = file( "http-testkit-client" ),
+    settings = Seq(
+      name := "http-testkit-client",
+      description :=
+        "Some crap i need to describe the library"
+    ) ++ baseSettings
+  ).dependsOn(httpTestkitCore)
+
+lazy val httpTestkitServer =
+  Project(
+    id = "http-testkit-server",
+    base = file( "http-testkit-server" ),
+    settings = Seq(
+      name := "http-testkit-server",
+      description :=
+        "Some crap i need to describe the library"
+    ) ++ baseSettings
+  ).dependsOn(httpTestkitCore)
+
+lazy val httpTestkitSpecs2 =
+  Project(
+    id = "http-testkit-specs2",
+    base = file( "http-testkit-specs2" ),
+    settings = Seq(
+      name := "http-testkit-specs2",
+      libraryDependencies ++= specs2Lib,
+      description :=
+        "Some crap i need to describe the library"
+    ) ++ baseSettings
+  ).dependsOn(httpTestkitCore, httpTestkitTestCommons)
+
+lazy val wixHttpTestkit =
+  Project(
+    id = "wix-http-testkit",
+    base = file( "wix-http-testkit" ),
+    settings = Seq(
+      name := "wix-http-testkit",
+      description :=
+        "Some crap i need to describe the library"
+    ) ++ baseSettings
+  ).dependsOn(httpTestkitClient, httpTestkitServer)
 
 lazy val httpTestkitContractTests =
   Project(
-    id = "http-testkit-constrct-tests",
-    base = file( "http-testkit-constrct-tests" ),
-    //    .crossType( CrossType.Pure )
-    //    .in( file( "http-server-testkit" ) )
+    id = "http-testkit-contract-tests",
+    base = file( "http-testkit-contract-tests" ),
     settings = Seq(
-      name := "http-testkit-constrct-tests",
-      libraryDependencies ++= akkaHttp ++ specs2 ++ wixFWDependenciesFor(fwVersion),
+      name := "http-testkit-contract-tests",
+      libraryDependencies ++= specs2,
       description :=
         "Some crap i need to describe the library"
     ) ++ baseSettings
-  ).dependsOn( httpServerTestkit, httpClientTestkit)
+  ).dependsOn(wixHttpTestkit, httpTestkitTestCommons, httpTestkitSpecs2)
 
 
 lazy val root =
@@ -105,4 +142,6 @@ lazy val root =
     id = "root",
     base = file( "." ),
     settings = baseSettings ++ noPublish
-  ).aggregate( httpServerTestkit, httpClientTestkit, httpTestkitContractTests )
+  ).aggregate(httpTestkitTestCommons,
+    httpTestkitCore, httpTestkitClient, httpTestkitServer, httpTestkitSpecs2, wixHttpTestkit,
+    httpTestkitContractTests)

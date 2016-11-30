@@ -3,12 +3,12 @@ package com.wix.hoopoe.http.matchers.json
 import java.lang.reflect.{ParameterizedType, Type}
 
 import com.fasterxml.jackson.core.`type`.TypeReference
-import com.fasterxml.jackson.databind.MapperFeature.USE_ANNOTATIONS
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.joda.JodaModule
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
 trait Marshaller {
@@ -22,10 +22,12 @@ class JsonJacksonMarshaller extends Marshaller {
   def marshall[T](t: T): String = objectMapper.writeValueAsString(t)
 
   private val objectMapper = new ObjectMapper()
-                                    .registerModules(new DefaultScalaModule)
-                                    .registerModules(new JodaModule, new Jdk8Module, new JSR310Module) // time modules
+                                    .registerModule(new Jdk8Module().configureAbsentsAsNulls(true))
+                                    .registerModules(new JodaModule, new ParameterNamesModule, new JavaTimeModule) // time modules
+                                    .registerModule(new DefaultScalaModule)
                                     .disable( WRITE_DATES_AS_TIMESTAMPS )
-                                    .disable( USE_ANNOTATIONS )
+//                                    .disable( USE_ANNOTATIONS )
+//import com.fasterxml.jackson.databind.MapperFeature.USE_ANNOTATIONS
 
   private def typeReference[T: Manifest] = new TypeReference[T] {
     override def getType = typeFromManifest(manifest[T])
@@ -44,16 +46,3 @@ class JsonJacksonMarshaller extends Marshaller {
 object DefaultMarshaller {
   val marshaller: Marshaller = new JsonJacksonMarshaller
 }
-
-
-
-//object HttpTestkitJacksonMarshaller {
-//  private val globalObjectMapper = new ObjectMapper
-//
-//  private def customizeObjectMapper(objectMapper: ObjectMapper): Unit = ???
-//  private def registerModules(): Unit = ???
-//
-//  private def mapper: ObjectMapper = globalObjectMapper
-//}
-
-
