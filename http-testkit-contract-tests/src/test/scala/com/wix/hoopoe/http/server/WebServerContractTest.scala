@@ -1,7 +1,6 @@
 package com.wix.hoopoe.http.server
 
 import akka.http.scaladsl.model.HttpResponse
-import akka.http.scaladsl.model.Uri.Path
 import com.wix.hoopoe.http._
 import com.wix.hoopoe.http.client.sync._
 import com.wix.hoopoe.http.matchers.ResponseMatchers._
@@ -17,8 +16,6 @@ import org.specs2.specification.Scope
 class WebServerContractTest extends SpecWithJUnit {
 
   trait ctx extends Scope {
-    private def randomPort = randomInt(0, 65535)
-
     val somePort = randomPort
     val somePath = randomStr
     val anotherPath = randomStr

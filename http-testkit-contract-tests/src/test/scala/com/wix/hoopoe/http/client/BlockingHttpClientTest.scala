@@ -6,7 +6,7 @@ import com.wix.hoopoe.http.drivers.StubWebServerMatchers.receivedRequestWith
 import com.wix.hoopoe.http.drivers.StubWebServerProvider
 import com.wix.hoopoe.http.matchers.ResponseMatchers._
 import com.wix.hoopoe.http.server.WebServerFactory.aStubWebServer
-import com.wixpress.hoopoe.test.randomStr
+import com.wixpress.hoopoe.test._
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 
