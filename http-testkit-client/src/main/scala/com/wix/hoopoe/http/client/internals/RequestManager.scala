@@ -1,7 +1,6 @@
 package com.wix.hoopoe.http.client.internals
 
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.Uri
 import akka.stream.StreamTcpException
 import com.wix.hoopoe.http._
 import com.wix.hoopoe.http.exceptions.ConnectionRefusedException
@@ -28,8 +27,8 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
           .withTimeoutOf(duration = withTimeout)
   }
 
-  private def composeUrlFor(baseUri: BaseUri, withPath: String): RequestTransformer =
-    _.copy(uri = Uri(s"http://localhost:${baseUri.port}/$withPath"))
+  private def composeUrlFor(baseUri: BaseUri, path: String): RequestTransformer =
+    _.copy(uri = baseUri.asUriWith(path) )
 }
 
 class BlockingRequestManager(request: HttpRequest) extends RequestManager[HttpResponse] {
