@@ -3,7 +3,7 @@ package com.wix.hoopoe.http.matchers.drivers
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.headers.{HttpCookie, RawHeader, `Set-Cookie`}
 import akka.http.scaladsl.model.{HttpResponse, StatusCode}
-import com.wix.hoopoe.http.matchers.json.MarshallingTestObjects.SomeCaseClass
+import com.wix.hoopoe.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
 import com.wix.hoopoe.http.matchers.json.{JsonJacksonMarshaller, Marshaller}
 import com.wixpress.hoopoe.test._
 import org.specs2.matcher.Matcher
@@ -83,4 +83,8 @@ object HttpResponseFactory {
 
 object HttpResponseMatchers {
   def cookieWith(value: String): Matcher[HttpCookie] = be_===(value) ^^ { (_: HttpCookie).value aka "cookie value" }
+}
+
+object MarshallingTestObjects {
+  case class SomeCaseClass(s: String, i: Int)
 }

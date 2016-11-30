@@ -2,9 +2,9 @@ package com.wix.hoopoe.http.matchers.internal
 
 import com.wix.hoopoe.http.matchers.ResponseMatchers._
 import com.wix.hoopoe.http.matchers.drivers.HttpResponseFactory._
+import com.wix.hoopoe.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
 import com.wix.hoopoe.http.matchers.drivers.{HttpResponseTestSupport, MatchersTestSupport}
 import com.wix.hoopoe.http.matchers.json.Marshaller
-import com.wix.hoopoe.http.matchers.json.MarshallingTestObjects.SomeCaseClass
 import org.specs2.matcher.ThrownExpectations
 import org.specs2.mock.Mockito
 import org.specs2.mutable.SpecWithJUnit
