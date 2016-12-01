@@ -1,30 +1,19 @@
 package com.wix.hoopoe.http.server
 
-import akka.http.scaladsl.model.HttpResponse
 import com.wix.hoopoe.http._
 import com.wix.hoopoe.http.client.sync._
+import com.wix.hoopoe.http.drivers.HttpClientTestSupport
+import com.wix.hoopoe.http.matchers.RequestMatchers.{beGet, havePath}
 import com.wix.hoopoe.http.matchers.ResponseMatchers._
-import com.wix.hoopoe.http.server.RequestMatchers._
 import com.wix.hoopoe.http.server.WebServerFactory._
-import com.wixpress.hoopoe.test._
-import org.specs2.matcher.Matcher
-import org.specs2.matcher.Matchers._
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 
 
 class WebServerContractTest extends SpecWithJUnit {
 
-  trait ctx extends Scope {
-    val somePort = randomPort
-    val somePath = randomStr
-    val anotherPath = randomStr
-    val content = randomStr
+  trait ctx extends Scope with HttpClientTestSupport
 
-    def handlerFor(path: String, returnsBody: String): RequestHandler = {
-      case r: HttpRequest if r.uri.path.toString.endsWith(path) => HttpResponse(entity = returnsBody)
-    }
-  }
 
   "Embedded Web Server lifecycle" should {
     "be not available until started" in new ctx {
@@ -77,7 +66,7 @@ class WebServerContractTest extends SpecWithJUnit {
 
       Seq(get, post, put, delete, patch, options, head, trace)
           .foreach { method =>
-            method(somePath) must beSuccessful
+            method(path) must beSuccessful
           }
     }
 
@@ -85,15 +74,15 @@ class WebServerContractTest extends SpecWithJUnit {
     "record all incoming requests" in new ctx {
       val server = aStubWebServer.build
                                  .start()
-      get(somePath)(server.baseUri)
+      get(path)(server.baseUri)
 
-      server.recordedRequests must contain( beGetRequestWith(path = somePath) )
+      server.recordedRequests must contain( beGet and havePath(s"/$path") )
     }
 
     "reset recorded requests" in new ctx {
       val server = aStubWebServer.build
                                  .start()
-      get(somePath)(server.baseUri)
+      get(path)(server.baseUri)
 
       server.clearRecordedRequests()
 
@@ -101,27 +90,27 @@ class WebServerContractTest extends SpecWithJUnit {
     }
 
     "allow to define custom handlers" in new ctx {
-      val server = aStubWebServer.addHandler(handlerFor(somePath, returnsBody = content))
+      val server = aStubWebServer.addHandler(handlerFor(path, returnsBody = content))
                                  .build
                                  .start()
 
-      get(somePath)(server.baseUri) must beSuccessfulWith(content)
+      get(path)(server.baseUri) must beSuccessfulWith(content)
     }
   }
 
   "Mock web server" should {
 
     "define at least one handler and respond according to the defined behavior" in new ctx {
-      val server = aMockWebServerWith(handlerFor(somePath, returnsBody = content)).build
+      val server = aMockWebServerWith(handlerFor(path, returnsBody = content)).build
                                                                                   .start()
 
       implicit lazy val sut = server.baseUri
 
-      get(somePath) must beSuccessfulWith(content)
+      get(path) must beSuccessfulWith(content)
     }
 
     "return 404 if no handler is found to handle the request" in new ctx {
-      val server = aMockWebServerWith(handlerFor(somePath, returnsBody = content)).build
+      val server = aMockWebServerWith(handlerFor(path, returnsBody = content)).build
                                                                                   .start()
 
       implicit lazy val sut = server.baseUri
@@ -129,9 +118,4 @@ class WebServerContractTest extends SpecWithJUnit {
       get(anotherPath) must beNotFound
     }
   }
-}
-
-object RequestMatchers {
-  def beGetRequestWith(path: String): Matcher[HttpRequest] =
-    be_===( s"/$path" ) ^^ { (_: HttpRequest).uri.path.toString() aka "request path" }
 }
