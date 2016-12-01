@@ -1,7 +1,7 @@
 Http Client
 ==============
 
-A simple DSL to test REST API's.
+A sane DSL to test REST API's.
 
 
 #### Generate Request
