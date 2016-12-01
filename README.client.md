@@ -11,7 +11,7 @@ Import the DSL, There are two variations of the client that can be used:
  2. Non-Blocking
 
  
- To import the DSL: 
+#####To import the DSL: 
 
 package import:
 ```scala
@@ -45,7 +45,7 @@ Add trait to call site
     class MyClass extends com.wix.e2e.http.client.NonBlockingHttpClientSupport 
 ```
 
-Issuing New Request
+#####Issuing New Request
 ```scala
 
     val somePort = 99123 /// ant port
