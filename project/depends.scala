@@ -39,9 +39,4 @@ object depends {
 
   def scalaXml =
     "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
-
-  def wixFWDependenciesFor(version: String) = Seq(
-    "com.wixpress.hoopoe" % "hoopoe-http-test-kit" % version,
-    "com.wixpress.hoopoe" % "hoopoe-utest" % version % "test"
-  )
 }

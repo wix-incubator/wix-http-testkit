@@ -11,7 +11,7 @@ Create server
   val someHandler: RequestHandler = { case r: HttpRequest => HttpResponse(entity = "Hello!") }
 
   
-  import com.wix.hoopoe.http.server.WebServerFactory._
+  import com.wix.e2e.http.server.WebServerFactory._
   val server = aMockWebServerWith(someHandler).build
   
   // server will start on an open port
@@ -37,7 +37,7 @@ Create server
   val someHandler: RequestHandler = { case r: HttpRequest => HttpResponse(entity = "Hello!") }
 
 
-  import com.wix.hoopoe.http.server.WebServerFactory._
+  import com.wix.e2e.http.server.WebServerFactory._
   val server = aStubWebServer.build
   
   // server will start on an open port
