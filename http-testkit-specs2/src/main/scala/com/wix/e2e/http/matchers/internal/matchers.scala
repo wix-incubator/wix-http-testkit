@@ -1,14 +1,14 @@
 package com.wix.e2e.http.matchers.internal
 
+import akka.http.scaladsl.model.StatusCode
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.headers._
-import akka.http.scaladsl.model.{HttpResponse, StatusCode}
 import akka.http.scaladsl.unmarshalling.Unmarshal
-import com.wix.e2e.http.WixHttpTestkitResources
 import com.wix.e2e.http.exceptions.ConnectionRefusedException
 import com.wix.e2e.http.json.Marshaller
 import com.wix.e2e.http.matchers.ResponseMatcher
 import com.wix.e2e.http.utils._
+import com.wix.e2e.http.{HttpResponse, WixHttpTestkitResources}
 import org.specs2.matcher.Matchers._
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 
