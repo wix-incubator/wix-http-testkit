@@ -1,6 +1,6 @@
 package com.wix.e2e.http.matchers.internal
 
-import com.wix.e2e.http.json.DefaultMarshaller
+import com.wix.e2e.http.json.Marshaller
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
@@ -70,7 +70,7 @@ class ResponseBodyMatchersTest extends SpecWithJUnit with MatchersTestSupport {
     }
 
     "provide a default json marshaller in case no marshaller is specified" in new ctxNoMarshaller {
-      aResponseWith(DefaultMarshaller.marshaller.marshall(someObject)) must havePayloadWith(someObject)
+      aResponseWith(Marshaller.marshaller.marshall(someObject)) must havePayloadWith(someObject)
     }
   }
 }

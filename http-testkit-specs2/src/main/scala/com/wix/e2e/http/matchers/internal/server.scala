@@ -5,7 +5,7 @@ import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.headers.{Cookie, HttpCookiePair}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import com.wix.e2e.http.HttpRequest
-import com.wix.e2e.http.json.{DefaultMarshaller, Marshaller}
+import com.wix.e2e.http.json.Marshaller
 import com.wix.e2e.http.matchers.RequestMatcher
 import com.wix.e2e.http.utils._
 import org.specs2.matcher.Matchers._
@@ -178,8 +178,8 @@ trait RequestBodyMatchers {
   def haveBodyWith(data: Array[Byte]): RequestMatcher = haveBodyDataThat( must = be_===(data) )
   def haveBodyDataThat(must: Matcher[Array[Byte]]): RequestMatcher = must ^^ httpRequestAsBinary
 
-  def havePayloadWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller = DefaultMarshaller.marshaller): RequestMatcher = havePayloadThat[T]( must = be_===(entity) )
-  def havePayloadThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller = DefaultMarshaller.marshaller): RequestMatcher = new RequestMatcher {
+  def havePayloadWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): RequestMatcher = havePayloadThat[T]( must = be_===(entity) )
+  def havePayloadThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): RequestMatcher = new RequestMatcher {
 
     def apply[S <: HttpRequest](t: Expectable[S]): MatchResult[S] = {
       val request = t.value
