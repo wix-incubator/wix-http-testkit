@@ -2,6 +2,7 @@ package com.wix.hoopoe.http.matchers.internal
 
 import akka.http.scaladsl.model.HttpMethod
 import akka.http.scaladsl.model.HttpMethods._
+import akka.http.scaladsl.model.headers.{Cookie, HttpCookiePair}
 import com.wix.hoopoe.http.HttpRequest
 import com.wix.hoopoe.http.matchers.RequestMatcher
 import org.specs2.matcher.Matchers._
@@ -99,13 +100,13 @@ trait RequestHeadersMatchers {
 
     def apply[S <: HttpRequest](t: Expectable[S]): MatchResult[S] = {
       val request = t.value
-      val responseHeaders = request.headers
-//        .filterNot( _.isInstanceOf[`Set-Cookie`] )
-        .map( h => h.name -> h.value )
-      val comparisonResult = compare(headers, responseHeaders)
+      val requestHeaders = request.headers
+                                  .filterNot( _.isInstanceOf[Cookie] )
+                                  .map( h => h.name -> h.value )
+      val comparisonResult = compare(headers, requestHeaders)
 
       if ( comparator(comparisonResult) ) success("ok", t)
-      else if (responseHeaders.isEmpty) failure("Response did not contain any headers.", t)
+      else if (requestHeaders.isEmpty) failure("Request did not contain any headers.", t)
       else failure(errorMessage(comparisonResult), t)
     }
 
@@ -125,15 +126,15 @@ trait RequestHeadersMatchers {
     def apply[S <: HttpRequest](t: Expectable[S]): MatchResult[S] = {
       val request = t.value
       val headers = request.headers
-//        .filterNot( _.isInstanceOf[`Set-Cookie`] )
-      val responseHeader = headers.find( _.name.toLowerCase == withHeaderName.toLowerCase )
-        .map( _.value )
+                           .filterNot( _.isInstanceOf[Cookie] )
+      val requestHeader = headers.find( _.name.toLowerCase == withHeaderName.toLowerCase )
+                                 .map( _.value )
 
-      responseHeader match {
-        case None if headers.isEmpty => failure("Response did not contain any headers.", t)
-        case None => failure(s"Response contain header names: [${headers.map( _.name ).mkString(", ")}] which did not contain: [$withHeaderName]", t)
+      requestHeader match {
+        case None if headers.isEmpty => failure("Request did not contain any headers.", t)
+        case None => failure(s"Request contain header names: [${headers.map( _.name ).mkString(", ")}] which did not contain: [$withHeaderName]", t)
         case Some(value) if must.apply(createExpectable(value)).isSuccess => success("ok", t)
-        case Some(value) => failure(s"Response header [$withHeaderName], did not match { ${must.apply(createExpectable(value)).message} }", t)
+        case Some(value) => failure(s"Request header [$withHeaderName], did not match { ${must.apply(createExpectable(value)).message} }", t)
       }
     }
   }
@@ -142,6 +143,22 @@ trait RequestHeadersMatchers {
 
 }
 
-//  def haveHeaders(param: (String, String)): RequestMatcher = ???
-//  def haveCookies(param: (String, String)): RequestMatcher = ???
+trait RequestCookiesMatchers {
+  def receivedCookieWith(name: String): RequestMatcher = receivedCookieThat(must = be_===(name) ^^ { (_: HttpCookiePair).name aka "cookie name" })
+
+  def receivedCookieThat(must: Matcher[HttpCookiePair]): RequestMatcher = new RequestMatcher {
+    def apply[S <: HttpRequest](t: Expectable[S]): MatchResult[S] = {
+      val request = t.value
+      val cookies = request.headers
+                           .collect { case Cookie(cookie) => cookie }
+                           .flatten[HttpCookiePair]
+      val matchResult = cookies.map( c => must.apply(createExpectable(c)) )
+      if (matchResult.exists( _.isSuccess) ) success("ok", t)
+      else if (matchResult.isEmpty) failure("Request did not contain any Cookie headers.", t)
+      else failure(s"Could not find cookie that [${matchResult.map( _.message ).mkString(", ")}].", t)
+    }
+  }
+}
+
+
 //  def haveBody(param: (String, String)): RequestMatcher = ???

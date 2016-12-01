@@ -56,20 +56,21 @@ class RequestHeadersMatchersTest extends SpecWithJUnit with MatchersTestSupport 
 
     "request with no headers will show a 'no headers' message" in new ctx {
       failureMessageFor(haveAnyOf(header), matchedOn = aRequestWithNoHeaders ) must_===
-        "Response did not contain any headers."
+        "Request did not contain any headers."
 
       failureMessageFor(haveAllOf(header), matchedOn = aRequestWithNoHeaders ) must_===
-        "Response did not contain any headers."
+        "Request did not contain any headers."
 
       failureMessageFor(haveTheSameHeadersAs(header), matchedOn = aRequestWithNoHeaders ) must_===
-        "Response did not contain any headers."
+        "Request did not contain any headers."
     }
 
-//    "ignore cookies and set cookies from headers comparison" in new ctx {
-//      aResponseWithCookies(cookie) must not( haveAnyOf("Set-Cookie" -> s"${cookie.name}=${cookie.value}") )
-//      aResponseWithCookies(cookie) must not( haveAllOf("Set-Cookie" -> s"${cookie.name}=${cookie.value}") )
-//      aResponseWithCookies(cookie) must not( haveTheSameHeadersAs("Set-Cookie" -> s"${cookie.name}=${cookie.value}") )
-//    }
+    "ignore cookies and set cookies from headers comparison" in new ctx {
+      aRequestWithCookies(cookiePair) must not( haveAnyOf("Cookie" -> s"${cookiePair._1}=${cookiePair._2}") )
+      aRequestWithCookies(cookiePair) must not( haveAllOf("Cookie" -> s"${cookiePair._1}=${cookiePair._2}") )
+      aRequestWithCookies(cookiePair) must not( haveTheSameHeadersAs("Cookie" -> s"${cookiePair._1}=${cookiePair._2}") )
+      aRequestWithCookies(cookiePair) must not( haveAnyHeaderThat(must = be_===(s"${cookiePair._1}=${cookiePair._2}"), withHeaderName = "Cookie") )
+    }
 
     "match if any header satisfy the composed matcher" in new ctx {
       aRequestWithHeaders(header) must haveAnyHeaderThat(must = be_===(header._2), withHeaderName = header._1)
@@ -78,11 +79,11 @@ class RequestHeadersMatchersTest extends SpecWithJUnit with MatchersTestSupport 
 
     "return informative error messages" in new ctx {
       failureMessageFor(haveAnyHeaderThat(must = AlwaysMatcher(), withHeaderName = nonExistingHeaderName), matchedOn = aRequestWithHeaders(header)) must_===
-        s"Response contain header names: [${header._1}] which did not contain: [$nonExistingHeaderName]"
+        s"Request contain header names: [${header._1}] which did not contain: [$nonExistingHeaderName]"
       failureMessageFor(haveAnyHeaderThat(must = AlwaysMatcher(), withHeaderName = nonExistingHeaderName), matchedOn = aRequestWithNoHeaders) must_===
-        "Response did not contain any headers."
+        "Request did not contain any headers."
       failureMessageFor(haveAnyHeaderThat(must = be_===(anotherHeader._2), withHeaderName = header._1), matchedOn = aRequestWithHeaders(header)) must_===
-        s"Response header [${header._1}], did not match { ${be_===(anotherHeader._2).apply(header._2).message} }"
+        s"Request header [${header._1}], did not match { ${be_===(anotherHeader._2).apply(header._2).message} }"
     }
   }
 }

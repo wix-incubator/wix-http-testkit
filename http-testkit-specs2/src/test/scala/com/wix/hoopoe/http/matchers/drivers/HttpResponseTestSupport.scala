@@ -2,7 +2,7 @@ package com.wix.hoopoe.http.matchers.drivers
 
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.Uri.{Path, Query}
-import akka.http.scaladsl.model.headers.{HttpCookie, RawHeader, `Set-Cookie`}
+import akka.http.scaladsl.model.headers.{Cookie, HttpCookie, RawHeader, `Set-Cookie`}
 import akka.http.scaladsl.model._
 import com.wix.hoopoe.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
 import com.wixpress.hoopoe.test._
@@ -17,6 +17,8 @@ trait HttpResponseTestSupport {
   val cookie = randomCookie
   val anotherCookie = randomCookie
   val yetAnotherCookie = randomCookie
+
+  val cookiePair = randomStrPair
 
   val nonExistingHeaderName = randomStr
   val header = randomHeader
@@ -99,4 +101,7 @@ object HttpRequestFactory {
   def aRequestWithHeaders(headers: (String, String)*) = HttpRequest(headers = immutable.Seq( headers.map{ case (k, v) => RawHeader(k, v) }:_* ) )
   def aRequestWithNoHeaders = aRequestWithHeaders()
 
+  def aRequestWithNoCookies = HttpRequest()
+  def aRequestWithCookies(cookies: (String, String)*) =
+    HttpRequest(headers = immutable.Seq( cookies.map( Cookie(_) ) :_*) )
 }

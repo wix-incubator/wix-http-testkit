@@ -8,6 +8,7 @@ package object test {
   def randomStrWith(length: Int): String =
     Random.alphanumeric
           .take(length).mkString
+  def randomStrPair = randomStr -> randomStr
 
   def randomInt: Int = Random.nextInt()
 
