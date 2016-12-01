@@ -31,13 +31,13 @@ class RequestUrlMatchersTest extends SpecWithJUnit with MatchersTestSupport {
   "RequestUrlMatchers" should {
 
     "match exact path" in new ctx {
-      aRequestWith(somePath) must havePath(somePath)
-      aRequestWith(somePath) must not( havePath(anotherPath) )
+      aRequestWithPath(somePath) must havePath(somePath)
+      aRequestWithPath(somePath) must not( havePath(anotherPath) )
     }
 
     "match exact path matcher" in new ctx {
-      aRequestWith(somePath) must havePathThat(must = be_===( somePath ))
-      aRequestWith(somePath) must not( havePathThat(must = be_===( anotherPath )) )
+      aRequestWithPath(somePath) must havePathThat(must = be_===( somePath ))
+      aRequestWithPath(somePath) must not( havePathThat(must = be_===( anotherPath )) )
     }
     // if first ignore first slash ???
 

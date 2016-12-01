@@ -3,10 +3,16 @@ package com.wix.hoopoe.http.matchers.internal
 import akka.http.scaladsl.model.HttpMethod
 import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.headers.{Cookie, HttpCookiePair}
-import com.wix.hoopoe.http.HttpRequest
+import akka.http.scaladsl.unmarshalling.Unmarshal
 import com.wix.hoopoe.http.matchers.RequestMatcher
+import com.wix.hoopoe.http.matchers.json.{DefaultMarshaller, Marshaller}
+import com.wix.hoopoe.http.utils.waitFor
+import com.wix.hoopoe.http.{HttpRequest, WixHttpTestkitResources}
 import org.specs2.matcher.Matchers._
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
+
+import scala.concurrent.ExecutionContext
+import scala.util.Try
 
 trait RequestMethodMatchers {
   def bePost: RequestMatcher = beRequestWith( POST )
@@ -160,5 +166,33 @@ trait RequestCookiesMatchers {
   }
 }
 
+trait RequestBodyMatchers {
+  import WixHttpTestkitResources.materializer
 
-//  def haveBody(param: (String, String)): RequestMatcher = ???
+  import ExecutionContext.Implicits.global
+
+
+  def haveBodyWith(bodyContent: String): RequestMatcher = haveBodyThat( must = be_===(bodyContent) )
+  def haveBodyThat(must: Matcher[String]): RequestMatcher = must ^^ httpRequestAsString
+
+  def haveBodyWith(data: Array[Byte]): RequestMatcher = haveBodyDataThat( must = be_===(data) )
+  def haveBodyDataThat(must: Matcher[Array[Byte]]): RequestMatcher = must ^^ httpRequestAsBinary
+
+  def havePayloadWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller = DefaultMarshaller.marshaller): RequestMatcher = havePayloadThat[T]( must = be_===(entity) )
+  def havePayloadThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller = DefaultMarshaller.marshaller): RequestMatcher = new RequestMatcher {
+
+    def apply[S <: HttpRequest](t: Expectable[S]): MatchResult[S] = {
+      val request = t.value
+      val content = waitFor( Unmarshal(request.entity).to[String] )
+
+      Try( marshaller.unmarshall[T](content) ).toOption match {
+        case None => failure(s"Failed to unmarshall: [$content]", t)
+        case Some(x) if must.apply(createExpectable(x)).isSuccess => success("ok", t)
+        case Some(x) => failure(s"Failed to match: [${must.apply(createExpectable(x)).message.replaceAll("\n", "")}] with content: [$content]", t)
+      }
+    }
+  }
+
+  private def httpRequestAsString = (r: HttpRequest) => waitFor( Unmarshal(r.entity).to[String] ) aka "Body content as string"
+  private def httpRequestAsBinary = (r: HttpRequest) => waitFor( Unmarshal(r.entity).to[Array[Byte]] ) aka "Body content as bytes"
+}

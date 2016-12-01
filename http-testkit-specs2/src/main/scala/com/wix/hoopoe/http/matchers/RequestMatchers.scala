@@ -6,5 +6,6 @@ trait RequestMatchers extends RequestMethodMatchers
                       with RequestUrlMatchers
                       with RequestHeadersMatchers
                       with RequestCookiesMatchers
+                      with RequestBodyMatchers
 
 object RequestMatchers extends RequestMatchers

@@ -93,7 +93,7 @@ object MarshallingTestObjects {
 object HttpRequestFactory {
 
   def aRequestWith(method: HttpMethod) = HttpRequest(method = method)
-  def aRequestWith(path: String) = HttpRequest(uri = Uri().withPath(Path(path)))
+  def aRequestWithPath(path: String) = HttpRequest(uri = Uri().withPath(Path(path)))
 
   def aRequestWithParameters(parameters: (String, String)*) = HttpRequest(uri = Uri().withQuery(Query(parameters:_*)))
   def aRequestWithNoParameters = HttpRequest()
@@ -104,4 +104,9 @@ object HttpRequestFactory {
   def aRequestWithNoCookies = HttpRequest()
   def aRequestWithCookies(cookies: (String, String)*) =
     HttpRequest(headers = immutable.Seq( cookies.map( Cookie(_) ) :_*) )
+
+  def aRequestWith(body: String) = HttpRequest(entity = body)
+  def aRequestWith(binaryBody: Array[Byte]) = HttpRequest(entity = binaryBody)
+  def aRequestWithoutBody = HttpRequest()
+
 }
