@@ -6,12 +6,6 @@ object depends {
   private val Specs2Version = "3.8.6"
 
   def specs2 = Seq(
-    "org.specs2" %% "specs2-core" % Specs2Version % "test",
-    "org.specs2" %% "specs2-junit" % Specs2Version % "test",
-    "org.specs2" %% "specs2-mock" % Specs2Version % "test"
-  )
-
-  def specs2Lib = Seq(
     "org.specs2" %% "specs2-core" % Specs2Version,
     "org.specs2" %% "specs2-junit" % Specs2Version,
     "org.specs2" %% "specs2-mock" % Specs2Version

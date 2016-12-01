@@ -107,7 +107,7 @@ lazy val httpTestkitSpecs2 =
     base = file( "http-testkit-specs2" ),
     settings = Seq(
       name := "http-testkit-specs2",
-      libraryDependencies ++= specs2Lib,
+      libraryDependencies ++= specs2,
       description :=
         "Some crap i need to describe the library"
     ) ++ baseSettings
@@ -130,7 +130,7 @@ lazy val httpTestkitContractTests =
     base = file( "http-testkit-contract-tests" ),
     settings = Seq(
       name := "http-testkit-contract-tests",
-      libraryDependencies ++= specs2,
+      libraryDependencies ++= specs2.map(_ % "test") ,
       description :=
         "Some crap i need to describe the library"
     ) ++ baseSettings
