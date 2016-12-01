@@ -81,6 +81,67 @@ trait RequestUrlMatchers {
   private case class ParamterComparisonResult(identical: Seq[(String, String)], missing: Seq[(String, String)], extra: Seq[(String, String)])
 }
 
+trait RequestHeadersMatchers {
+
+  def haveAnyOf(headers: (String, String)*): RequestMatcher =
+    haveHeaderInternal( headers, _.identical.nonEmpty,
+      res => s"Could not find header [${res.missing.map(_._1).mkString(", ")}] but found those: [${res.extra.map(_._1).mkString(", ")}]" )
+
+  def haveAllOf(headers: (String, String)*): RequestMatcher =
+    haveHeaderInternal( headers, _.missing.isEmpty,
+      res => s"Could not find header [${res.missing.map(_._1).mkString(", ")}] but found those: [${res.identical.map(_._1).mkString(", ")}]." )
+
+  def haveTheSameHeadersAs(headers: (String, String)*): RequestMatcher =
+    haveHeaderInternal( headers, r => r.extra.isEmpty && r.missing.isEmpty,
+      res => s"Request header is not identical, missing headers from request: [${res.missing.map(_._1).mkString(", ")}], request contained extra headers: [${res.extra.map(_._1).mkString(", ")}]." )
+
+  private def haveHeaderInternal(headers: Seq[(String, String)], comparator: HeaderComparisonResult => Boolean, errorMessage: HeaderComparisonResult => String): RequestMatcher = new RequestMatcher {
+
+    def apply[S <: HttpRequest](t: Expectable[S]): MatchResult[S] = {
+      val request = t.value
+      val responseHeaders = request.headers
+//        .filterNot( _.isInstanceOf[`Set-Cookie`] )
+        .map( h => h.name -> h.value )
+      val comparisonResult = compare(headers, responseHeaders)
+
+      if ( comparator(comparisonResult) ) success("ok", t)
+      else if (responseHeaders.isEmpty) failure("Response did not contain any headers.", t)
+      else failure(errorMessage(comparisonResult), t)
+    }
+
+    private def compareHeader(header1: (String, String), header2: (String, String)) = header1._1.toLowerCase == header2._1.toLowerCase && header1._2 == header2._2
+
+    private def compare(headers: Seq[(String, String)], requestHeaders: Seq[(String, String)]): HeaderComparisonResult = {
+      val identical = headers.filter( h1 => requestHeaders.exists( h2 => compareHeader(h1, h2) ) )
+      val missing = headers.filter( h1 => !identical.exists( h2 => compareHeader(h1, h2) ) )
+      val extra = requestHeaders.filter( h1 => !identical.exists( h2 => compareHeader(h1, h2) ) )
+
+      HeaderComparisonResult(identical, missing, extra)
+    }
+  }
+
+  def haveAnyHeaderThat(must: Matcher[String], withHeaderName: String): RequestMatcher = new RequestMatcher {
+
+    def apply[S <: HttpRequest](t: Expectable[S]): MatchResult[S] = {
+      val request = t.value
+      val headers = request.headers
+//        .filterNot( _.isInstanceOf[`Set-Cookie`] )
+      val responseHeader = headers.find( _.name.toLowerCase == withHeaderName.toLowerCase )
+        .map( _.value )
+
+      responseHeader match {
+        case None if headers.isEmpty => failure("Response did not contain any headers.", t)
+        case None => failure(s"Response contain header names: [${headers.map( _.name ).mkString(", ")}] which did not contain: [$withHeaderName]", t)
+        case Some(value) if must.apply(createExpectable(value)).isSuccess => success("ok", t)
+        case Some(value) => failure(s"Response header [$withHeaderName], did not match { ${must.apply(createExpectable(value)).message} }", t)
+      }
+    }
+  }
+
+  private case class HeaderComparisonResult(identical: Seq[(String, String)], missing: Seq[(String, String)], extra: Seq[(String, String)])
+
+}
+
 //  def haveHeaders(param: (String, String)): RequestMatcher = ???
 //  def haveCookies(param: (String, String)): RequestMatcher = ???
 //  def haveBody(param: (String, String)): RequestMatcher = ???

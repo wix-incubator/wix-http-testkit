@@ -92,7 +92,11 @@ object HttpRequestFactory {
 
   def aRequestWith(method: HttpMethod) = HttpRequest(method = method)
   def aRequestWith(path: String) = HttpRequest(uri = Uri().withPath(Path(path)))
+
   def aRequestWithParameters(parameters: (String, String)*) = HttpRequest(uri = Uri().withQuery(Query(parameters:_*)))
   def aRequestWithNoParameters = HttpRequest()
+
+  def aRequestWithHeaders(headers: (String, String)*) = HttpRequest(headers = immutable.Seq( headers.map{ case (k, v) => RawHeader(k, v) }:_* ) )
+  def aRequestWithNoHeaders = aRequestWithHeaders()
 
 }
