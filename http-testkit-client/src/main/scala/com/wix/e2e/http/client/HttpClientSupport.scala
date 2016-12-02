@@ -3,20 +3,9 @@ package com.wix.e2e.http.client
 import akka.http.scaladsl.client.RequestBuilding.{Delete, Get, Head, Options, Patch, Post, Put, RequestBuilder}
 import akka.http.scaladsl.model.HttpMethods.TRACE
 import com.wix.e2e.http.client.internals.{BlockingRequestManager, NonBlockingRequestManager}
-import com.wix.e2e.http.client.transformers.HttpClientRequestTransformers
+import com.wix.e2e.http.client.transformers.HttpClientTransformers
 
-//sealed trait HttpClientSupport[T] extends HttpClientRequestTransformers {
-//  def get: RequestManager[T]
-//  def post: RequestManager[T]
-//  def put: RequestManager[T]
-//  def patch: RequestManager[T]
-//  def delete: RequestManager[T]
-//  def options: RequestManager[T]
-//  def head: RequestManager[T]
-//  def trace: RequestManager[T]
-//}
-
-trait BlockingHttpClientSupport extends HttpClientRequestTransformers {
+trait BlockingHttpClientSupport extends HttpClientTransformers {
   val get = new BlockingRequestManager(Get())
   val post = new BlockingRequestManager(Post())
   val put = new BlockingRequestManager(Put())
@@ -27,7 +16,7 @@ trait BlockingHttpClientSupport extends HttpClientRequestTransformers {
   val trace = new BlockingRequestManager(new RequestBuilder(TRACE).apply())
 }
 
-trait NonBlockingHttpClientSupport extends HttpClientRequestTransformers {
+trait NonBlockingHttpClientSupport extends HttpClientTransformers {
   val get = new NonBlockingRequestManager(Get())
   val post = new NonBlockingRequestManager(Post())
   val put = new NonBlockingRequestManager(Put())

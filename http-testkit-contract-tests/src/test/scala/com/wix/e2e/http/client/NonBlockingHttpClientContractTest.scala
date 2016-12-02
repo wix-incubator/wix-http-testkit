@@ -14,7 +14,7 @@ import org.specs2.specification.Scope
 import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
 
-class NonBlockingHttpClientTest extends SpecWithJUnit with NonBlockingHttpClientSupport with FutureMatchers {
+class NonBlockingHttpClientContractTest extends SpecWithJUnit with NonBlockingHttpClientSupport with FutureMatchers {
 
   trait ctx extends Scope with StubWebServerProvider with HttpClientTestSupport
 

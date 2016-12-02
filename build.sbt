@@ -73,7 +73,7 @@ lazy val httpTestkitCore =
     base = file( "http-testkit-core" ),
     settings = Seq(
       name := "http-testkit-core",
-      libraryDependencies ++= akkaHttp ++ jackson ++ joda ++ specs2 :+ scalaXml,
+      libraryDependencies ++= akkaHttp ++ jackson ++ joda ++ specs2.map(_ % "test") :+ scalaXml,
       description :=
         "Some crap i need to describe the library"
     ) ++ baseSettings
@@ -85,10 +85,11 @@ lazy val httpTestkitClient =
     base = file( "http-testkit-client" ),
     settings = Seq(
       name := "http-testkit-client",
+      libraryDependencies ++= specs2.map(_ % "test") ,
       description :=
         "Some crap i need to describe the library"
     ) ++ baseSettings
-  ).dependsOn(httpTestkitCore)
+  ).dependsOn(httpTestkitCore, httpTestkitSpecs2)
 
 lazy val httpTestkitServer =
   Project(

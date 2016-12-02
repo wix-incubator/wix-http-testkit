@@ -12,7 +12,7 @@ import org.specs2.specification.Scope
 import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
 
-class BlockingHttpClientTest extends SpecWithJUnit {
+class BlockingHttpClientContractTest extends SpecWithJUnit {
 
   trait ctx extends Scope with StubWebServerProvider with HttpClientTestSupport
 

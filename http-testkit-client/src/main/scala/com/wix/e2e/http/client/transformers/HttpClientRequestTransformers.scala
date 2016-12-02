@@ -3,9 +3,16 @@ package com.wix.e2e.http.client.transformers
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{Cookie, RawHeader}
-import com.wix.e2e.http.{RequestTransformer, WixHttpTestkitResources}
+import akka.http.scaladsl.unmarshalling.Unmarshal
+import com.wix.e2e.http.json.Marshaller
+import com.wix.e2e.http.utils.waitFor
+import com.wix.e2e.http.{HttpResponse, RequestTransformer, WixHttpTestkitResources}
 
+import scala.concurrent.ExecutionContext
 import scala.xml.Node
+
+trait HttpClientTransformers extends HttpClientRequestTransformers
+                                with HttpClientResponseTransformers
 
 trait HttpClientRequestTransformers extends HttpClientContentTypes {
 
@@ -26,7 +33,8 @@ trait HttpClientRequestTransformers extends HttpClientContentTypes {
   def withPayload(body: String, contentType: ContentType = TextPlain): RequestTransformer = setBody(body)
   def withPayload(bytes: Array[Byte], contentType: ContentType): RequestTransformer = setBody(HttpEntity(contentType, bytes))
   def withPayload(xml: Node): RequestTransformer = setBody(HttpEntity(XmlContent, WixHttpTestkitResources.xmlPrinter.format(xml)))
-  def withPayload(entity: AnyRef): RequestTransformer = setBody(HttpEntity(JsonContent, WixHttpTestkitResources.jsonMapper.writeValueAsString(entity)))
+
+  def withPayload(entity: AnyRef)(implicit marshaller: Marshaller): RequestTransformer = setBody(HttpEntity(JsonContent, marshaller.marshall(entity)))
 
   def withFormData(formParams: (String, String)*): RequestTransformer = identity
 //  { r: HttpRequest =>
@@ -37,7 +45,7 @@ trait HttpClientRequestTransformers extends HttpClientContentTypes {
 
   private def setBody(entity: RequestEntity): RequestTransformer = _.copy(entity = entity)
   private def appendHeaders[H <: HttpHeader](headers: Iterable[H]): RequestTransformer = r =>
-    r.withHeaders( r.headers ++ headers/* :_**/)
+    r.withHeaders( r.headers ++ headers)
 
   implicit class TransformerConcatenation(first: RequestTransformer) {
     def and(second: RequestTransformer): RequestTransformer = first andThen second
@@ -49,4 +57,16 @@ trait HttpClientContentTypes {
   val TextPlain = ContentTypes.`text/plain(UTF-8)`
   val JsonContent = ContentTypes.`application/json`
   val XmlContent = ContentType(MediaTypes.`application/xml`, HttpCharsets.`UTF-8`)
+}
+
+trait HttpClientResponseTransformers {
+  implicit class `HttpResponse --> T`(r: HttpResponse) {
+    def extractAs[T : Manifest](implicit marshaller: Marshaller): T =
+      marshaller.unmarshall[T]( httpRequestAsString )
+
+    import com.wix.e2e.http.WixHttpTestkitResources.materializer
+
+    import ExecutionContext.Implicits.global
+    private def httpRequestAsString = waitFor( Unmarshal(r.entity).to[String] )
+  }
 }
