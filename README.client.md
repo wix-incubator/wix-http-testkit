@@ -3,12 +3,14 @@ Overview
 
 A sane DSL to test REST API's.
 
-Import the DSL, There are two variations of the client that can be used:
- 1. __Blocking__
- 2. __Non-Blocking__
+There are two variations of the client that can be used:
+* __Blocking__
+* __Non-Blocking__
 
+
+##Create HTTP Client
  
-#####To import the DSL: 
+####Import the DSL: 
 
 package import:
 ```scala
@@ -42,7 +44,7 @@ Or add mixin trait to call site
     class MyClass extends com.wix.e2e.http.client.NonBlockingHttpClientSupport 
 ```
 
-#####Issuing New Request
+####Issuing New Request
 ```scala
 
     val somePort = 99123 /// any port
@@ -53,7 +55,7 @@ Or add mixin trait to call site
     // suported method: get, post, put, patch, delete, options, head, trace
 ```
 
-#### Customizing Request
+### Customizing Request
 
 Each request can be easily customized with a set of basic transformers allowing all basic functionality (add parameters, headers, cookies and request body)
 ```scala
