@@ -109,4 +109,5 @@ object HttpRequestFactory {
   def aRequestWith(binaryBody: Array[Byte]) = HttpRequest(entity = binaryBody)
   def aRequestWithoutBody = HttpRequest()
 
+  def aRandomRequest = aRequestWithPath(randomStr)
 }

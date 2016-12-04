@@ -5,6 +5,7 @@ import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.headers.{Cookie, HttpCookiePair}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import com.wix.e2e.http.HttpRequest
+import com.wix.e2e.http.api.RequestRecordSupport
 import com.wix.e2e.http.json.Marshaller
 import com.wix.e2e.http.matchers.RequestMatcher
 import com.wix.e2e.http.utils._
@@ -195,4 +196,75 @@ trait RequestBodyMatchers {
 
   private def httpRequestAsString = (r: HttpRequest) => waitFor( Unmarshal(r.entity).to[String] ) aka "Body content as string"
   private def httpRequestAsBinary = (r: HttpRequest) => waitFor( Unmarshal(r.entity).to[Array[Byte]] ) aka "Body content as bytes"
+}
+
+trait RequestRecorderMatchers {
+
+  def receivedAnyOf[T <: RequestRecordSupport](requests: HttpRequest*): Matcher[T] =
+    receivedRequestsInternal(requests, _.identical.nonEmpty,
+                             res =>
+                               s"""Could not find requests:
+                                  |${requestsToStr(res.missing)}
+                                  |
+                                  |but found those:
+                                  |${requestsToStr(res.extra)}""".stripMargin )
+
+  private def requestsToStr(rs: Seq[HttpRequest]) = rs.zipWithIndex.map{ case (r, i) => s"${i + 1}: $r"}.mkString(",\n")
+
+  def receivedAllOf[T <: RequestRecordSupport](requests: HttpRequest*): Matcher[T] =
+    receivedRequestsInternal( requests, _.missing.isEmpty,
+                              res => s"""Could not find requests:
+                                         |${requestsToStr(res.missing)}
+                                         |
+                                         |but found those:
+                                         |${requestsToStr(res.identical)}""".stripMargin )
+
+  def receivedTheSameRequestsAs[T <: RequestRecordSupport](requests: HttpRequest*): Matcher[T] =
+  receivedRequestsInternal( requests, r => r.extra.isEmpty && r.missing.isEmpty,
+                            res => s"""Requests are not identical, missing requests are:
+                                       |${requestsToStr(res.missing)}
+                                       |
+                                       |added requests found:
+                                       |${requestsToStr(res.extra)}""".stripMargin)
+
+  private def receivedRequestsInternal[T <: RequestRecordSupport](requests: Seq[HttpRequest], comparator: RequestComparisonResult => Boolean, errorMessage: RequestComparisonResult => String): Matcher[T] = new Matcher[T] {
+
+    def apply[S <: T](t: Expectable[S]): MatchResult[S] = {
+      val recorder = t.value
+      val recordedRequests = recorder.recordedRequests
+      val comparisonResult = compare(requests, recordedRequests)
+
+      if ( comparator(comparisonResult) ) success("ok", t)
+      else if (recordedRequests.isEmpty) failure("Server did not receive any requests.", t)
+      else failure(errorMessage(comparisonResult), t)
+    }
+
+    private def compareRequest(request1: HttpRequest, request2: HttpRequest) = request1 == request2
+
+    private def compare(headers: Seq[HttpRequest], requestHeaders: Seq[HttpRequest]): RequestComparisonResult = {
+      val identical = headers.filter( h1 => requestHeaders.exists( h2 => compareRequest(h1, h2) ) )
+      val missing = headers.filter( h1 => !identical.exists( h2 => compareRequest(h1, h2) ) )
+      val extra = requestHeaders.filter( h1 => !identical.exists( h2 => compareRequest(h1, h2) ) )
+
+      RequestComparisonResult(identical, missing, extra)
+    }
+  }
+
+  def receivedAnyRequestThat[T <: RequestRecordSupport](must: Matcher[HttpRequest]): Matcher[T] = new Matcher[T] {
+
+    def apply[S <: T](t: Expectable[S]): MatchResult[S] = {
+      val request = t.value
+      val recordedRequests = request.recordedRequests
+      val results = recordedRequests.map( r => must.apply(createExpectable(r)) )
+
+      results match {
+        case Nil => failure("Server did not receive any requests.", t)
+        case rs if rs.exists( _.isSuccess ) => success("ok", t)
+        case rs => failure(s"""Could not find any request that matches:
+                               |${rs.zipWithIndex.map { case (r, i) => s"${i + 1}: ${r.message.replaceAll("\n", "")}" }.mkString(",\n") }""".stripMargin, t)
+      }
+    }
+  }
+
+  private case class RequestComparisonResult(identical: Seq[HttpRequest], missing: Seq[HttpRequest], extra: Seq[HttpRequest])
 }

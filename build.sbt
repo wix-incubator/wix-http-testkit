@@ -137,6 +137,18 @@ lazy val httpTestkitContractTests =
     ) ++ baseSettings
   ).dependsOn(wixHttpTestkit, httpTestkitTestCommons, httpTestkitSpecs2)
 
+lazy val httpTestkitExamples =
+  Project(
+    id = "examples",
+    base = file( "examples" ),
+    settings = Seq(
+      name := "examples",
+      libraryDependencies ++= specs2.map(_ % "test") ,
+      description :=
+        "Some crap i need to describe the library"
+    ) ++ baseSettings
+  ).dependsOn(wixHttpTestkit, httpTestkitSpecs2)
+
 
 lazy val root =
   Project(
