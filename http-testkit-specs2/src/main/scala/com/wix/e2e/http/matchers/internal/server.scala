@@ -5,8 +5,7 @@ import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.headers.{Cookie, HttpCookiePair}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import com.wix.e2e.http.HttpRequest
-import com.wix.e2e.http.api.RequestRecordSupport
-import com.wix.e2e.http.json.Marshaller
+import com.wix.e2e.http.api.{Marshaller, RequestRecordSupport}
 import com.wix.e2e.http.matchers.RequestMatcher
 import com.wix.e2e.http.utils._
 import org.specs2.matcher.Matchers._

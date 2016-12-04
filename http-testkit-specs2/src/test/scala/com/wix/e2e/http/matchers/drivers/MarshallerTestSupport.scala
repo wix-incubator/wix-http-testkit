@@ -1,6 +1,6 @@
 package com.wix.e2e.http.matchers.drivers
 
-import com.wix.e2e.http.json.Marshaller
+import com.wix.e2e.http.api.Marshaller
 import org.specs2.matcher.ThrownExpectations
 import org.specs2.mock.Mockito
 

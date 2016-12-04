@@ -10,11 +10,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-
-trait Marshaller {
-  def unmarshall[T : Manifest](jsonStr: String): T
-  def marshall[T](t: T): String
-}
+import com.wix.e2e.http.api.Marshaller
 
 class JsonJacksonMarshaller extends Marshaller {
 
@@ -41,8 +37,4 @@ class JsonJacksonMarshaller extends Marshaller {
       def getOwnerType = null
     }
   }
-}
-
-object Marshaller {
-  implicit val marshaller: Marshaller = new JsonJacksonMarshaller
 }

@@ -1,6 +1,6 @@
 package com.wix.e2e.http.matchers.internal
 
-import com.wix.e2e.http.json.Marshaller
+import com.wix.e2e.http.api.Marshaller
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass

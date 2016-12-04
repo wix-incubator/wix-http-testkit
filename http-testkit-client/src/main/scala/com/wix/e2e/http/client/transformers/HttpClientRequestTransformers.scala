@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{Cookie, RawHeader}
 import akka.http.scaladsl.unmarshalling.Unmarshal
-import com.wix.e2e.http.json.Marshaller
+import com.wix.e2e.http.api.Marshaller
 import com.wix.e2e.http.utils.waitFor
 import com.wix.e2e.http.{HttpResponse, RequestTransformer, WixHttpTestkitResources}
 

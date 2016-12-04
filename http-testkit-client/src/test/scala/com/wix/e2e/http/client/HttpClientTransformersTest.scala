@@ -2,8 +2,8 @@ package com.wix.e2e.http.client
 
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.HttpCookiePair
+import com.wix.e2e.http.api.Marshaller
 import com.wix.e2e.http.client.transformers.HttpClientTransformers
-import com.wix.e2e.http.json.Marshaller
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.test.random._
 import org.specs2.mutable.SpecWithJUnit

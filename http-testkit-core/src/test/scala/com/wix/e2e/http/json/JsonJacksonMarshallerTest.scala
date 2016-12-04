@@ -3,6 +3,7 @@ package com.wix.e2e.http.json
 import java.time.LocalDateTime
 import java.util.Optional
 
+import com.wix.e2e.http.api.Marshaller
 import com.wix.e2e.http.json.MarshallingTestObjects.SomeCaseClass
 import com.wix.test.random._
 import org.joda.time.DateTimeZone.UTC

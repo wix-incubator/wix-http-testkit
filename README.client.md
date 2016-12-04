@@ -1,14 +1,11 @@
-Http Client
-==============
+Overview
+========
 
 A sane DSL to test REST API's.
 
-
-#### Generate Request
-
 Import the DSL, There are two variations of the client that can be used:
- 1. Blocking
- 2. Non-Blocking
+ 1. __Blocking__
+ 2. __Non-Blocking__
 
  
 #####To import the DSL: 
@@ -34,7 +31,7 @@ Import Object:
 
 ```
 
-Add trait to call site
+Or add mixin trait to call site
 
 ```scala
 
@@ -48,7 +45,7 @@ Add trait to call site
 #####Issuing New Request
 ```scala
 
-    val somePort = 99123 /// ant port
+    val somePort = 99123 /// any port
     implicit val baseUri = BaseUri(port = somePort)
 
     get("/somePath")
@@ -58,7 +55,7 @@ Add trait to call site
 
 #### Customizing Request
 
-Each request can be easily customized
+Each request can be easily customized with a set of basic transformers allowing all basic functionality (add parameters, headers, cookies and request body)
 ```scala
 
     get("/somePath", 
@@ -67,15 +64,14 @@ Each request can be easily customized
           and withCookie("cookie" -> "cookieValue"))
           
     // post plain text data to api
-    post("/somePath", but = withPayload("Hi There !!!"))
+    post("/somePath", 
+         but = withPayload("Hi There !!!"))
     
     // or post entity that would be marshalled using testkit marshaller (or custom user marshaller)
     case class SomeCaseClass(str: String)
     
     // request will automatically be marshalled to json
     put("/somePath", but = withPayload(SomeCaseClass("Hi There !!!")))
-    
-    
 ```
 
 Handlers can be also be defined by developer, it can use existing transformers or to implement transformers from scratch
@@ -86,3 +82,25 @@ Handlers can be also be defined by developer, it can use existing transformers o
     get("/path", but = withSiteId("someId"))
 
 ```
+
+### Json Marshaller
+
+Testkit comes out of the box with a default [Jackson](https://github.com/FasterXML/jackson) json marshaller preloaded with ([Scala Module](https://github.com/FasterXML/jackson-module-scala), [JDK8](https://github.com/FasterXML/jackson-datatype-jdk8), [Java Time](https://github.com/FasterXML/jackson-datatype-jsr310), [JodaTime](https://github.com/FasterXML/jackson-datatype-joda))
+
+It can also allow you to create your own custom marshaller: 
+
+```scala
+
+    val myMarshaller = new com.wix.e2e.http.api.Marshaller {
+      def unmarshall[T : Manifest](jsonStr: String): T = { /*your code here*/ }
+      def marshall[T](t: T): String = { /*your code here*/ }
+    }
+
+    
+    // on call site, define implicit marshaller
+    implicit val customMarshaller = myMarshaller 
+
+    put("/somePath", but = withPayload(SomeCaseClass("Hi There !!!")))
+    
+```
+ 
