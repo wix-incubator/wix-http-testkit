@@ -1,6 +1,4 @@
-import sbt.Keys.resolvers
 import depends._
-
 
 lazy val publishSettings = Seq(
   publishTo := {
@@ -27,8 +25,6 @@ lazy val publishSettings = Seq(
 )
 
 lazy val compileOptions = Seq(
-  //  resolvers := wixArtifactory,
-
   scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.11.8", "2.12.0"),
   scalacOptions ++= Seq(
@@ -39,8 +35,6 @@ lazy val compileOptions = Seq(
     "-Xfatal-warnings"
   )
 )
-
-//val fwVersion = "2.1019.0-SNAPSHOT"
 
 lazy val noPublish = Seq( publish := {}, publishLocal := {}, publishArtifact := false )
 
@@ -123,7 +117,7 @@ lazy val wixHttpTestkit =
       description :=
         "Some crap i need to describe the library"
     ) ++ baseSettings
-  ).dependsOn(httpTestkitClient, httpTestkitServer)
+  ).dependsOn(httpTestkitClient, httpTestkitServer, httpTestkitSpecs2)
 
 lazy val httpTestkitContractTests =
   Project(
@@ -135,19 +129,19 @@ lazy val httpTestkitContractTests =
       description :=
         "Some crap i need to describe the library"
     ) ++ baseSettings
-  ).dependsOn(wixHttpTestkit, httpTestkitTestCommons, httpTestkitSpecs2)
+  ).dependsOn(wixHttpTestkit, httpTestkitTestCommons)
 
-lazy val httpTestkitExamples =
-  Project(
-    id = "examples",
-    base = file( "examples" ),
-    settings = Seq(
-      name := "examples",
-      libraryDependencies ++= specs2.map(_ % "test") ,
-      description :=
-        "Some crap i need to describe the library"
-    ) ++ baseSettings
-  ).dependsOn(wixHttpTestkit, httpTestkitSpecs2)
+//lazy val httpTestkitExamples =
+//  Project(
+//    id = "examples",
+//    base = file( "examples" ),
+//    settings = Seq(
+//      name := "examples",
+//      libraryDependencies ++= specs2.map(_ % "test") ,
+//      description :=
+//        "Some crap i need to describe the library"
+//    ) ++ baseSettings
+//  ).dependsOn(wixHttpTestkit)
 
 
 lazy val root =
@@ -156,5 +150,5 @@ lazy val root =
     base = file( "." ),
     settings = baseSettings ++ noPublish
   ).aggregate(httpTestkitTestCommons,
-    httpTestkitCore, httpTestkitClient, httpTestkitServer, httpTestkitSpecs2, wixHttpTestkit,
-    httpTestkitContractTests)
+              httpTestkitCore, httpTestkitClient, httpTestkitServer, httpTestkitSpecs2, wixHttpTestkit,
+              httpTestkitContractTests)

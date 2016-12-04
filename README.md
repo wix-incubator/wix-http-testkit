@@ -1,4 +1,41 @@
-Wix HTTP Test-kit
-===================
+Overview
+========
 
-Reasonable Test Client Docs: [Here](./README.client.md)
+Wix Http Testkit is a library that will address many of the End-to-end testing concerns you might encounter.
+
+Wix HTTP Testkit aims to be:
+* __Simple__ Testing REST services or starting a mock/stub servers are very simple and require very few lines of code.
+* __Fast__ Leveraging [Akka-Http](https://github.com/akka/akka-http) infrastructure, starting servers is measured in milliseconds.
+* __Integrated__: Other than providing a set of DSL's to support composing and executing REST http calls and creating and configuring web serververs it also contain outof the box matcher libraries for [Specs<sup>2</sup>](http://wix.github.io/accord/specs2.html) to easily validate each aspect of the tested flow.   
+
+
+Getting Started
+===============
+
+HTTP-testkit version 0.1 is available on Maven Central Repository. Scala versions 2.11.1+ and 2.12.0+ are supported. The next milestone is 0.2-SNAPSHOT and is available from the Sonatype snapshots repository.
+
+###SBT
+Simply add the *wix-http-testkit* module to your build settings:
+
+```sbt
+libraryDependencies += "com.wix" %% "wix-http-testkit" % "0.1"
+```
+###Maven
+
+```xml
+
+<dependencies>
+  <dependency>
+    <groupId>com.wix</groupId>
+    <artifactId>wix-http-testkit_${scala.tools.version}</artifactId>
+    <version>0.1</version>
+  </dependency>
+</dependencies>
+
+```
+
+# Documentation 
+
+* __Rest Client__: a declarative REST client [Documentation](./README.client.md).  
+* __Simplicator Web Servers__: Easily configurable web servers [Documentation](./README.server.md).
+* __Specs<sup>2</sup> Matchers Suite__: A comprahensive matcher suite [Documentation](./README.matchers.md).    
