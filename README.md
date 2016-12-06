@@ -42,4 +42,4 @@ libraryDependencies += "com.wix" %% "wix-http-testkit" % "0.1"
 
 # Contribute
 
-Ideas and feature requests welcome! You can join the fun on our [Gitter channel](https://gitter.im/wix/wix-http-testkit), report an [issue](https://github.com/wix/wix-http-testkit/issues/) or contact the [maintainer](https://github.com/noam-almog) directly. 
+Ideas and feature requests welcome! Report an [issue](https://github.com/wix/wix-http-testkit/issues/) or contact the [maintainer](https://github.com/noam-almog) directly. 
