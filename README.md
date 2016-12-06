@@ -39,3 +39,7 @@ libraryDependencies += "com.wix" %% "wix-http-testkit" % "0.1"
 * __Rest Client__: a declarative REST client [Documentation](./HTTP_CLIENT.md).  
 * __Simplicator Web Servers__: Easily configurable web servers [Documentation](./WEBSERVER.md).
 * __Specs<sup>2</sup> Matchers Suite__: A comprahensive matcher suites [Response Matchers](./HTTP_CLIENT_MATCHERS.md) and [Response Matchers](./WEBSERVER_MATCHERS.md).    
+
+# Contribute
+
+Ideas and feature requests welcome! You can join the fun on our [Gitter channel](https://gitter.im/wix/wix-http-testkit), report an [issue](https://github.com/wix/wix-http-testkit/issues/) or contact the [maintainer](https://github.com/noam-almog) directly. 
