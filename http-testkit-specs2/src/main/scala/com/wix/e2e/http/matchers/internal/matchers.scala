@@ -77,11 +77,11 @@ trait ResponseCookiesMatchers {
 }
 
 trait ResponseHeadersMatchers {
-  def haveAnyOf(headers: (String, String)*): ResponseMatcher =
+  def haveAnyHeadersOf(headers: (String, String)*): ResponseMatcher =
     haveHeaderInternal( headers, _.identical.nonEmpty,
                         res => s"Could not find header [${res.missing.map(_._1).mkString(", ")}] but found those: [${res.extra.map(_._1).mkString(", ")}]" )
 
-  def haveAllOf(headers: (String, String)*): ResponseMatcher =
+  def haveAllHeadersOf(headers: (String, String)*): ResponseMatcher =
     haveHeaderInternal( headers, _.missing.isEmpty,
                         res => s"Could not find header [${res.missing.map(_._1).mkString(", ")}] but found those: [${res.identical.map(_._1).mkString(", ")}]." )
 
@@ -146,8 +146,8 @@ trait ResponseBodyMatchers {
   def haveBodyWith(data: Array[Byte]): ResponseMatcher = haveBodyDataThat( must = be_===(data) )
   def haveBodyDataThat(must: Matcher[Array[Byte]]): ResponseMatcher = must ^^ httpResponseAsBinary
 
-  def havePayloadWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): ResponseMatcher = havePayloadThat[T]( must = be_===(entity) )
-  def havePayloadThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): ResponseMatcher = new ResponseMatcher {
+  def haveBodyWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): ResponseMatcher = haveBodyThat[T]( must = be_===(entity) )
+  def haveBodyThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): ResponseMatcher = new ResponseMatcher {
 
     def apply[S <: HttpResponse](t: Expectable[S]): MatchResult[S] = {
       val response = t.value
@@ -170,13 +170,13 @@ trait ResponseBodyAndStatusMatchers { self: ResponseBodyMatchers with ResponseSt
   def beSuccessfulWith(bodyContent: String): ResponseMatcher = beSuccessful and haveBodyWith(bodyContent)
   def beSuccessfulWithBodyThat(must: Matcher[String]): ResponseMatcher = beSuccessful and haveBodyThat(must)
 
-  def beSuccessfulWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): ResponseMatcher = beSuccessful and havePayloadWith(entity)
-  def beSuccessfulWithEntityThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): ResponseMatcher = beSuccessful and havePayloadThat(must)
+  def beSuccessfulWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): ResponseMatcher = beSuccessful and haveBodyWith(entity)
+  def beSuccessfulWithEntityThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): ResponseMatcher = beSuccessful and haveBodyThat(must)
 
   def beSuccessfulWith(data: Array[Byte]): ResponseMatcher = beSuccessful and haveBodyWith(data)
   def beSuccessfulWithBodyDataThat(must: Matcher[Array[Byte]]): ResponseMatcher = beSuccessful and haveBodyDataThat(must)
 
-  def beSuccessfulWithHeaders(headers: (String, String)*): ResponseMatcher = beSuccessful and haveAllOf(headers:_*)
+  def beSuccessfulWithHeaders(headers: (String, String)*): ResponseMatcher = beSuccessful and haveAllHeadersOf(headers:_*)
   def beSuccessfulWithHeaderThat(must: Matcher[String], withHeaderName: String): ResponseMatcher = beSuccessful and haveAnyHeaderThat(must, withHeaderName)
 
   def beSuccessfulWithCookie(cookieName: String): ResponseMatcher = beSuccessful and receivedCookieWith(cookieName)

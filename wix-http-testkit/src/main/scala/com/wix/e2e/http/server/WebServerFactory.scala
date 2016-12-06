@@ -8,9 +8,3 @@ object WebServerFactory {
   def aMockWebServerWith(handler: RequestHandler, handlers: RequestHandler*): MockWebServerBuilder =
     new MockWebServerBuilder(handler +: handlers, None)
 }
-
-
-
-
-
-

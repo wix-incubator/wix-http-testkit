@@ -44,33 +44,33 @@ class ResponseBodyMatchersTest extends SpecWithJUnit with MatchersTestSupport {
     "support unmarshalling body content with user custom unmarshaller" in new ctx {
       givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
 
-      aResponseWith(content) must havePayloadWith(entity = someObject)
-      aResponseWith(content) must not( havePayloadWith(entity = anotherObject) )
+      aResponseWith(content) must haveBodyWith(entity = someObject)
+      aResponseWith(content) must not( haveBodyWith(entity = anotherObject) )
     }
 
     "provide a meaningful explanation why match failed" in new ctx {
       givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
 
-      failureMessageFor(havePayloadThat(must = be_===(anotherObject)), matchedOn = aResponseWith(content)) must_===
+      failureMessageFor(haveBodyThat(must = be_===(anotherObject)), matchedOn = aResponseWith(content)) must_===
         s"Failed to match: ['$someObject' is not equal to '$anotherObject'] with content: [$content]"
     }
 
     "provide a proper message to user in case of a badly behaving marshaller" in new ctx {
       givenBadlyBehavingUnmarshallerFor[SomeCaseClass](withContent = content)
 
-      failureMessageFor(havePayloadWith(entity = someObject), matchedOn = aResponseWith(content)) must_===
+      failureMessageFor(haveBodyWith(entity = someObject), matchedOn = aResponseWith(content)) must_===
         s"Failed to unmarshall: [$content]"
     }
 
     "support custom matcher for user object" in new ctx {
       givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
 
-      aResponseWith(content) must havePayloadThat(must = be_===(someObject))
-      aResponseWith(content) must not( havePayloadThat(must = be_===(anotherObject)) )
+      aResponseWith(content) must haveBodyThat(must = be_===(someObject))
+      aResponseWith(content) must not( haveBodyThat(must = be_===(anotherObject)) )
     }
 
     "provide a default json marshaller in case no marshaller is specified" in new ctxNoMarshaller {
-      aResponseWith(Marshaller.marshaller.marshall(someObject)) must havePayloadWith(someObject)
+      aResponseWith(Marshaller.marshaller.marshall(someObject)) must haveBodyWith(someObject)
     }
   }
 }
