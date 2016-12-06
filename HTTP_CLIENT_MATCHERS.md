@@ -36,7 +36,7 @@ It is possible to match response body in several ways
     response must haveBodyWith("someBody")
     
     // compose matchers
-    response must haveBodyThat(contain("someBody"))
+    response must haveBodyThat(must = contain("someBody"))
 ```
 
 Unmarshal and match
@@ -47,7 +47,7 @@ Unmarshal and match
     response must haveBodyWith(SomeCaseClass("some string"))
      
     // or compose matchers 
-    response must haveBodyThat(be_===( SomeCaseClass("some string") ))
+    response must haveBodyThat(must = be_===( SomeCaseClass("some string") ))
 ```
 
 All responses are unmarshalled with default or custom marshaller, for more info see [Marshaller Documentation](./MARSHALLER.md)
@@ -63,7 +63,7 @@ Check if response contain headers
     response must haveTheSameHeadersAs("h1" -> "v1", "h2" -> "v2") // same list of headers (no more, no less)
      
     // compose
-    response must haveAnyHeaderThat( must = contain("value"), withHeaderName = "header" ) 
+    response must haveAnyHeaderThat(must = contain("value"), withHeaderName = "header" ) 
 
 ```
 
@@ -80,7 +80,7 @@ Check if response contain headers cookies
     
     // successful response with body
     response must beSuccessfulWith( "some content" )
-    response must beSuccessfulWithEntityThat( be_===( SomeCaseClass("some content" ) ) )
+    response must beSuccessfulWithEntityThat(must = be_===( SomeCaseClass("some content" ) ) )
     
     // more matchers exists
 

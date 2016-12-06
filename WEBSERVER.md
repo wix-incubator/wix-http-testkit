@@ -55,8 +55,8 @@ Create server
     
     // use custom port
     val somePort = 11111
-    val serverOnCustomPort = aStubWebServer.build
-                                           .onPort(somePort)
+    val serverOnCustomPort = aStubWebServer.onPort(somePort)
+                                           .build
                                            .start()
 ```
 
@@ -66,9 +66,9 @@ Stub server can, but not require, to have custom handlers (same like the mock se
     val someHandler = // create your own
     val anotherHandler = // create your own
 
-    val server = aStubWebServer.build
-                               .addHandler(someHandler)                  // add one
-                               .addHandlers(someHandler, anotherHandler) // add more than one handler     
+    val server = aStubWebServer.addHandler(someHandler)                  // add one
+                               .addHandlers(someHandler, anotherHandler) // add more than one handler
+                               .build
                                .start()
 
 

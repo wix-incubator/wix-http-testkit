@@ -26,7 +26,7 @@ You can also use trait mixin
 
     // compose matchers
     
-    server must receivedAnyRequestThat( beGet )
+    server must receivedAnyRequestThat(must = beGet)
 ``` 
 
 #Request Matchers
@@ -49,7 +49,7 @@ Match against request path or parameters
 ```scala
     // request path
     request must havePath("/somePath")
-    request must havePathThat(contain("/somePath"))
+    request must havePathThat(must = contain("/somePath"))
      
     // request parameters 
     request must haveAnyParamOf("param1" -> "value1", "param2" -> "value2")
@@ -74,7 +74,7 @@ Unmarshal and match
 ```scala
     case class SomeCaseClass(s: String)
     
-    request must haveBodyWith(SomeCaseClass("some string"))
+    request must haveBodyWith(entity = SomeCaseClass("some string"))
      
     // or compose matchers 
     request must haveBodyEntityThat(must = be_===( SomeCaseClass("some string") ))
@@ -93,7 +93,7 @@ Check if request contain headers
     request must haveTheSameHeadersAs("h1" -> "v1", "h2" -> "v2") // same list of headers (no more, no less)
      
     // compose
-    request must haveAnyHeaderThat( must = contain("value"), withHeaderName = "header" ) 
+    request must haveAnyHeaderThat(must = contain("value"), withHeaderName = "header" ) 
 
 ```
 
