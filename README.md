@@ -36,6 +36,6 @@ libraryDependencies += "com.wix" %% "wix-http-testkit" % "0.1"
 
 # Documentation 
 
-* __Rest Client__: a declarative REST client [Documentation](./README.client.md).  
-* __Simplicator Web Servers__: Easily configurable web servers [Documentation](./README.server.md).
-* __Specs<sup>2</sup> Matchers Suite__: A comprahensive matcher suite [Documentation](./README.matchers.md).    
+* __Rest Client__: a declarative REST client [Documentation](./HTTP_CLIENT.md).  
+* __Simplicator Web Servers__: Easily configurable web servers [Documentation](./WEBSERVER.md).
+* __Specs<sup>2</sup> Matchers Suite__: A comprahensive matcher suites [Response Matchers](./HTTP_CLIENT_MATCHERS.md) and [Response Matchers](./WEBSERVER_MATCHERS.md).    
