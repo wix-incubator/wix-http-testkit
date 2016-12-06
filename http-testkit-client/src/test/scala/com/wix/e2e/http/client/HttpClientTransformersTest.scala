@@ -75,7 +75,7 @@ class HttpClientTransformersTest extends SpecWithJUnit with HttpClientTransforme
     }
 
     "added objects will be converted to json" in new ctx {
-      withPayload(payload).apply(request) must havePayloadWith(payload)
+      withPayload(payload).apply(request) must haveBodyWith(payload)
     }
 
     "add XML as payload" in new ctx {
@@ -98,9 +98,9 @@ class HttpClientTransformersTest extends SpecWithJUnit with HttpClientTransforme
        withCookie(keyValue3) and
        withPayload(payload))(request) must
         { haveTheSameParamsAs(keyValue1) and
-          haveAllOf(keyValue2) and
+          haveAllHeadersOf(keyValue2) and
           receivedCookieThat(be_===(HttpCookiePair(keyValue3))) and
-          havePayloadWith(payload) }
+          haveBodyWith(payload) }
     }
 
   }

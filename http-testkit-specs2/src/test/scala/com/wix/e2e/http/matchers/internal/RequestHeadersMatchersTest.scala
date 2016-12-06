@@ -15,20 +15,20 @@ class RequestHeadersMatchersTest extends SpecWithJUnit with MatchersTestSupport 
   "RequestHeadersMatchers" should {
 
     "contain header will check if any header is present" in new ctx {
-      aRequestWithHeaders(header, anotherHeader) must haveAnyOf(header)
+      aRequestWithHeaders(header, anotherHeader) must haveAnyHeadersOf(header)
     }
 
     "return detailed message on hasAnyOf match failure" in new ctx {
-      failureMessageFor(haveAnyOf(header, anotherHeader), matchedOn = aRequestWithHeaders(yetAnotherHeader, andAnotherHeader)) must_===
+      failureMessageFor(haveAnyHeadersOf(header, anotherHeader), matchedOn = aRequestWithHeaders(yetAnotherHeader, andAnotherHeader)) must_===
         s"Could not find header [${header._1}, ${anotherHeader._1}] but found those: [${yetAnotherHeader._1}, ${andAnotherHeader._1}]"
     }
 
     "contain header will check if all headers are present" in new ctx {
-      aRequestWithHeaders(header, anotherHeader, yetAnotherHeader) must haveAllOf(header, anotherHeader)
+      aRequestWithHeaders(header, anotherHeader, yetAnotherHeader) must haveAllHeadersOf(header, anotherHeader)
     }
 
     "allOf matcher will return a message stating what was found, and what is missing from header list" in new ctx {
-      failureMessageFor(haveAllOf(header, anotherHeader), matchedOn = aRequestWithHeaders(yetAnotherHeader, header)) must_===
+      failureMessageFor(haveAllHeadersOf(header, anotherHeader), matchedOn = aRequestWithHeaders(yetAnotherHeader, header)) must_===
         s"Could not find header [${anotherHeader._1}] but found those: [${header._1}]."
     }
 
@@ -44,21 +44,21 @@ class RequestHeadersMatchersTest extends SpecWithJUnit with MatchersTestSupport 
     }
 
     "header name compare should be case insensitive" in new ctx {
-      aRequestWithHeaders(header) must haveAnyOf(header.copy(_1 = header._1.toUpperCase))
-      aRequestWithHeaders(header) must not( haveAnyOf(header.copy(_2 = header._2.toUpperCase)) )
+      aRequestWithHeaders(header) must haveAnyHeadersOf(header.copy(_1 = header._1.toUpperCase))
+      aRequestWithHeaders(header) must not( haveAnyHeadersOf(header.copy(_2 = header._2.toUpperCase)) )
 
-      aRequestWithHeaders(header) must haveAllOf(header.copy(_1 = header._1.toUpperCase))
-      aRequestWithHeaders(header) must not( haveAllOf(header.copy(_2 = header._2.toUpperCase)) )
+      aRequestWithHeaders(header) must haveAllHeadersOf(header.copy(_1 = header._1.toUpperCase))
+      aRequestWithHeaders(header) must not( haveAllHeadersOf(header.copy(_2 = header._2.toUpperCase)) )
 
       aRequestWithHeaders(header) must haveTheSameHeadersAs(header.copy(_1 = header._1.toUpperCase))
       aRequestWithHeaders(header) must not( haveTheSameHeadersAs(header.copy(_2 = header._2.toUpperCase)) )
     }
 
     "request with no headers will show a 'no headers' message" in new ctx {
-      failureMessageFor(haveAnyOf(header), matchedOn = aRequestWithNoHeaders ) must_===
+      failureMessageFor(haveAnyHeadersOf(header), matchedOn = aRequestWithNoHeaders ) must_===
         "Request did not contain any headers."
 
-      failureMessageFor(haveAllOf(header), matchedOn = aRequestWithNoHeaders ) must_===
+      failureMessageFor(haveAllHeadersOf(header), matchedOn = aRequestWithNoHeaders ) must_===
         "Request did not contain any headers."
 
       failureMessageFor(haveTheSameHeadersAs(header), matchedOn = aRequestWithNoHeaders ) must_===
@@ -66,8 +66,8 @@ class RequestHeadersMatchersTest extends SpecWithJUnit with MatchersTestSupport 
     }
 
     "ignore cookies and set cookies from headers comparison" in new ctx {
-      aRequestWithCookies(cookiePair) must not( haveAnyOf("Cookie" -> s"${cookiePair._1}=${cookiePair._2}") )
-      aRequestWithCookies(cookiePair) must not( haveAllOf("Cookie" -> s"${cookiePair._1}=${cookiePair._2}") )
+      aRequestWithCookies(cookiePair) must not( haveAnyHeadersOf("Cookie" -> s"${cookiePair._1}=${cookiePair._2}") )
+      aRequestWithCookies(cookiePair) must not( haveAllHeadersOf("Cookie" -> s"${cookiePair._1}=${cookiePair._2}") )
       aRequestWithCookies(cookiePair) must not( haveTheSameHeadersAs("Cookie" -> s"${cookiePair._1}=${cookiePair._2}") )
       aRequestWithCookies(cookiePair) must not( haveAnyHeaderThat(must = be_===(s"${cookiePair._1}=${cookiePair._2}"), withHeaderName = "Cookie") )
     }

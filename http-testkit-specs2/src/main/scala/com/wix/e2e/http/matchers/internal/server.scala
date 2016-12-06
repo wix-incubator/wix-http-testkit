@@ -90,11 +90,11 @@ trait RequestUrlMatchers {
 
 trait RequestHeadersMatchers {
 
-  def haveAnyOf(headers: (String, String)*): RequestMatcher =
+  def haveAnyHeadersOf(headers: (String, String)*): RequestMatcher =
     haveHeaderInternal( headers, _.identical.nonEmpty,
       res => s"Could not find header [${res.missing.map(_._1).mkString(", ")}] but found those: [${res.extra.map(_._1).mkString(", ")}]" )
 
-  def haveAllOf(headers: (String, String)*): RequestMatcher =
+  def haveAllHeadersOf(headers: (String, String)*): RequestMatcher =
     haveHeaderInternal( headers, _.missing.isEmpty,
       res => s"Could not find header [${res.missing.map(_._1).mkString(", ")}] but found those: [${res.identical.map(_._1).mkString(", ")}]." )
 
@@ -178,8 +178,8 @@ trait RequestBodyMatchers {
   def haveBodyWith(data: Array[Byte]): RequestMatcher = haveBodyDataThat( must = be_===(data) )
   def haveBodyDataThat(must: Matcher[Array[Byte]]): RequestMatcher = must ^^ httpRequestAsBinary
 
-  def havePayloadWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): RequestMatcher = havePayloadThat[T]( must = be_===(entity) )
-  def havePayloadThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): RequestMatcher = new RequestMatcher {
+  def haveBodyWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): RequestMatcher = haveBodyEntityThat[T]( must = be_===(entity) )
+  def haveBodyEntityThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): RequestMatcher = new RequestMatcher {
 
     def apply[S <: HttpRequest](t: Expectable[S]): MatchResult[S] = {
       val request = t.value

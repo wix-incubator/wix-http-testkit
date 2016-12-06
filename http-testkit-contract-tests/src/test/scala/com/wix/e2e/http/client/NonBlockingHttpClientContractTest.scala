@@ -31,7 +31,7 @@ class NonBlockingHttpClientContractTest extends SpecWithJUnit with NonBlockingHt
 
       server must receivedAnyRequestThat( beGet and
                                           havePath(s"/$path") and
-                                          haveAnyOf(header) and
+                                          haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1)).eventually
     }
 
@@ -44,9 +44,9 @@ class NonBlockingHttpClientContractTest extends SpecWithJUnit with NonBlockingHt
 
       server must receivedAnyRequestThat( bePost and
                                           havePath(s"/$path") and
-                                          haveAnyOf(header) and
+                                          haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
-                                          havePayloadWith(someObject)).eventually
+                                          haveBodyWith(someObject)).eventually
     }
 
     "support generating put request" in new ctx {
@@ -58,9 +58,9 @@ class NonBlockingHttpClientContractTest extends SpecWithJUnit with NonBlockingHt
 
       server must receivedAnyRequestThat( bePut and
                                           havePath(s"/$path") and
-                                          haveAnyOf(header) and
+                                          haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
-                                          havePayloadWith(someObject)).eventually
+                                          haveBodyWith(someObject)).eventually
     }
 
     "support generating delete request" in new ctx {
@@ -72,9 +72,9 @@ class NonBlockingHttpClientContractTest extends SpecWithJUnit with NonBlockingHt
 
       server must receivedAnyRequestThat( beDelete and
                                           havePath(s"/$path") and
-                                          haveAnyOf(header) and
+                                          haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
-                                          havePayloadWith(someObject)).eventually
+                                          haveBodyWith(someObject)).eventually
     }
 
     "support generating patch request" in new ctx {
@@ -86,9 +86,9 @@ class NonBlockingHttpClientContractTest extends SpecWithJUnit with NonBlockingHt
 
       server must receivedAnyRequestThat( bePatch and
                                           havePath(s"/$path") and
-                                          haveAnyOf(header) and
+                                          haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
-                                          havePayloadWith(someObject)).eventually
+                                          haveBodyWith(someObject)).eventually
     }
 
     "support generating options request" in new ctx {
@@ -100,9 +100,9 @@ class NonBlockingHttpClientContractTest extends SpecWithJUnit with NonBlockingHt
 
       server must receivedAnyRequestThat( beOptions and
                                           havePath(s"/$path") and
-                                          haveAnyOf(header) and
+                                          haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
-                                          havePayloadWith(someObject)).eventually
+                                          haveBodyWith(someObject)).eventually
     }
 
     "support generating trace request" in new ctx {
@@ -113,7 +113,7 @@ class NonBlockingHttpClientContractTest extends SpecWithJUnit with NonBlockingHt
 
       server must receivedAnyRequestThat( beTrace and
                                           havePath(s"/$path") and
-                                          haveAnyOf(header) and
+                                          haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1)).eventually
     }
 

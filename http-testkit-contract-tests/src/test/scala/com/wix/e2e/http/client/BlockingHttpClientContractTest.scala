@@ -27,7 +27,7 @@ class BlockingHttpClientContractTest extends SpecWithJUnit {
 
       server must receivedAnyRequestThat( beGet and
                                           havePath(s"/$path") and
-                                          haveAnyOf(header) and
+                                          haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1))
     }
 
@@ -40,9 +40,9 @@ class BlockingHttpClientContractTest extends SpecWithJUnit {
 
       server must receivedAnyRequestThat( bePost and
                                           havePath(s"/$path") and
-                                          haveAnyOf(header) and
+                                          haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
-                                          havePayloadWith(someObject))
+                                          haveBodyWith(someObject))
     }
 
     "support generating put request" in new ctx {
@@ -54,9 +54,9 @@ class BlockingHttpClientContractTest extends SpecWithJUnit {
 
       server must receivedAnyRequestThat( bePut and
                                           havePath(s"/$path") and
-                                          haveAnyOf(header) and
+                                          haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
-                                          havePayloadWith(someObject))
+                                          haveBodyWith(someObject))
     }
 
     "support generating delete request" in new ctx {
@@ -68,9 +68,9 @@ class BlockingHttpClientContractTest extends SpecWithJUnit {
 
       server must receivedAnyRequestThat( beDelete and
                                           havePath(s"/$path") and
-                                          haveAnyOf(header) and
+                                          haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
-                                          havePayloadWith(someObject))
+                                          haveBodyWith(someObject))
     }
 
     "support generating patch request" in new ctx {
@@ -82,9 +82,9 @@ class BlockingHttpClientContractTest extends SpecWithJUnit {
 
       server must receivedAnyRequestThat( bePatch and
                                           havePath(s"/$path") and
-                                          haveAnyOf(header) and
+                                          haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
-                                          havePayloadWith(someObject))
+                                          haveBodyWith(someObject))
     }
 
     "support generating options request" in new ctx {
@@ -96,9 +96,9 @@ class BlockingHttpClientContractTest extends SpecWithJUnit {
 
       server must receivedAnyRequestThat( beOptions and
                                           havePath(s"/$path") and
-                                          haveAnyOf(header) and
+                                          haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
-                                          havePayloadWith(someObject))
+                                          haveBodyWith(someObject))
     }
 
     "support generating trace request" in new ctx {
@@ -109,7 +109,7 @@ class BlockingHttpClientContractTest extends SpecWithJUnit {
 
       server must receivedAnyRequestThat( beTrace and
                                           havePath(s"/$path") and
-                                          haveAnyOf(header) and
+                                          haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1))
     }
 
