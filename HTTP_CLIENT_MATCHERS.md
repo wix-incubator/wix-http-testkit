@@ -9,11 +9,9 @@ Import the matcher suite
 
 ```
 
-You can also use object import or trait mixin
+You can also use trait mixin
 
 ```scala
-    import ResponseMatchers._
-     
     class MyTestClass extends SpecWithJUnit with ResponseMatchers     
 ```
  
