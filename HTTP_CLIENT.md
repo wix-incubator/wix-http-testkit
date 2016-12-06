@@ -8,9 +8,9 @@ There are two variations of the client that can be used:
 * __Non-Blocking__
 
 
-##Create HTTP Client
+## Create HTTP Client
  
-####Import the DSL: 
+#### Import the DSL: 
 
 package import:
 ```scala
@@ -22,29 +22,25 @@ package import:
     import com.wix.e2e.http.client.async._
 ```
 
-Import Object:
+Other Options
 ```scala
-
+    //Import Object
     // blocking implementation
     import com.wix.e2e.http.client.BlockingHttpClientSupport
     
     // or non blocking implementation
     import com.wix.e2e.http.client.NonBlockingHttpClientSupport
 
-```
-
-Or add mixin trait to call site
-
-```scala
-
+    // Or add mixin trait to call site
     // blocking implementation
     class MyClass extends com.wix.e2e.http.client.BlockingHttpClientSupport
      
     // or non blocking implementation
     class MyClass extends com.wix.e2e.http.client.NonBlockingHttpClientSupport 
+
 ```
 
-####Issuing New Request
+#### Issuing New Request
 ```scala
 
     val somePort = 99123 /// any port
