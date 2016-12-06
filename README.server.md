@@ -65,8 +65,6 @@ Stub server can, but not require, to have custom handlers (same like the mock se
 ```scala
     val someHandler = // create your own
     val anotherHandler = // create your own
-//  def addHandlers(handler: RequestHandler, handlers: RequestHandler*) = new StubWebServerBuilder(handlers = this.handlers ++ (handler +: handlers), port)
-//  def addHandler(handler: RequestHandler) = addHandlers(handler)
 
     val server = aStubWebServer.build
                                .addHandler(someHandler)                  // add one
@@ -91,4 +89,4 @@ To view the recorded requests just access the recordedRequests member:
 
 ```
 
-To validate incoming requests use the included []Specs<sup>2</sup> Matcher Suite](./README.matchers.md).
+To validate incoming requests use the included [Specs<sup>2</sup> Matcher Suite](./README.matchers.md).

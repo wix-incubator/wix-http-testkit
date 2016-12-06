@@ -86,7 +86,7 @@ Handlers can be also be defined by developer, it can use existing transformers o
 ```
 
 ###Validate Responses
-To validate HTTP response use the included []Specs<sup>2</sup> Matcher Suite](./README.matchers.md).
+To validate HTTP response use the included [Specs<sup>2</sup> Matcher Suite](./README.matchers.md).
 
 ### Json Marshaller
 
