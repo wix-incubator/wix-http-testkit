@@ -146,9 +146,9 @@ lazy val httpTestkitContractTests =
 
 lazy val root =
   Project(
-    id = "root",
+    id = "wix-http-testkit-modules",
     base = file( "." ),
-    settings = baseSettings ++ noPublish
+    settings = Seq(name:= "Wix Http Testkit Modules") ++ baseSettings ++ noPublish
   ).aggregate(httpTestkitTestCommons,
               httpTestkitCore, httpTestkitClient, httpTestkitServer, httpTestkitSpecs2, wixHttpTestkit,
               httpTestkitContractTests)
