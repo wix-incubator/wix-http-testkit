@@ -5,7 +5,7 @@
 Import the matcher suite
 
 ```scala
-  import com.wix.e2e.http.matchers.ResponseMatchers
+  import com.wix.e2e.http.matchers.ResponseMatchers._
 
 ```
 
