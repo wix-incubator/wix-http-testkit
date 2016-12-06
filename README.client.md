@@ -85,6 +85,9 @@ Handlers can be also be defined by developer, it can use existing transformers o
 
 ```
 
+###Validate Responses
+To validate HTTP response use the included []Specs<sup>2</sup> Matcher Suite](./README.matchers.md).
+
 ### Json Marshaller
 
 Testkit comes out of the box with a default [Jackson](https://github.com/FasterXML/jackson) json marshaller preloaded with ([Scala Module](https://github.com/FasterXML/jackson-module-scala), [JDK8](https://github.com/FasterXML/jackson-datatype-jdk8), [Java Time](https://github.com/FasterXML/jackson-datatype-jsr310), [JodaTime](https://github.com/FasterXML/jackson-datatype-joda))
