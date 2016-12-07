@@ -4,9 +4,9 @@ Overview
 Wix Http Testkit is a library that will address many of the End-to-end testing concerns you might encounter.
 
 Wix HTTP Testkit aims to be:
-* __Simple__ Testing REST services or starting a mock/stub servers are very simple and require very few lines of code.
-* __Fast__ Leveraging [Akka-Http](https://github.com/akka/akka-http) infrastructure, starting servers is measured in milliseconds.
-* __Integrated__: Other than providing a set of DSL's to support composing and executing REST http calls and creating and configuring web serververs it also contain outof the box matcher libraries for [Specs<sup>2</sup>](http://wix.github.io/accord/specs2.html) to easily validate each aspect of the tested flow.   
+* __Simple__ Testing REST services or starting mock/stub servers is very simple and requires very few lines of code.
+* __Fast__ Leveraging [Akka-Http](https://github.com/akka/akka-http) infrastructure, starting servers takes milliseconds.
+* __Integrated__: Other than providing a set of DSLs to support composing and executing REST HTTP calls and creating and configuring web servers, it also contains out of the box matcher libraries for [Specs<sup>2</sup>](http://wix.github.io/accord/specs2.html) to easily validate each aspect of the tested flow.
 
 
 Getting Started
@@ -38,7 +38,7 @@ libraryDependencies += "com.wix" %% "wix-http-testkit" % "0.1"
 
 * __Rest Client__: a declarative REST client [Documentation](./HTTP_CLIENT.md).  
 * __Simplicator Web Servers__: Easily configurable web servers [Documentation](./WEBSERVER.md).
-* __Specs<sup>2</sup> Matchers Suite__: A comprahensive matcher suites [Response Matchers](./HTTP_CLIENT_MATCHERS.md) and [Response Matchers](./WEBSERVER_MATCHERS.md).    
+* __Specs<sup>2</sup> Matchers Suite__: Comprahensive matcher suites [Response Matchers](./HTTP_CLIENT_MATCHERS.md) and [Request Matchers](./WEBSERVER_MATCHERS.md).    
 
 # Contribute
 
