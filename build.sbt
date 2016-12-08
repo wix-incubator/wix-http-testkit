@@ -42,11 +42,10 @@ lazy val baseSettings =
   publishSettings ++
     releaseSettings ++
     compileOptions ++
-    //  sbtdoge.CrossPerProjectPlugin.projectSettings ++
     Seq(
       organization := "com.wix",
       homepage := Some( url( "https://github.com/wix-private/http-testkit" ) ),
-      licenses := Seq( "Apache-2.0" -> url( "http://www.opensource.org/licenses/Apache-2.0" ) )
+      licenses := Seq( "MIT" -> url( "https://opensource.org/licenses/MIT" ) )
     )
 
 
@@ -57,7 +56,7 @@ lazy val httpTestkitTestCommons =
     base = file( "http-testkit-test-commons" ),
     settings = Seq(
       name := "http-testkit-test-commons",
-      description := "Some crap i need to describe the library"
+      description := "Commonly used test utilities"
     ) ++ baseSettings
   )
 
@@ -68,8 +67,7 @@ lazy val httpTestkitCore =
     settings = Seq(
       name := "http-testkit-core",
       libraryDependencies ++= akkaHttp ++ jackson ++ joda ++ specs2.map(_ % "test") :+ scalaXml,
-      description :=
-        "Some crap i need to describe the library"
+      description := "Commonly used util code also client and server interfaces"
     ) ++ baseSettings
   ).dependsOn(httpTestkitTestCommons)
 
@@ -80,8 +78,7 @@ lazy val httpTestkitClient =
     settings = Seq(
       name := "http-testkit-client",
       libraryDependencies ++= specs2.map(_ % "test") ,
-      description :=
-        "Some crap i need to describe the library"
+      description := "All code related to REST client, blocking and non-blocking"
     ) ++ baseSettings
   ).dependsOn(httpTestkitCore, httpTestkitSpecs2)
 
@@ -91,8 +88,7 @@ lazy val httpTestkitServer =
     base = file( "http-testkit-server" ),
     settings = Seq(
       name := "http-testkit-server",
-      description :=
-        "Some crap i need to describe the library"
+      description := "Server implementations - stub and mock"
     ) ++ baseSettings
   ).dependsOn(httpTestkitCore)
 
@@ -103,8 +99,7 @@ lazy val httpTestkitSpecs2 =
     settings = Seq(
       name := "http-testkit-specs2",
       libraryDependencies ++= specs2,
-      description :=
-        "Some crap i need to describe the library"
+      description := "Specs2 Matcher suites - Request and Response."
     ) ++ baseSettings
   ).dependsOn(httpTestkitCore, httpTestkitTestCommons)
 
@@ -114,8 +109,7 @@ lazy val wixHttpTestkit =
     base = file( "wix-http-testkit" ),
     settings = Seq(
       name := "wix-http-testkit",
-      description :=
-        "Some crap i need to describe the library"
+      description := "Main module, contain factories but no implementation."
     ) ++ baseSettings
   ).dependsOn(httpTestkitClient, httpTestkitServer, httpTestkitSpecs2)
 
@@ -126,8 +120,7 @@ lazy val httpTestkitContractTests =
     settings = Seq(
       name := "http-testkit-contract-tests",
       libraryDependencies ++= specs2.map(_ % "test") ,
-      description :=
-        "Some crap i need to describe the library"
+      description := "Contract tests for both client and server"
     ) ++ baseSettings
   ).dependsOn(wixHttpTestkit, httpTestkitTestCommons)
 
