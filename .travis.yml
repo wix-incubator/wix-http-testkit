@@ -10,18 +10,7 @@ script:
   - sbt "++$TRAVIS_SCALA_VERSION clean" "++$TRAVIS_SCALA_VERSION test"
 
 jdk:
-  - oraclejdk7
-  - openjdk7
   - oraclejdk8
-
-
-# Exclude builds for Scala 2.12 on JDK <8
-matrix:
-  exclude:
-    - scala: "2.12.1"
-      jdk: oraclejdk7
-    - scala: "2.12.1"
-      jdk: openjdk7
 
 cache:
   directories:

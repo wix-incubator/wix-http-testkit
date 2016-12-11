@@ -1,6 +1,6 @@
 import depends._
 
-lazy val javaRuntimeVersion = settingKey[ Double ]( "The JVM runtime version (e.g. 1.8)" )
+//lazy val javaRuntimeVersion = settingKey[ Double ]( "The JVM runtime version (e.g. 1.8)" )
 
 
 
@@ -31,11 +31,11 @@ lazy val publishSettings = Seq(
 lazy val compileOptions = Seq(
   scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.11.8", "2.12.1"),
-  javaRuntimeVersion := System.getProperty( "java.vm.specification.version" ).toDouble,
-  crossScalaVersions := ( javaRuntimeVersion.value match {
-    case v if v >= 1.8 => Seq( "2.11.8", "2.12.1" )
-    case _             => Seq( "2.11.8" )
-  } ),
+//  javaRuntimeVersion := System.getProperty( "java.vm.specification.version" ).toDouble,
+//  crossScalaVersions := ( javaRuntimeVersion.value match {
+//    case v if v >= 1.8 => Seq( "2.11.8", "2.12.1" )
+//    case _             => Seq( "2.11.8" )
+//  } ),
   scalacOptions ++= Seq(
     "-feature",
     "-deprecation",
