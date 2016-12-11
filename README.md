@@ -1,6 +1,6 @@
-# HTTP Testkit
-
 [![Build Status](https://travis-ci.org/wix/wix-http-testkit.svg?branch=master)](https://travis-ci.org/wix/wix-http-testkit)
+
+# HTTP Testkit
 
 Overview
 ========
