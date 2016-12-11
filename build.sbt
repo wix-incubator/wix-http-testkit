@@ -65,7 +65,7 @@ lazy val httpTestkitTestCommons =
     settings = Seq(
       name := "http-testkit-test-commons",
       description := "Commonly used test utilities"
-    ) ++ baseSettings
+    ) ++ baseSettings ++ noPublish
   )
 
 lazy val httpTestkitCore =
@@ -97,7 +97,7 @@ lazy val httpTestkitServer =
     settings = Seq(
       name := "http-testkit-server",
       description := "Server implementations - stub and mock"
-    ) ++ baseSettings
+    ) ++ baseSettings ++ packAutoSettings
   ).dependsOn(httpTestkitCore)
 
 lazy val httpTestkitSpecs2 =
@@ -129,7 +129,7 @@ lazy val httpTestkitContractTests =
       name := "http-testkit-contract-tests",
       libraryDependencies ++= specs2.map(_ % "test") ,
       description := "Contract tests for both client and server"
-    ) ++ baseSettings
+    ) ++ baseSettings ++ noPublish
   ).dependsOn(wixHttpTestkit, httpTestkitTestCommons)
 
 //lazy val httpTestkitExamples =
