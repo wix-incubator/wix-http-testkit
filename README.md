@@ -20,16 +20,15 @@ HTTP-testkit version 0.1 is available on Maven Central Repository. Scala version
 Simply add the *wix-http-testkit* module to your build settings:
 
 ```sbt
-libraryDependencies += "com.wix" %% "wix-http-testkit" % "0.1"
+libraryDependencies += "com.wix" %% "http-testkit" % "0.1"
 ```
 ###Maven
 
 ```xml
-
 <dependencies>
   <dependency>
     <groupId>com.wix</groupId>
-    <artifactId>wix-http-testkit_${scala.tools.version}</artifactId>
+    <artifactId>http-testkit_${scala.tools.version}</artifactId>
     <version>0.1</version>
   </dependency>
 </dependencies>
