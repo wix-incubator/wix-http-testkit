@@ -111,10 +111,10 @@ lazy val httpTestkitSpecs2 =
     ) ++ baseSettings
   ).dependsOn(httpTestkitCore, httpTestkitTestCommons)
 
-lazy val wixHttpTestkit =
+lazy val httpTestkit =
   Project(
     id = "http-testkit",
-    base = file( "wix-http-testkit" ),
+    base = file( "http-testkit" ),
     settings = Seq(
       name := "Http Testkit",
       description := "Main module, contain factories but no implementation."
@@ -130,7 +130,7 @@ lazy val httpTestkitContractTests =
       libraryDependencies ++= specs2.map(_ % "test") ,
       description := "Contract tests for both client and server"
     ) ++ baseSettings ++ noPublish
-  ).dependsOn(wixHttpTestkit, httpTestkitTestCommons)
+  ).dependsOn(httpTestkit, httpTestkitTestCommons)
 
 //lazy val httpTestkitExamples =
 //  Project(
@@ -151,5 +151,5 @@ lazy val root =
     base = file( "." ),
     settings = Seq(name:= "Wix Http Testkit Modules") ++ baseSettings ++ noPublish
   ).aggregate(httpTestkitTestCommons,
-              httpTestkitCore, httpTestkitClient, httpTestkitServer, httpTestkitSpecs2, wixHttpTestkit,
+              httpTestkitCore, httpTestkitClient, httpTestkitServer, httpTestkitSpecs2, httpTestkit,
               httpTestkitContractTests)
