@@ -7,7 +7,7 @@ sudo: false
 
 script:
   # Evidently sbt-doge doesn't like it when you specify multiple commands
-  - sbt "+++$TRAVIS_SCALA_VERSION clean" "+++$TRAVIS_SCALA_VERSION test"
+  - sbt "++$TRAVIS_SCALA_VERSION clean" "++$TRAVIS_SCALA_VERSION test"
 
 jdk:
   - oraclejdk7

@@ -37,7 +37,6 @@ lazy val compileOptions = Seq(
     case _             => Seq( "2.11.8" )
   } ),
   scalacOptions ++= Seq(
-//    "-language:reflectiveCalls",
     "-feature",
     "-deprecation",
     "-unchecked",
@@ -75,7 +74,7 @@ lazy val httpTestkitCore =
     base = file( "http-testkit-core" ),
     settings = Seq(
       name := "http-testkit-core",
-      libraryDependencies ++= akkaHttp ++ jackson ++ joda ++ specs2.map(_ % "test") :+ scalaXml,
+      libraryDependencies ++= akkaHttp ++ jackson ++ joda ++ specs2.map(_ % Test) :+ scalaXml,
       description := "Commonly used util code also client and server interfaces"
     ) ++ baseSettings
   ).dependsOn(httpTestkitTestCommons)
@@ -86,7 +85,7 @@ lazy val httpTestkitClient =
     base = file( "http-testkit-client" ),
     settings = Seq(
       name := "http-testkit-client",
-      libraryDependencies ++= specs2.map(_ % "test") ,
+      libraryDependencies ++= specs2.map(_ % Test) ,
       description := "All code related to REST client, blocking and non-blocking"
     ) ++ baseSettings
   ).dependsOn(httpTestkitCore, httpTestkitSpecs2)
@@ -114,10 +113,10 @@ lazy val httpTestkitSpecs2 =
 
 lazy val wixHttpTestkit =
   Project(
-    id = "wix-http-testkit",
+    id = "http-testkit",
     base = file( "wix-http-testkit" ),
     settings = Seq(
-      name := "wix-http-testkit",
+      name := "Http Testkit",
       description := "Main module, contain factories but no implementation."
     ) ++ baseSettings
   ).dependsOn(httpTestkitClient, httpTestkitServer, httpTestkitSpecs2)
