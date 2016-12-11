@@ -97,7 +97,7 @@ lazy val httpTestkitServer =
     settings = Seq(
       name := "http-testkit-server",
       description := "Server implementations - stub and mock"
-    ) ++ baseSettings ++ packAutoSettings
+    ) ++ baseSettings
   ).dependsOn(httpTestkitCore)
 
 lazy val httpTestkitSpecs2 =
