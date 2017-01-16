@@ -11,8 +11,8 @@ object depends {
         "org.specs2" %% "specs2-mock" % Specs2Version )
 
   def akkaHttp =
-    Seq("com.typesafe.akka" %% "akka-http" % "10.0.0",
-        "com.typesafe.akka" %% "akka-actor" % "2.4.9")
+    Seq("com.typesafe.akka" %% "akka-http" % "10.0.1",
+        "com.typesafe.akka" %% "akka-actor" % "2.4.16")
 
   def jackson =
     Seq("com.fasterxml.jackson.core" % "jackson-databind" % JacksonVersion,
