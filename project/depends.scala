@@ -2,13 +2,12 @@ import sbt._
 
 object depends {
 
-  private val Specs2Version = "3.8.8"
-  private val JacksonVersion = "2.8.6"
+  private val Specs2Version = "3.8.6"
+  private val JacksonVersion = "2.8.4"
 
   def specs2 =
     Seq("org.specs2" %% "specs2-core" % Specs2Version,
         "org.specs2" %% "specs2-junit" % Specs2Version,
-        "org.specs2" %% "specs2-shapeless" % Specs2Version,
         "org.specs2" %% "specs2-mock" % Specs2Version )
 
   def akkaHttp =
