@@ -2,17 +2,18 @@ import sbt._
 
 object depends {
 
-  private val Specs2Version = "3.8.6"
-  private val JacksonVersion = "2.8.4"
+  private val Specs2Version = "3.8.8"
+  private val JacksonVersion = "2.8.6"
 
   def specs2 =
     Seq("org.specs2" %% "specs2-core" % Specs2Version,
         "org.specs2" %% "specs2-junit" % Specs2Version,
+        "org.specs2" %% "specs2-shapeless" % Specs2Version,
         "org.specs2" %% "specs2-mock" % Specs2Version )
 
   def akkaHttp =
-    Seq("com.typesafe.akka" %% "akka-http" % "10.0.1",
-        "com.typesafe.akka" %% "akka-actor" % "2.4.16")
+    Seq("com.typesafe.akka" %% "akka-http" % "10.0.3",
+        "com.typesafe.akka" %% "akka-actor" % "2.4.17")
 
   def jackson =
     Seq("com.fasterxml.jackson.core" % "jackson-databind" % JacksonVersion,

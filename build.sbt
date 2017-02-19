@@ -29,7 +29,7 @@ lazy val publishSettings = Seq(
 )
 
 lazy val compileOptions = Seq(
-  scalaVersion := "2.11.8",
+  scalaVersion := "2.12.1",
   crossScalaVersions := Seq("2.11.8", "2.12.1"),
 //  javaRuntimeVersion := System.getProperty( "java.vm.specification.version" ).toDouble,
 //  crossScalaVersions := ( javaRuntimeVersion.value match {
