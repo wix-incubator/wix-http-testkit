@@ -77,7 +77,7 @@ lazy val httpTestkitCore =
       libraryDependencies ++= akkaHttp ++ jackson ++ joda ++ specs2.map(_ % Test) :+ scalaXml,
       description := "Commonly used util code also client and server interfaces"
     ) ++ baseSettings
-  ).dependsOn(httpTestkitTestCommons)
+  ).dependsOn(httpTestkitTestCommons % Test)
 
 lazy val httpTestkitClient =
   Project(
@@ -109,7 +109,7 @@ lazy val httpTestkitSpecs2 =
       libraryDependencies ++= specs2,
       description := "Specs2 Matcher suites - Request and Response."
     ) ++ baseSettings
-  ).dependsOn(httpTestkitCore, httpTestkitTestCommons)
+  ).dependsOn(httpTestkitCore, httpTestkitTestCommons % Test)
 
 lazy val httpTestkit =
   Project(
@@ -130,7 +130,7 @@ lazy val httpTestkitContractTests =
       libraryDependencies ++= specs2.map(_ % "test") ,
       description := "Contract tests for both client and server"
     ) ++ baseSettings ++ noPublish
-  ).dependsOn(httpTestkit, httpTestkitTestCommons)
+  ).dependsOn(httpTestkit, httpTestkitTestCommons % Test)
 
 //lazy val httpTestkitExamples =
 //  Project(
