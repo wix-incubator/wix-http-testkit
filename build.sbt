@@ -88,7 +88,7 @@ lazy val httpTestkitClient =
       libraryDependencies ++= specs2.map(_ % Test) ,
       description := "All code related to REST client, blocking and non-blocking"
     ) ++ baseSettings
-  ).dependsOn(httpTestkitCore, httpTestkitSpecs2)
+  ).dependsOn(httpTestkitCore, httpTestkitSpecs2, httpTestkitTestCommons % Test)
 
 lazy val httpTestkitServer =
   Project(
