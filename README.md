@@ -18,13 +18,13 @@ Getting Started
 
 HTTP-testkit version 0.1 is available on Maven Central Repository. Scala versions 2.11.1+ and 2.12.0+ are supported. The next milestone is 0.2-SNAPSHOT and is available from the Sonatype snapshots repository.
 
-###SBT
+### SBT
 Simply add the *wix-http-testkit* module to your build settings:
 
 ```sbt
 libraryDependencies += "com.wix" %% "http-testkit" % "0.1"
 ```
-###Maven
+### Maven
 
 ```xml
 <dependencies>
