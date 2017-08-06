@@ -7,7 +7,7 @@ There are two variations of the server:
 * __Stub Server__: Responds *200 OK* on all REST APIs and records all incoming requests.
 
 
-##Create Web Server
+## Create Web Server
 
 Import Factory
 ```scala
@@ -75,7 +75,7 @@ A Stub server can, but is not required to, have custom handlers (the same as the
 ```
 
 
-####Recorded Requests
+#### Recorded Requests
 
 To view the recorded requests just access the `recordedRequests` member:
 ```scala
