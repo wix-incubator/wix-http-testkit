@@ -1,4 +1,4 @@
-#Response Matchers
+# Response Matchers
  
 
  
@@ -16,7 +16,7 @@ You can also use trait mixin
 ```
  
 
-###Status Matchers
+### Status Matchers
 
 All Http response statuses can be matched
 
@@ -28,7 +28,7 @@ All Http response statuses can be matched
     // more statuses are available
 ```
 
-###Body Matchers
+### Body Matchers
 
 It is possible to match response body in several ways
 ```scala
@@ -53,7 +53,7 @@ Unmarshal and match
 All responses are unmarshalled with default or custom marshaller, for more info see [Marshaller Documentation](./MARSHALLER.md)
 
 
-###Headers Matchers
+### Headers Matchers
 
 Check if response contain headers
 
@@ -75,7 +75,7 @@ Check if response contain headers cookies
 
 ```
 
-###Common Matchers
+### Common Matchers
 ```scala
     
     // successful response with body
@@ -86,7 +86,7 @@ Check if response contain headers cookies
 
 ```
 
-##Create Your Own
+## Create Your Own
 
 You can mix and match and create your own [Specs<sup>2</sup> matchers](http://etorreborre.github.io/specs2/), if there are more commonly used matchers you are using and think that should be included do not hasitate to open an issue or create a PR.
 
