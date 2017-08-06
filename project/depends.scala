@@ -3,7 +3,7 @@ import sbt._
 object depends {
 
   private val Specs2Version = "3.8.6"
-  private val JacksonVersion = "2.8.5"
+  private val JacksonVersion = "2.9.0"
 
   def specs2 =
     Seq("org.specs2" %% "specs2-core" % Specs2Version,
