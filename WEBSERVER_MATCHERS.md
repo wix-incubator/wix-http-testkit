@@ -1,4 +1,4 @@
-#Stub Servers Request Matchers
+# Stub Servers Request Matchers
 
  
 Import the matcher suite
@@ -29,9 +29,9 @@ You can also use trait mixin
     server must receivedAnyRequestThat(must = beGet)
 ``` 
 
-#Request Matchers
+# Request Matchers
 
-###Method Matchers
+### Method Matchers
 
 All Http request statuses can be matched
 
@@ -58,7 +58,7 @@ Match against request path or parameters
 
 
 
-###Body Matchers
+### Body Matchers
 
 It is possible to match request body in several ways
 ```scala
@@ -83,7 +83,7 @@ Unmarshal and match
 All requests are unmarshalled with default or custom marshaller, for more info see [Marshaller Documentation](./MARSHALLER.md)
 
 
-###Headers Matchers
+### Headers Matchers
 
 Check if request contain headers
 
@@ -105,7 +105,7 @@ Check if request contain headers cookies
 
 ```
 
-##Create Your Own
+## Create Your Own
 
 You can mix and match and create your own [Specs<sup>2</sup> matchers](http://etorreborre.github.io/specs2/), if there are more commonly used matchers you are using and think that should be included do not hasitate to open an issue or create a PR.
 
