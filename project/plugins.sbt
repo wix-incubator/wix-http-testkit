@@ -11,4 +11,4 @@ credentials ++= (
   } yield Credentials( "Sonatype Nexus Repository Manager", "oss.sonatype.org", username, password )
   ).toSeq
 
-resolvers += Resolver.url("bintray-sbt-plugins", url("https://dl.bintray.com/sbt/sbt-plugin-releases"))(Resolver.ivyStylePatterns)
+//resolvers += Resolver.url("bintray-sbt-plugins", url("https://dl.bintray.com/sbt/sbt-plugin-releases"))(Resolver.ivyStylePatterns)
