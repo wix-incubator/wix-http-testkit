@@ -10,5 +10,3 @@ credentials ++= (
     password <- Option( System.getenv().get( "SONATYPE_PASSWORD" ) )
   } yield Credentials( "Sonatype Nexus Repository Manager", "oss.sonatype.org", username, password )
   ).toSeq
-
-//resolvers += Resolver.url("bintray-sbt-plugins", url("https://dl.bintray.com/sbt/sbt-plugin-releases"))(Resolver.ivyStylePatterns)
