@@ -5,7 +5,7 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import com.wix.e2e.http.api.Marshaller
-import com.wix.e2e.http.exceptions.ConnectionRefusedException
+import com.wix.e2e.http.exceptions.{ConnectionRefusedException, MarshallerErrorException, MissingMarshallerException}
 import com.wix.e2e.http.matchers.ResponseMatcher
 import com.wix.e2e.http.utils._
 import com.wix.e2e.http.{HttpResponse, WixHttpTestkitResources}
@@ -13,7 +13,7 @@ import org.specs2.matcher.Matchers._
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 
 import scala.concurrent.ExecutionContext
-import scala.util.Try
+import scala.util.control.Exception.handling
 
 trait ResponseStatusMatchers {
 
@@ -153,11 +153,15 @@ trait ResponseBodyMatchers {
       val response = t.value
       val content = waitFor( Unmarshal(response.entity).to[String] )
 
-      Try( marshaller.unmarshall[T](content) ).toOption match {
-        case None => failure(s"Failed to unmarshall: [$content]", t)
-        case Some(x) if must.apply(createExpectable(x)).isSuccess => success("ok", t)
-        case Some(x) => failure(s"Failed to match: [${must.apply(createExpectable(x)).message.replaceAll("\n", "")}] with content: [$content]", t)
-      }
+      handling(classOf[MissingMarshallerException], classOf[Exception])
+        .by( {
+          case e: MissingMarshallerException => throw e
+          case e: Exception => throw new MarshallerErrorException(content, e)
+        }) {
+          val x = marshaller.unmarshall[T](content)
+          if (must.apply(createExpectable(x)).isSuccess) success("ok", t)
+          else failure(s"Failed to match: [${must.apply(createExpectable(x)).message.replaceAll("\n", "")}] with content: [$content]", t)
+        }
     }
   }
 

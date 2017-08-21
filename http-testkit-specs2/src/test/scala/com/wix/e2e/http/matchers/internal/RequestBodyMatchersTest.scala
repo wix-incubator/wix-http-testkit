@@ -5,6 +5,7 @@ import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
 import com.wix.e2e.http.matchers.drivers.{CustomMarshallerProvider, HttpResponseTestSupport, MarshallerTestSupport, MatchersTestSupport}
+import org.specs2.matcher.ResultMatchers._
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
 
@@ -58,8 +59,7 @@ class RequestBodyMatchersTest extends SpecWithJUnit with MatchersTestSupport {
     "provide a proper message to user in case of a badly behaving marshaller" in new ctx {
       givenBadlyBehavingUnmarshallerFor[SomeCaseClass](withContent = content)
 
-      failureMessageFor(haveBodyWith(entity = someObject), matchedOn = aRequestWith(content)) must_===
-        s"Failed to unmarshall: [$content]"
+      haveBodyWith(entity = someObject).apply( aRequestWith(content) ) must beError(s"Failed to unmarshall: \\[$content\\]")
     }
 
     "support custom matcher for user object" in new ctx {

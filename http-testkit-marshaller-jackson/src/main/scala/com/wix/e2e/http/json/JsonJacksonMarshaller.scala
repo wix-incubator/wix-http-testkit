@@ -22,8 +22,6 @@ class JsonJacksonMarshaller extends Marshaller {
                                     .registerModules(new JodaModule, new ParameterNamesModule, new JavaTimeModule) // time modules
                                     .registerModule(new DefaultScalaModule)
                                     .disable( WRITE_DATES_AS_TIMESTAMPS )
-//                                    .disable( USE_ANNOTATIONS )
-//import com.fasterxml.jackson.databind.MapperFeature.USE_ANNOTATIONS
 
   private def typeReference[T: Manifest] = new TypeReference[T] {
     override def getType = typeFromManifest(manifest[T])

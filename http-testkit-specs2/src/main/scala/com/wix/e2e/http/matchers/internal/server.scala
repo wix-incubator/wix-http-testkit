@@ -6,13 +6,14 @@ import akka.http.scaladsl.model.headers.{Cookie, HttpCookiePair}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import com.wix.e2e.http.HttpRequest
 import com.wix.e2e.http.api.{Marshaller, RequestRecordSupport}
+import com.wix.e2e.http.exceptions.{MarshallerErrorException, MissingMarshallerException}
 import com.wix.e2e.http.matchers.RequestMatcher
 import com.wix.e2e.http.utils._
 import org.specs2.matcher.Matchers._
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 
 import scala.concurrent.ExecutionContext
-import scala.util.Try
+import scala.util.control.Exception._
 
 trait RequestMethodMatchers {
   def bePost: RequestMatcher = beRequestWith( POST )
@@ -185,11 +186,15 @@ trait RequestBodyMatchers {
       val request = t.value
       val content = waitFor( Unmarshal(request.entity).to[String] )
 
-      Try( marshaller.unmarshall[T](content) ).toOption match {
-        case None => failure(s"Failed to unmarshall: [$content]", t)
-        case Some(x) if must.apply(createExpectable(x)).isSuccess => success("ok", t)
-        case Some(x) => failure(s"Failed to match: [${must.apply(createExpectable(x)).message.replaceAll("\n", "")}] with content: [$content]", t)
-      }
+      handling(classOf[MissingMarshallerException], classOf[Exception])
+        .by( {
+          case e: MissingMarshallerException => throw e
+          case e: Exception => throw new MarshallerErrorException(content, e)
+        }) {
+          val x = marshaller.unmarshall[T](content)
+          if (must.apply(createExpectable(x)).isSuccess) success("ok", t)
+          else failure(s"Failed to match: [${must.apply(createExpectable(x)).message.replaceAll("\n", "")}] with content: [$content]", t)
+        }
     }
   }
 
