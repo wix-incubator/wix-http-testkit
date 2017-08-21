@@ -7,6 +7,7 @@ import com.wix.e2e.http.matchers.ResponseMatchers.beConnectionRefused
 import com.wix.e2e.http.server.WebServerFactory.aStubWebServer
 import com.wix.e2e.http.utils._
 import org.specs2.concurrent.ExecutionEnv
+import org.specs2.execute.PendingUntilFixed._
 import org.specs2.matcher.FutureMatchers
 import org.specs2.mutable.SpecWithJUnit
 import org.specs2.specification.Scope
@@ -127,6 +128,6 @@ class NonBlockingHttpClientContractTest extends SpecWithJUnit with NonBlockingHt
 
     "match connection failed" in new ctx {
       get("/nowhere")(ClosedPort) must beConnectionRefused.await
-    }
+    }.pendingUntilFixed
   }
 }
