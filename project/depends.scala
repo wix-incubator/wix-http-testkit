@@ -11,8 +11,8 @@ object depends {
         "org.specs2" %% "specs2-mock" % Specs2Version )
 
   val akkaHttp =
-    Seq("com.typesafe.akka" %% "akka-http" % "10.0.3",
-        "com.typesafe.akka" %% "akka-actor" % "2.4.20")
+    Seq("com.typesafe.akka" %% "akka-http" % "10.0.9"/*,
+        "com.typesafe.akka" %% "akka-actor" % "2.4.20"*/)
 
   val jackson = jacksonFor(JacksonVersion)
   val jackson2_6 = jacksonFor("2.6.7")
