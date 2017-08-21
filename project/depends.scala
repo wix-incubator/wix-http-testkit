@@ -32,4 +32,6 @@ object depends {
   val reflections = "org.reflections" % "reflections" % "0.9.11"
 
   val jsr305 = "com.google.code.findbugs" % "jsr305" % "3.0.2"
+
+  val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.25"
 }
