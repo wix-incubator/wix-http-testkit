@@ -54,7 +54,7 @@ lazy val noPublish = Seq( publish := {}, publishLocal := {}, publishArtifact := 
 
 lazy val baseSettings =
   publishSettings ++
-    releaseSettings ++
+//    releaseSettings ++
     compileOptions ++
     Seq(
       organization := "com.wix",
