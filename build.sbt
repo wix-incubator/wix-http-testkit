@@ -2,7 +2,7 @@ import depends._
 
 //lazy val javaRuntimeVersion = settingKey[ Double ]( "The JVM runtime version (e.g. 1.8)" )
 
-resolvers += Resolver.url("bintray-sbt-plugin-releases", url("https://dl.bintray.com/content/sbt/sbt-plugin-releases"))(Resolver.ivyStylePatterns)
+//resolvers += Resolver.url("bintray-sbt-plugin-releases", url("https://dl.bintray.com/content/sbt/sbt-plugin-releases"))(Resolver.ivyStylePatterns)
 
 lazy val publishSettings = Seq(
   publishTo := {
