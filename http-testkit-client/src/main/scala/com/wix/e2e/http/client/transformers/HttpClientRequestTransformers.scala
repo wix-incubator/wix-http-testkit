@@ -4,6 +4,7 @@ import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{Cookie, RawHeader}
 import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.util.ByteString
 import com.wix.e2e.http.api.Marshaller
 import com.wix.e2e.http.utils.waitFor
 import com.wix.e2e.http.{HttpResponse, RequestTransformer, WixHttpTestkitResources}
@@ -30,7 +31,7 @@ trait HttpClientRequestTransformers extends HttpClientContentTypes {
   def withCookie(cookie: (String, String)): RequestTransformer = withCookies(cookie)
   def withCookies(cookies: (String, String)*): RequestTransformer = appendHeaders( cookies.map(p => Cookie(p._1, p._2)) )
 
-  def withPayload(body: String, contentType: ContentType = TextPlain): RequestTransformer = setBody(body)
+  def withPayload(body: String, contentType: ContentType = TextPlain): RequestTransformer = setBody(HttpEntity(contentType, ByteString(body)))
   def withPayload(bytes: Array[Byte], contentType: ContentType): RequestTransformer = setBody(HttpEntity(contentType, bytes))
   def withPayload(xml: Node): RequestTransformer = setBody(HttpEntity(XmlContent, WixHttpTestkitResources.xmlPrinter.format(xml)))
 

@@ -64,9 +64,10 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
     }
 
     "add string payload with content type" in new ctx {
-      withPayload(someBody, contentType = TextPlain)(request) must haveBodyWith(someBody)
-      // todo: fix this
-//      withPayload(someBody)(request) must haveBodyWith(someBody)
+      withPayload(body = someBody)(request) must (haveTextPlainBody and haveBodyWith(someBody))
+
+      withPayload(someBody, contentType = TextPlain)(request) must (haveTextPlainBody and haveBodyWith(someBody))
+      withPayload(someBody, contentType = JsonContent)(request) must (haveJsonBody and haveBodyWith(someBody))
     }
 
     "add byte array payload with custom content type" in new ctx {

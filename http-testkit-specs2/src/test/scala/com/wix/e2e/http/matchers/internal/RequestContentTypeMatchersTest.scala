@@ -1,0 +1,27 @@
+package com.wix.e2e.http.matchers.internal
+
+import akka.http.scaladsl.model.ContentTypes._
+import com.wix.e2e.http.matchers.RequestMatchers._
+import com.wix.e2e.http.matchers.drivers.HttpRequestFactory.aRequestWith
+import com.wix.e2e.http.matchers.drivers.{HttpResponseTestSupport, MatchersTestSupport}
+import org.specs2.mutable.Spec
+import org.specs2.specification.Scope
+
+class RequestContentTypeMatchersTest extends Spec with MatchersTestSupport {
+
+  trait ctx extends Scope with HttpResponseTestSupport
+
+  "RequestContentTypeMatchers" should {
+
+    "exact match on request json content type" in new ctx {
+      aRequestWith(`application/json`) must haveJsonBody
+      aRequestWith(`text/csv(UTF-8)`) must not( haveJsonBody )
+    }
+
+    "exact match on request text plain content type" in new ctx {
+      aRequestWith(`text/plain(UTF-8)`) must haveTextPlainBody
+      aRequestWith(`text/csv(UTF-8)`) must not( haveTextPlainBody )
+    }
+  }
+}
+

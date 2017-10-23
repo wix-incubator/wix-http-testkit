@@ -106,6 +106,7 @@ object HttpRequestFactory {
     HttpRequest(headers = immutable.Seq( cookies.map( Cookie(_) ) :_*) )
 
   def aRequestWith(body: String) = HttpRequest(entity = body)
+  def aRequestWith(contentType: ContentType) = HttpRequest(entity = HttpEntity.Empty.withContentType(contentType))
   def aRequestWith(binaryBody: Array[Byte]) = HttpRequest(entity = binaryBody)
   def aRequestWithoutBody = HttpRequest()
 

@@ -1,6 +1,6 @@
 package com.wix.e2e.http.matchers.internal
 
-import akka.http.scaladsl.model.HttpMethod
+import akka.http.scaladsl.model.{ContentType, ContentTypes, HttpMethod}
 import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.headers.{Cookie, HttpCookiePair}
 import akka.http.scaladsl.unmarshalling.Unmarshal
@@ -271,4 +271,13 @@ trait RequestRecorderMatchers {
   }
 
   private case class RequestComparisonResult(identical: Seq[HttpRequest], missing: Seq[HttpRequest], extra: Seq[HttpRequest])
+}
+
+trait RequestContentTypeMatchers {
+
+  def haveJsonBody: RequestMatcher = haveContent(ContentTypes.`application/json`)
+  def haveTextPlainBody: RequestMatcher = haveContent(ContentTypes.`text/plain(UTF-8)`)
+
+  private def haveContent(contentType: ContentType): RequestMatcher =
+    be_===(contentType) ^^ { (_: HttpRequest).entity.contentType aka "content type"}
 }
