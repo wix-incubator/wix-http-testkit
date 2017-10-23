@@ -14,6 +14,7 @@ trait HttpClientTestSupport {
 
   val somePort = randomPort
   val content = randomStr
+  val anotherContent = randomStr
 
   def handlerFor(path: String, returnsBody: String): RequestHandler = {
     case r: HttpRequest if r.uri.path.toString.endsWith(path) => HttpResponse(entity = returnsBody)

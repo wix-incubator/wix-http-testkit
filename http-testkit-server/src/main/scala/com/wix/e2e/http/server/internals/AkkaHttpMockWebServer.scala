@@ -6,7 +6,10 @@ import com.wix.e2e.http.api.BaseWebServer
 import com.wix.e2e.http.utils._
 import com.wix.e2e.http.{BaseUri, RequestHandler, WixHttpTestkitResources}
 
-abstract class AkkaHttpMockWebServer(specificPort: Option[Int]) extends BaseWebServer {
+abstract class AkkaHttpMockWebServer(specificPort: Option[Int], val initialHandlers: Seq[RequestHandler])
+  extends BaseWebServer
+  with AdjustableServerBehaviorSupport {
+
   private implicit val system = WixHttpTestkitResources.system
   private implicit val materializer = WixHttpTestkitResources.materializer
 

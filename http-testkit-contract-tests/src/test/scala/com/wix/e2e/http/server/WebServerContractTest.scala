@@ -97,6 +97,25 @@ class WebServerContractTest extends Spec {
 
       get(path)(server.baseUri) must beSuccessfulWith(content)
     }
+
+    "allow to dynamically append handlers" in new ctx {
+      val server = aStubWebServer.build
+                                 .start()
+
+      server.appendAll(handlerFor(path, returnsBody = content))
+
+      get(path)(server.baseUri) must beSuccessfulWith(content)
+    }
+
+    "allow to dynamically replace handlers" in new ctx {
+      val server = aStubWebServer.addHandler(handlerFor(path, returnsBody = content))
+                                 .build
+                                 .start()
+
+      server.replaceWith(handlerFor(path, returnsBody = anotherContent))
+
+      get(path)(server.baseUri) must beSuccessfulWith(anotherContent)
+    }
   }
 
   "Mock web server" should {

@@ -2,12 +2,12 @@ package com.wix.e2e.http.server.internals
 
 import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import com.wix.e2e.http._
-import com.wix.e2e.http.api.{MockWebServer, StubWebServer}
+import com.wix.e2e.http.api.{AdjustableServerBehavior, MockWebServer, StubWebServer}
 
 import scala.collection.mutable.ListBuffer
 
-class StubAkkaHttpMockWebServer(handlers: Seq[RequestHandler], specificPort: Option[Int])
-  extends AkkaHttpMockWebServer(specificPort)
+class StubAkkaHttpMockWebServer(initialHandlers: Seq[RequestHandler], specificPort: Option[Int])
+  extends AkkaHttpMockWebServer(specificPort, initialHandlers)
   with StubWebServer {
 
 
@@ -22,7 +22,7 @@ class StubAkkaHttpMockWebServer(handlers: Seq[RequestHandler], specificPort: Opt
   private val requests = ListBuffer.empty[HttpRequest]
 
   private val SuccessfulHandler: RequestHandler = { case _ => HttpResponse(status = StatusCodes.OK) }
-  private val MockServerHandlers = (handlers :+ SuccessfulHandler).reduce(_ orElse _)
+  private def MockServerHandlers = (currentHandlers :+ SuccessfulHandler).reduce(_ orElse _)
   private val RequestRecorderHandler: RequestHandler = { case r =>
     this.synchronized {
       requests.append(r)
@@ -33,10 +33,31 @@ class StubAkkaHttpMockWebServer(handlers: Seq[RequestHandler], specificPort: Opt
   protected val serverBehavior = RequestRecorderHandler
 }
 
-class MockAkkaHttpWebServer(handlers: Seq[RequestHandler], specificPort: Option[Int])
-  extends AkkaHttpMockWebServer(specificPort)
+class MockAkkaHttpWebServer(initialHandlers: Seq[RequestHandler], specificPort: Option[Int])
+  extends AkkaHttpMockWebServer(specificPort, initialHandlers)
   with MockWebServer {
 
   private val NotFoundHandler: RequestHandler = { case _ => HttpResponse(status = StatusCodes.NotFound) }
-  protected def serverBehavior: RequestHandler = (handlers :+ NotFoundHandler).reduce(_ orElse _)
+  protected def serverBehavior: RequestHandler = {
+    (currentHandlers :+ NotFoundHandler).reduce(_ orElse _)
+  }
+}
+
+trait AdjustableServerBehaviorSupport extends AdjustableServerBehavior {
+  private val localHandlers: ListBuffer[RequestHandler] = ListBuffer(initialHandlers:_*)
+
+  def initialHandlers: Seq[RequestHandler]
+
+  def currentHandlers: Seq[RequestHandler] = this.synchronized {
+    localHandlers
+  }
+
+  def appendAll(handlers: RequestHandler*) = this.synchronized {
+    localHandlers.appendAll(handlers)
+  }
+
+  def replaceWith(handlers: RequestHandler*) = this.synchronized {
+    localHandlers.clear()
+    appendAll(handlers:_*)
+  }
 }
