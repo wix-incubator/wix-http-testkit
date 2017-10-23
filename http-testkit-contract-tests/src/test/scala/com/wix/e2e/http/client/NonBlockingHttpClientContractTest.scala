@@ -7,13 +7,13 @@ import com.wix.e2e.http.server.WebServerFactory.aStubWebServer
 import com.wix.e2e.http.utils._
 import org.specs2.concurrent.ExecutionEnv
 import org.specs2.matcher.FutureMatchers
-import org.specs2.mutable.SpecWithJUnit
+import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
 
-class NonBlockingHttpClientContractTest extends SpecWithJUnit with NonBlockingHttpClientSupport with FutureMatchers {
+class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientSupport with FutureMatchers {
 
   trait ctx extends Scope with StubWebServerProvider with HttpClientTestSupport
 

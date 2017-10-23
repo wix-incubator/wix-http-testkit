@@ -6,10 +6,10 @@ import com.wix.e2e.http.api.Marshaller
 import com.wix.e2e.http.client.transformers.HttpClientTransformers
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.test.random._
-import org.specs2.mutable.SpecWithJUnit
+import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
-class HttpClientTransformersTest extends SpecWithJUnit with HttpClientTransformers {
+class HttpClientTransformersTest extends Spec with HttpClientTransformers {
 
   trait ctx extends Scope {
     val request = HttpRequest()

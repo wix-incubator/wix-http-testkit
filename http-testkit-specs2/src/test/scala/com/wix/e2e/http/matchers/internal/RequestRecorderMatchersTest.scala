@@ -6,10 +6,10 @@ import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
 import com.wix.e2e.http.matchers.drivers.MatchersTestSupport
 import org.specs2.matcher.AlwaysMatcher
-import org.specs2.mutable.SpecWithJUnit
+import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
-class RequestRecorderMatchersTest extends SpecWithJUnit with MatchersTestSupport {
+class RequestRecorderMatchersTest extends Spec with MatchersTestSupport {
 
   trait ctx extends Scope {
     val request = aRandomRequest

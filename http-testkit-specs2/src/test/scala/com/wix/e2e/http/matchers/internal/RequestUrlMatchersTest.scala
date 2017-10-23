@@ -5,11 +5,11 @@ import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
 import com.wix.e2e.http.matchers.drivers.MatchersTestSupport
 import com.wix.test.random._
 import org.specs2.matcher.AlwaysMatcher
-import org.specs2.mutable.SpecWithJUnit
+import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 
-class RequestUrlMatchersTest extends SpecWithJUnit with MatchersTestSupport {
+class RequestUrlMatchersTest extends Spec with MatchersTestSupport {
 
   trait ctx extends Scope {
 

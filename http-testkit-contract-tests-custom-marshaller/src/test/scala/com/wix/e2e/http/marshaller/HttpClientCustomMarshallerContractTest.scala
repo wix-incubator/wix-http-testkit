@@ -4,10 +4,10 @@ import com.wix.e2e.http.client.transformers.HttpClientTransformers
 import com.wix.e2e.http.drivers.MarshallerTestSupport
 import com.wix.e2e.http.drivers.MarshallingTestObjects.SomeCaseClass
 import com.wix.e2e.http.matchers.{RequestMatchers, ResponseMatchers}
-import org.specs2.mutable.SpecWithJUnit
+import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
-class HttpClientCustomMarshallerContractTest extends SpecWithJUnit with HttpClientTransformers {
+class HttpClientCustomMarshallerContractTest extends Spec with HttpClientTransformers {
 
   trait ctx extends Scope with MarshallerTestSupport
 

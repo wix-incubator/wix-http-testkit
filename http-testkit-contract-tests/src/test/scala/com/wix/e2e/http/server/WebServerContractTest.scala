@@ -6,11 +6,11 @@ import com.wix.e2e.http.drivers.HttpClientTestSupport
 import com.wix.e2e.http.matchers.RequestMatchers.{beGet, havePath}
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.server.WebServerFactory._
-import org.specs2.mutable.SpecWithJUnit
+import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 
-class WebServerContractTest extends SpecWithJUnit {
+class WebServerContractTest extends Spec {
 
   trait ctx extends Scope with HttpClientTestSupport
 

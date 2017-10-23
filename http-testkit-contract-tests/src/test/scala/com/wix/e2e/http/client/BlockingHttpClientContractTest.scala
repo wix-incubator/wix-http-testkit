@@ -6,13 +6,13 @@ import com.wix.e2e.http.drivers.{HttpClientTestSupport, StubWebServerProvider}
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.ResponseMatchers.beConnectionRefused
 import com.wix.e2e.http.server.WebServerFactory.aStubWebServer
-import org.specs2.mutable.SpecWithJUnit
+import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
 
-class BlockingHttpClientContractTest extends SpecWithJUnit {
+class BlockingHttpClientContractTest extends Spec {
 
   trait ctx extends Scope with StubWebServerProvider with HttpClientTestSupport
 

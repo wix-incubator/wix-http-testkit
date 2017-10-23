@@ -4,13 +4,13 @@ import akka.http.scaladsl.model.HttpMethod
 import akka.http.scaladsl.model.HttpMethods._
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
-import org.specs2.mutable.SpecWithJUnit
+import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 import scala.util.Random
 
 
-class RequestMethodMatchersTest extends SpecWithJUnit {
+class RequestMethodMatchersTest extends Spec {
 
   trait ctx extends Scope {
     def randomMethodThatIsNot(method: HttpMethod) =

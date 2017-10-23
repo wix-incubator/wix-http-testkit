@@ -5,11 +5,11 @@ import akka.http.scaladsl.model.StatusCodes._
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
 import com.wix.e2e.http.matchers.drivers.HttpResponseTestSupport
-import org.specs2.mutable.SpecWithJUnit
+import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 
-class ResponseStatusMatchersTest extends SpecWithJUnit {
+class ResponseStatusMatchersTest extends Spec {
 
   trait ctx extends Scope with HttpResponseTestSupport
 

@@ -6,11 +6,11 @@ import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
 import com.wix.e2e.http.matchers.drivers.{CustomMarshallerProvider, HttpResponseTestSupport, MarshallerTestSupport, MatchersTestSupport}
 import org.specs2.matcher.ResultMatchers._
-import org.specs2.mutable.SpecWithJUnit
+import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 
-class RequestBodyMatchersTest extends SpecWithJUnit with MatchersTestSupport {
+class RequestBodyMatchersTest extends Spec with MatchersTestSupport {
 
   trait ctxNoMarshaller extends Scope with HttpResponseTestSupport with MarshallerTestSupport
   trait ctx extends ctxNoMarshaller with CustomMarshallerProvider

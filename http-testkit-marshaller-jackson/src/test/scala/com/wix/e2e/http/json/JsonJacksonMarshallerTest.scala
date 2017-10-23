@@ -8,10 +8,10 @@ import com.wix.e2e.http.json.MarshallingTestObjects.SomeCaseClass
 import com.wix.test.random._
 import org.joda.time.DateTimeZone.UTC
 import org.joda.time.{DateTime, DateTimeZone}
-import org.specs2.mutable.SpecWithJUnit
+import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
-class JsonJacksonMarshallerTest extends SpecWithJUnit {
+class JsonJacksonMarshallerTest extends Spec {
 
   trait ctx extends Scope {
     val someStr = randomStr

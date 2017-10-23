@@ -5,11 +5,11 @@ import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
 import com.wix.e2e.http.matchers.drivers.HttpResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseTestSupport
-import org.specs2.mutable.SpecWithJUnit
+import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 
-class ResponseBodyAndStatusMatchersTest extends SpecWithJUnit {
+class ResponseBodyAndStatusMatchersTest extends Spec {
 
   trait ctx extends Scope with HttpResponseTestSupport
 

@@ -7,11 +7,11 @@ import com.wix.e2e.http.matchers.drivers.MatchersTestSupport
 import com.wix.test.random._
 import org.specs2.matcher.Matcher
 import org.specs2.matcher.Matchers._
-import org.specs2.mutable.SpecWithJUnit
+import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 
-class RequestCookiesMatchersTest extends SpecWithJUnit with MatchersTestSupport {
+class RequestCookiesMatchersTest extends Spec with MatchersTestSupport {
 
   trait ctx extends Scope {
     val cookie = randomStr -> randomStr
