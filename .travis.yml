@@ -1,4 +1,5 @@
 language: scala
+
 scala:
   - 2.11.11
   - 2.12.4
@@ -6,17 +7,28 @@ scala:
 sudo: false
 
 script:
-  # Evidently sbt-doge doesn't like it when you specify multiple commands
   - sbt "++$TRAVIS_SCALA_VERSION clean" "++$TRAVIS_SCALA_VERSION test"
+
+after_success:
+  # Snapshot publishing via Travis courtesy of Jan Machacek, thanks!
+  # http://www.cakesolutions.net/teamblogs/publishing-artefacts-to-oss-sonatype-nexus-using-sbt-and-travis-ci
+  - '[[ $TRAVIS_BRANCH == "master" ]] && { sbt "++$TRAVIS_SCALA_VERSION publish"; };'
 
 jdk:
   - oraclejdk8
 
+env:
+  global:
+    - secure: X6x/fmQpVWUFKQi2Dz+SZZ4ZJm+qRGTmogNWQjvr8fXoc46FFdkqRXjdGaKqh6mceKSCMVASWhSY+J7LjQHQZSpGhpKlMmrmZv8W7GnuG3AqSQq1c4BANWepZQFcx5I/gbVqS5v/IG4v24KFXX/Cybl47A2Gz3UBL6Ze7D4t3Ll+jyfFkeg8pwUpNyWxDdtdHE51kh0WvRI4B2t3XcYFLmyt+GttDE8SzaampBdYfTJFwJz0nkwyr6xo7WcNI7z8grrbGUiHkCKk3TTb9cSIPFwsrDUSYemytByP5JgtlDm80lEcGry023O5c+F1gfRm4pbzdXusHbSkgVBv7UIyHebKvZ7/XxbXPvOmIOD2zZ4Z55gGJbKowaD8lpu1s+/yhp0GbHux8edZkQL7OmrSIG4h4mOzx/TpPSC4uY2xWomv0/rwo6oioJgXNIj58ZPvDZ27/MT/+yk0Ngpr6yhWkmGcMnsRK3NjTpuOjumvmAsw+Yg0cMRA/hhA1Da6rhOnYUDaVEpB4q1ZmJcRuFS+K1sUaeTOYmHIlnbbmAl9Z59xy39UQ4oMYOcXZM8onyK7gUrR+Tc4cVcm6KWJHj+US7hh7PIQGhqrammKY06+R836ZLDly1SVduDpNcNEPsmS2SQOzDh11bObF799CV0pJriBWa3O0rCu0ARui4VJKE4=
+    - secure: A48o60w1j0ClsqggP4pWkYl8Pef2EPotVR57Yq3ekKpnmxBZpkI1+N2Lxscv4gl5ZC5O8WZyvPZi+o+bIMhkG+MCE0f+uiu0aZ13DCuv2jj8Kwqe7tT4+iUtxOdeWxxbvvK2cBRWQNlYVeNjwnvmWbu7CaPaxzesjtb6NDPZLMRJEKWSc/xqU/HFpoFUoIniIfNJVtg0S+OtkKXgqyvH0DXtrd9B6DgocATXIAZC9YUU0fF/91nWeKpb456wCTM38F4vDB/+oFhiILQwQGWFOF41rUgzAmy87wMtyiI0M/HagWAgT3tiySiSYEPSkgTFD5yKPk9hsllgdEWWmUlgJaI1R878dfm+LIFf2xthECu7rhDXKGsryv/WjJyP89Zn6UJW76Ysb7lOmr1o09nwMHcZCeugymEO//3T7sglpzVYybLHa9oFpN0FlO4Z8ze0nulAMV0q3wxeO+31qOuml4FXAf8fa6HNDxIF5M1Rf/xviitCD0X0RLKZ+g6sHIgfzZWGn36xDgwrrl5n4pFIuYthDSEp6QaeH3womBERdfBklZWBbigtwMk/G7igkKslGwNzKY2F7VCNFtf7iOAOmU8P4SclFpPoiThByblhZgzp3IUm/45798iiMoQrrAB0Ggwr8HbBDUwL6VbUv1Rj9oOYElpNiCcdUhTHOL7g5Zo=
+
+# Cache bootstrap and dependency files for (hopefully) faster builds, per recommendation in
+# http://www.scala-sbt.org/0.13/docs/Travis-CI-with-sbt.html
 cache:
   directories:
-    - $HOME/.ivy2/cache
-    - $HOME/.sbt/boot/
-    - $HOME/.sbt/launchers/
+    - "$HOME/.ivy2/cache"
+    - "$HOME/.sbt/boot/"
+    - "$HOME/.sbt/launchers/"
 
 before_cache:
   - find $HOME/.sbt -name "*.lock" | xargs rm
