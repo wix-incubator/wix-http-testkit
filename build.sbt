@@ -15,8 +15,8 @@ lazy val publishSettings = Seq(
   publishMavenStyle := true,
   pomExtra in ThisBuild :=
     <scm>
-      <url>git@github.com:wix-private/http-testkit.git</url>
-      <connection>scm:git:git@github.com:wix-private/http-testkit.git</connection>
+      <url>git@github.com:wix/wix-http-testkit.git</url>
+      <connection>scm:git:git@github.com:wix/wix-http-testkit.git</connection>
     </scm>
       <developers>
         <developer>
