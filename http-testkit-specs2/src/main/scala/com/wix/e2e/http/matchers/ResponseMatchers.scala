@@ -7,5 +7,6 @@ trait ResponseMatchers extends ResponseStatusMatchers
                        with ResponseHeadersMatchers
                        with ResponseBodyMatchers
                        with ResponseBodyAndStatusMatchers
+                       with ResponseStatusAndHeaderMatchers
 
 object ResponseMatchers extends ResponseMatchers

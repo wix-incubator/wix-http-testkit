@@ -3,7 +3,7 @@ package com.wix.e2e.http.matchers.drivers
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.Uri.{Path, Query}
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.headers.{Cookie, HttpCookie, RawHeader, `Set-Cookie`}
+import akka.http.scaladsl.model.headers._
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
 import com.wix.test.random._
 import org.specs2.matcher.Matcher
@@ -34,6 +34,9 @@ trait HttpResponseTestSupport {
 
   val someObject = SomeCaseClass(randomStr, randomInt)
   val anotherObject = SomeCaseClass(randomStr, randomInt)
+
+  val url = "http://example.com/some/path"
+  val anotherUrl = "http://example.com/another/path"
 
   def randomStatusThatIsNot(status: StatusCode): StatusCode =
     Random.shuffle(AllResponseStatuses.filterNot(_ == status))
@@ -77,6 +80,9 @@ object HttpResponseFactory {
   def aSuccessfulResponseWithCookies(cookies: HttpCookie*) = aResponseWithCookies(cookies:_*).copy(status = OK)
 
   def aResponseWith(status: StatusCode) = HttpResponse(status)
+
+  def aRedirectResponseTo(url: String) = HttpResponse(status = Found, headers = immutable.Seq( Location(Uri(url)) ) )
+  def aPermanentlyRedirectResponseTo(url: String) = aRedirectResponseTo(url).copy(status = MovedPermanently)
 
   def aResponseWith(body: String) = HttpResponse(entity = body)
   def aResponseWith(binaryBody: Array[Byte]) = HttpResponse(entity = binaryBody)

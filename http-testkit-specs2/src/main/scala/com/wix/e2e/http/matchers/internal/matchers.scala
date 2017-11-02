@@ -191,3 +191,11 @@ trait ResponseBodyAndStatusMatchers { self: ResponseBodyMatchers with ResponseSt
   def beInvalidWith(bodyContent: String): ResponseMatcher = beInvalid and haveBodyWith(bodyContent)
   def beInvalidWithBodyThat(must: Matcher[String]): ResponseMatcher = beInvalid and haveBodyThat(must)
 }
+
+trait ResponseStatusAndHeaderMatchers { self: ResponseStatusMatchers with ResponseHeadersMatchers =>
+
+  def beRedirectedTo(url: String): ResponseMatcher = beRedirect and haveLocationHeaderWith(url)
+  def bePermanentlyRedirectedTo(url: String): ResponseMatcher = bePermanentlyRedirect and haveLocationHeaderWith(url)
+
+  private def haveLocationHeaderWith(value: String) = haveAnyHeaderThat(be_===(value), withHeaderName = "Location")
+}
