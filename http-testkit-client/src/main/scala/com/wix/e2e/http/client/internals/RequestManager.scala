@@ -1,7 +1,9 @@
 package com.wix.e2e.http.client.internals
 
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.settings.ConnectionPoolSettings
 import akka.stream.StreamTcpException
+import com.wix.e2e.http.WixHttpTestkitResources.system
 import com.wix.e2e.http._
 import com.wix.e2e.http.exceptions.ConnectionRefusedException
 import com.wix.e2e.http.utils._
@@ -22,13 +24,23 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
     val transformed = Seq(composeUrlFor(baseUri, path), but)
                                 .foldLeft(request) { case (r, tr) => tr(r) }
     import WixHttpTestkitResources.{materializer, system}
-    Http().singleRequest(request = transformed)
+    Http().singleRequest(request = transformed,
+                         settings = settingsWith(withTimeout))
           .recoverWith( { case _: StreamTcpException => Future.failed(throw new ConnectionRefusedException(baseUri)) } )
-          .withTimeoutOf(duration = withTimeout)
   }
 
   private def composeUrlFor(baseUri: BaseUri, path: String): RequestTransformer =
     _.copy(uri = baseUri.asUriWith(path) )
+
+  private def settingsWith(timeout: FiniteDuration) = {
+    val settings = ConnectionPoolSettings(system)
+    settings.withConnectionSettings( settings.connectionSettings
+                                             .withConnectingTimeout(timeout)
+                                             .withIdleTimeout(timeout) )
+            .withMaxConnections(32)
+            .withPipeliningLimit(4)
+            .withMaxRetries(0)
+  }
 }
 
 class BlockingRequestManager(request: HttpRequest) extends RequestManager[HttpResponse] {
