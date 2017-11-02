@@ -34,7 +34,7 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
 class BlockingRequestManager(request: HttpRequest) extends RequestManager[HttpResponse] {
 
   def apply(path: String, but: RequestTransformer, withTimeout: FiniteDuration)(implicit baseUri: BaseUri): HttpResponse =
-    waitFor( nonBlockingRequestManager(path, but, withTimeout) )
+    waitFor( nonBlockingRequestManager(path, but, withTimeout) )(Duration.Inf)
 
   private val nonBlockingRequestManager = new NonBlockingRequestManager(request)
 }
