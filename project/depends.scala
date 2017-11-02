@@ -29,7 +29,7 @@ object depends {
 
   val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
 
-  val reflections = "org.reflections" % "reflections" % "0.9.11"
+  val reflections = "org.reflections" % "reflections" % "0.9.10"
 
   val jsr305 = "com.google.code.findbugs" % "jsr305" % "3.0.2"
 
