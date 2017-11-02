@@ -15,7 +15,6 @@ class ResponseStatusMatchersTest extends Spec {
 
 
   "ResponseStatusMatchers" should {
-    "test all matchers" in new ctx {
       Seq(OK -> beSuccessful, NoContent -> beNoContent, Created -> beSuccessfullyCreated, Accepted -> beAccepted, // 2xx
 
           Found -> beRedirect, MovedPermanently -> bePermanentlyRedirect, //3xx
@@ -28,10 +27,16 @@ class ResponseStatusMatchersTest extends Spec {
           ServiceUnavailable -> beUnavailable, InternalServerError -> beInternalServerError, NotImplemented -> beNotImplemented // 5xx
          ).foreach { case (status, matcherForStatus) =>
 
-        aResponseWith( status ) must matcherForStatus
-        aResponseWith( randomStatusThatIsNot(status) ) must not( matcherForStatus )
+        s"match against status ${status.value}" in new ctx {
+          aResponseWith( status ) must matcherForStatus
+          aResponseWith( randomStatusThatIsNot(status) ) must not( matcherForStatus )
+        }
       }
-      ok
+
+    "allow matching against status code" in new ctx {
+      val status = randomStatus
+      aResponseWith( status ) must haveStatus(code = status.intValue )
+      aResponseWith( status ) must not( haveStatus(code = randomStatusThatIsNot(status).intValue ) )
     }
   }
 }

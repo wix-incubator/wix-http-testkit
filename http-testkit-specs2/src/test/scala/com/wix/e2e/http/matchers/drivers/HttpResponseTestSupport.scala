@@ -39,6 +39,10 @@ trait HttpResponseTestSupport {
     Random.shuffle(AllResponseStatuses.filterNot(_ == status))
           .head
 
+  def randomStatus: StatusCode =
+    Random.shuffle(AllResponseStatuses)
+          .head
+
   private val AllResponseStatuses =
     Seq(Continue, SwitchingProtocols, Processing, OK, Created, Accepted, NonAuthoritativeInformation,
         NoContent, ResetContent, PartialContent, MultiStatus, AlreadyReported, IMUsed, MultipleChoices,

@@ -43,6 +43,8 @@ trait ResponseStatusMatchers {
   def beTooManyRequests: ResponseMatcher = haveStatus(TooManyRequests)
 
 
+  def haveStatus(code: Int): ResponseMatcher = haveStatus( StatusCode.int2StatusCode(code) )
+
   // Server Error Response codes
   def beUnavailable: ResponseMatcher = haveStatus(ServiceUnavailable)
   def beInternalServerError: ResponseMatcher = haveStatus(InternalServerError)
