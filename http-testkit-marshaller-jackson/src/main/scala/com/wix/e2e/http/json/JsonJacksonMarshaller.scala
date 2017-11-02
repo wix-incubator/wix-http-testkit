@@ -17,6 +17,8 @@ class JsonJacksonMarshaller extends Marshaller {
   def unmarshall[T : Manifest](jsonStr: String): T = objectMapper.readValue(jsonStr, typeReference[T])
   def marshall[T](t: T): String = objectMapper.writeValueAsString(t)
 
+  def configure: ObjectMapper = objectMapper
+
   private val objectMapper = new ObjectMapper()
                                     .registerModule(new Jdk8Module().configureAbsentsAsNulls(true))
                                     .registerModules(new JodaModule, new ParameterNamesModule, new JavaTimeModule) // time modules

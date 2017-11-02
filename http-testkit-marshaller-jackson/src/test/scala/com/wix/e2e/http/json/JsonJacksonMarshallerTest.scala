@@ -3,6 +3,7 @@ package com.wix.e2e.http.json
 import java.time.LocalDateTime
 import java.util.Optional
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.wix.e2e.http.api.Marshaller
 import com.wix.e2e.http.json.MarshallingTestObjects.SomeCaseClass
 import com.wix.test.random._
@@ -64,6 +65,10 @@ class JsonJacksonMarshallerTest extends Spec {
       marshaller.unmarshall[Optional[SomeCaseClass]](
         marshaller.marshall( someCaseClass )
       ) must_=== Optional.of(someCaseClass)
+    }
+
+    "expose jackson object mapper to allow external configuration" in new ctx {
+      marshaller.asInstanceOf[JsonJacksonMarshaller].configure must beAnInstanceOf[ObjectMapper]
     }
   }
 }
