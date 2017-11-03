@@ -128,5 +128,11 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
     "match connection failed" in new ctx {
       get("/nowhere")(ClosedPort) must beConnectionRefused.await
     }
+
+    "send arbitrary user-agent" in new ctx {
+      get(path, withUserAgent("test/0"))
+
+      server must receivedAnyRequestThat(haveAllHeadersOf("User-Agent" -> "test/0")).eventually
+    }
   }
 }
