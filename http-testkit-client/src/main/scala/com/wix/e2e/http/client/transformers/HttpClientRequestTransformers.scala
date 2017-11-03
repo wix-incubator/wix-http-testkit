@@ -2,7 +2,7 @@ package com.wix.e2e.http.client.transformers
 
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.headers.{Cookie, RawHeader}
+import akka.http.scaladsl.model.headers.{Cookie, RawHeader, `User-Agent`}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.util.ByteString
 import com.wix.e2e.http.api.Marshaller
@@ -26,7 +26,12 @@ trait HttpClientRequestTransformers extends HttpClientContentTypes {
                                       ++ params: _*)) )
 
   def withHeader(header: (String, String)): RequestTransformer = withHeaders(header)
-  def withHeaders(headers: (String, String)*): RequestTransformer = appendHeaders( headers.map(p => RawHeader(p._1, p._2)) )
+  def withHeaders(headers: (String, String)*): RequestTransformer = appendHeaders( headers.map {
+    case (name, value) => name.toLowerCase match {
+      case "user-agent" => throw new IllegalArgumentException("User-Agent must be set via `withUserAgent`")
+      case _ => RawHeader(name, value)
+    }
+  })
 
   def withCookie(cookie: (String, String)): RequestTransformer = withCookies(cookie)
   def withCookies(cookies: (String, String)*): RequestTransformer = appendHeaders( cookies.map(p => Cookie(p._1, p._2)) )
@@ -43,6 +48,8 @@ trait HttpClientRequestTransformers extends HttpClientContentTypes {
 //    r.copy(entity = entity, headers = headers.toList ++ r.headers)
 //    r
 //  }
+
+  def withUserAgent(product: String): RequestTransformer = appendHeaders(Seq(`User-Agent`(product)))
 
   private def setBody(entity: RequestEntity): RequestTransformer = _.copy(entity = entity)
   private def appendHeaders[H <: HttpHeader](headers: Iterable[H]): RequestTransformer = r =>

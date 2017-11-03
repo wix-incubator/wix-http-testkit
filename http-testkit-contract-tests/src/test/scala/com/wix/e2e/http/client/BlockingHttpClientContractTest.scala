@@ -124,5 +124,11 @@ class BlockingHttpClientContractTest extends Spec {
     "match connection failed" in new ctx {
       get(path)(ClosedPort) must beConnectionRefused
     }
+
+    "send arbitrary User-Agent" in new ctx {
+      get(path, withUserAgent("test/0"))
+
+      server must receivedAnyRequestThat(haveAllHeadersOf("User-Agent" -> "test/0"))
+    }
   }
 }

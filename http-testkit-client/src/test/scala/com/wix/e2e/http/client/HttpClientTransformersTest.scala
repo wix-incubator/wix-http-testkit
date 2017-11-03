@@ -104,6 +104,14 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
           haveBodyWith(payload) }
     }
 
+    "add User-Agent header to" in new ctx {
+      withUserAgent("test/0")(request) must haveTheSameHeadersAs("User-Agent" -> "test/0")
+    }
+
+    "forbid User-Agent in withHeader" in new ctx {
+      withHeader("User-Agent", "test/0") must throwAn[IllegalArgumentException]
+    }
+
   }
 
   "ResponseTransformers" should {
