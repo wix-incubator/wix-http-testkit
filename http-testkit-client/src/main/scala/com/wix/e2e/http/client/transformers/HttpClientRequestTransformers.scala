@@ -2,10 +2,11 @@ package com.wix.e2e.http.client.transformers
 
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.headers.{Cookie, RawHeader}
+import akka.http.scaladsl.model.headers.{Cookie, RawHeader, `User-Agent`}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.util.ByteString
 import com.wix.e2e.http.api.Marshaller
+import com.wix.e2e.http.exceptions.UserAgentModificationNotSupportedException
 import com.wix.e2e.http.utils.waitFor
 import com.wix.e2e.http.{HttpResponse, RequestTransformer, WixHttpTestkitResources}
 
@@ -26,7 +27,13 @@ trait HttpClientRequestTransformers extends HttpClientContentTypes {
                                       ++ params: _*)) )
 
   def withHeader(header: (String, String)): RequestTransformer = withHeaders(header)
-  def withHeaders(headers: (String, String)*): RequestTransformer = appendHeaders( headers.map(p => RawHeader(p._1, p._2)) )
+  def withHeaders(headers: (String, String)*): RequestTransformer =
+    appendHeaders( headers.map {
+      case (h, _) if h.toLowerCase == "user-agent" => throw new UserAgentModificationNotSupportedException
+      case (h, v) => RawHeader(h, v)
+    } )
+
+  def withUserAgent(value: String): RequestTransformer = appendHeaders(Seq(`User-Agent`(value)))
 
   def withCookie(cookie: (String, String)): RequestTransformer = withCookies(cookie)
   def withCookies(cookies: (String, String)*): RequestTransformer = appendHeaders( cookies.map(p => Cookie(p._1, p._2)) )
@@ -37,7 +44,7 @@ trait HttpClientRequestTransformers extends HttpClientContentTypes {
 
   def withPayload(entity: AnyRef)(implicit marshaller: Marshaller): RequestTransformer = setBody(HttpEntity(JsonContent, marshaller.marshall(entity)))
 
-  def withFormData(formParams: (String, String)*): RequestTransformer = identity
+//  def withFormData(formParams: (String, String)*): RequestTransformer = identity
 //  { r: HttpRequest =>
 //    val (entity, headers) = marshalToEntityAndHeaders(FormData(formParams)).right.get
 //    r.copy(entity = entity, headers = headers.toList ++ r.headers)

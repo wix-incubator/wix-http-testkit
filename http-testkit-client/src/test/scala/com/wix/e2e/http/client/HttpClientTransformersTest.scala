@@ -4,6 +4,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.HttpCookiePair
 import com.wix.e2e.http.api.Marshaller
 import com.wix.e2e.http.client.transformers.HttpClientTransformers
+import com.wix.e2e.http.exceptions.UserAgentModificationNotSupportedException
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.test.random._
 import org.specs2.mutable.Spec
@@ -17,6 +18,7 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
     val keyValue1 = randomStrPair
     val keyValue2 = randomStrPair
     val keyValue3 = randomStrPair
+    val userAgent = randomStr
     val someBody = randomStr
     val someBytes = randomBytes(100)
     val payload = SomePayload(randomStr, randomStr)
@@ -46,6 +48,15 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
     "chain more than one add headers calls to request" in new ctx {
       (withHeader(keyValue1) and
        withHeader(keyValue2))(request) must haveTheSameHeadersAs(keyValue1, keyValue2)
+    }
+
+    "allow modifying user agent of the client" in new ctx {
+      withUserAgent(userAgent)(request) must haveTheSameHeadersAs("user-agent" -> userAgent)
+    }
+
+    "throw an exception if trying to modify user-agent with with header transformer" in new ctx {
+      withHeader("user-agent" -> userAgent)(request) must throwAn[UserAgentModificationNotSupportedException]
+      withHeaders("user-agent" -> userAgent)(request) must throwAn[UserAgentModificationNotSupportedException]
     }
 
     "add cookie to request" in new ctx {

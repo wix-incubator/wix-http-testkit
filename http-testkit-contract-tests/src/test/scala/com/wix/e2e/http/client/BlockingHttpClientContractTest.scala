@@ -31,6 +31,12 @@ class BlockingHttpClientContractTest extends Spec {
                                           receivedCookieWith(cookie._1))
     }
 
+    "support modification of user agent" in new ctx {
+      get(path, but = withUserAgent(userAgent) )
+
+      server must receivedAnyRequestThat( haveAnyHeadersOf("user-agent" -> userAgent))
+    }
+
     "support generating post request" in new ctx {
       post(path,
            but = withParam(parameter)
