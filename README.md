@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/wix/wix-http-testkit.svg?branch=master)](https://travis-ci.org/wix/wix-http-testkit)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.wix/http-testkit_2.12/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.wix/http-testkit_2.12)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.wix/http-testkit_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.wix/http-testkit_2.12)
 
 # HTTP Testkit
 
@@ -115,6 +115,7 @@ libraryDependencies += "com.wix" %% "http-testkit" % "0.1.2"
 
 Ideas and feature requests welcome! Report an [issue](https://github.com/wix/wix-http-testkit/issues/) or contact the [maintainer](https://github.com/noam-almog) directly.
 
+
 ## License
 
-Copyright (c) 2017 Wix.com Ltd. All Rights Reserved. Use of this source code is governed by a MIT-style license that can be found in the [LICENSE](LICENSE.md) file in the root of the source tree.
+This project is licensed under [MIT License](./LICENSE.md).
