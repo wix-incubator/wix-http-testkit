@@ -22,6 +22,11 @@ class RequestContentTypeMatchersTest extends Spec with MatchersTestSupport {
       aRequestWith(`text/plain(UTF-8)`) must haveTextPlainBody
       aRequestWith(`text/csv(UTF-8)`) must not( haveTextPlainBody )
     }
+
+    "exact match on request form url encoded content type" in new ctx {
+      aRequestWith(`application/x-www-form-urlencoded`) must haveFormUrlEncodedBody
+      aRequestWith(`text/csv(UTF-8)`) must not( haveFormUrlEncodedBody )
+    }
   }
 }
 

@@ -38,6 +38,8 @@ trait HttpResponseTestSupport {
   val url = "http://example.com/some/path"
   val anotherUrl = "http://example.com/another/path"
 
+  val `application/x-www-form-urlencoded` = MediaTypes.`application/x-www-form-urlencoded`.withCharset(HttpCharsets.`UTF-8`)
+
   def randomStatusThatIsNot(status: StatusCode): StatusCode =
     Random.shuffle(AllResponseStatuses.filterNot(_ == status))
           .head

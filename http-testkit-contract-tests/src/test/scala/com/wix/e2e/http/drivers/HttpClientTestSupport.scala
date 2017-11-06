@@ -7,6 +7,7 @@ import com.wix.test.random._
 trait HttpClientTestSupport {
   val parameter = randomStrPair
   val header = randomStrPair
+  val formData = randomStrPair
   val userAgent = randomStr
   val cookie = randomStrPair
   val path = s"$randomStr/$randomStr"

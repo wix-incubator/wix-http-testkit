@@ -49,6 +49,20 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
                                           haveBodyWith(someObject)).eventually
     }
 
+    "support generating post url encoded request" in new ctx {
+      post(path,
+        but = withParam(parameter)
+          and withHeader(header)
+          and withCookie(cookie)
+          and withFormData(formData))
+
+      server must receivedAnyRequestThat( bePost and
+                                          havePath(s"/$path") and
+                                          haveAnyHeadersOf(header) and
+                                          receivedCookieWith(cookie._1) and
+                                          haveBodyWith(bodyContent = s"${formData._1}=${formData._2}")).eventually
+    }
+
     "support generating put request" in new ctx {
       put(path,
         but = withParam(parameter)

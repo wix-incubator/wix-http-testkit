@@ -1,5 +1,7 @@
 package com.wix.e2e.http.client
 
+import java.net.URLEncoder
+
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.HttpCookiePair
 import com.wix.e2e.http.api.Marshaller
@@ -18,6 +20,7 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
     val keyValue1 = randomStrPair
     val keyValue2 = randomStrPair
     val keyValue3 = randomStrPair
+    val escapedCharacters = "!'();:@&=+$,/?%#[]\"'/\\"
     val userAgent = randomStr
     val someBody = randomStr
     val someBytes = randomBytes(100)
@@ -94,16 +97,11 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
       withPayload(<element attribute="value"/>)(request) must haveBodyWith("""<element attribute="value"/>""")
     }
 
-//    "add form url encoded payload" in new ctx {
-//      withFormData("param1"->"value1&value1 space", "param2"->"//")(request) must
-//        beRequestWithBody(HttpEntity(ContentType(MediaTypes.`application/x-www-form-urlencoded`, `UTF-8`), "param1=value1%26value1+space&param2=%2F%2F"))
-//    }.pendingUntilFixed("figure how marshallers work in akka http")
-//
-//    "withFormData should keep previous headers" in new ctx {
-//      (withHeaders(keyValue1) and withFormData(keyValue2))(request) must
-//        beRequestWithBody(HttpEntity(ContentType(MediaTypes.`application/x-www-form-urlencoded`, `UTF-8`), "param1=value1%26value1+space&param2=%2F%2F"))
-//    }.pendingUntilFixed("figure how marshallers work in akka http")
-//
+    "add form url encoded payload" in new ctx {
+      withFormData(keyValue1, "escaped-characters" -> escapedCharacters)(request) must
+        ( haveFormUrlEncodedBody and haveBodyWith(bodyContent = s"${keyValue1._1}=${keyValue1._2}&escaped-characters=${URLEncoder.encode(escapedCharacters, "UTF-8")}") )
+    }
+
     "have all handlers chained together without loosing data" in new ctx {
       (withParam(keyValue1) and
        withHeader(keyValue2) and
@@ -115,6 +113,17 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
           haveBodyWith(payload) }
     }
 
+    "have all handlers chained together without loosing data with form data" in new ctx {
+      (withParam(keyValue1) and
+       withHeader(keyValue2) and
+       withCookie(keyValue3) and
+       withFormData(keyValue1))(request) must
+        { haveTheSameParamsAs(keyValue1) and
+          haveAllHeadersOf(keyValue2) and
+          receivedCookieThat(be_===(HttpCookiePair(keyValue3))) and
+          haveFormUrlEncodedBody and
+          haveBodyWith(bodyContent = s"${keyValue1._1}=${keyValue1._2}") }
+    }
   }
 
   "ResponseTransformers" should {
