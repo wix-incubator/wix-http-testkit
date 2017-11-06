@@ -1,6 +1,7 @@
 package com.wix.e2e.http.matchers.internal
 
-import akka.http.scaladsl.model.StatusCode
+import akka.http.scaladsl.model.MediaType.NotCompressible
+import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.unmarshalling.Unmarshal
@@ -100,7 +101,10 @@ trait ResponseHeadersMatchers {
                                    .map( h => h.name -> h.value )
       val comparisonResult = compare(headers, responseHeaders)
 
-      if ( comparator(comparisonResult) ) success("ok", t)
+      if (matchAgainstContentTypeHeader)
+        failure("""`content-type` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
+                  |Use `haveContentType` matcher instead (or `beJsonResponse`, `beTextPlainResponse`, `beFormUrlEncodedResponse`).""".stripMargin, t)
+      else if ( comparator(comparisonResult) ) success("ok", t)
       else if (responseHeaders.isEmpty) failure("Response did not contain any headers.", t)
       else failure(errorMessage(comparisonResult), t)
     }
@@ -114,6 +118,8 @@ trait ResponseHeadersMatchers {
 
       HeaderComparisonResult(identical, missing, extra)
     }
+
+    private def matchAgainstContentTypeHeader = headers.exists( h => "content-type".compareToIgnoreCase(h._1) == 0 )
   }
 
   def haveAnyHeaderThat(must: Matcher[String], withHeaderName: String): ResponseMatcher = new ResponseMatcher {
@@ -198,4 +204,28 @@ trait ResponseStatusAndHeaderMatchers { self: ResponseStatusMatchers with Respon
   def bePermanentlyRedirectedTo(url: String): ResponseMatcher = bePermanentlyRedirect and haveLocationHeaderWith(url)
 
   private def haveLocationHeaderWith(value: String) = haveAnyHeaderThat(be_===(value), withHeaderName = "Location")
+}
+
+trait ResponseContentTypeMatchers {
+
+  def beJsonResponse: ResponseMatcher = haveContentType(ContentTypes.`application/json`.value)
+  def beTextPlainResponse: ResponseMatcher = haveContentType(MediaTypes.`text/plain`.value)
+  def beFormUrlEncodedResponse: ResponseMatcher = haveContentType(MediaTypes.`application/x-www-form-urlencoded`.value)
+
+  def haveContentType(contentType: String): ResponseMatcher = new ResponseMatcher {
+    private val NoContentType = ContentType(MediaType.customBinary("none", "none", comp = NotCompressible))
+
+    def apply[S <: HttpResponse](t: Expectable[S]) = {
+      val response = t.value
+      val actual = response.entity.contentType
+      val expected = ContentType.parse(contentType)
+
+      (actual, expected) match {
+        case (a, _) if a == NoContentType => failure("Request body does not have a set content type", t)
+        case (_, Left(_)) => failure(s"Cannot match against a malformed content type: $contentType", t)
+        case (a, Right(e)) if a == e => success("ok", t)
+        case (a, Right(e)) if a != e => failure(s"Expected content type [$e] does not match actual content type [$a]", t)
+      }
+    }
+  }
 }

@@ -32,6 +32,11 @@ trait HttpResponseTestSupport {
   val binaryContent = Array[Byte](1, 1, 1, 1)
   val anotherBinaryContent = Array[Byte](2, 2, 2, 2)
 
+  val malformedContentType = randomStr
+  val contentType = "application/json"
+  val anotherContentType = "text/plain"
+  val contentTypeHeader = "content-type" -> contentType
+
   val someObject = SomeCaseClass(randomStr, randomInt)
   val anotherObject = SomeCaseClass(randomStr, randomInt)
 
@@ -89,6 +94,10 @@ object HttpResponseFactory {
   def aResponseWith(body: String) = HttpResponse(entity = body)
   def aResponseWith(binaryBody: Array[Byte]) = HttpResponse(entity = binaryBody)
   def aResponseWithoutBody = HttpResponse()
+  def aResponseWithContentType(contentType: String) = {
+    val r = aResponseWithoutBody
+    aResponseWithoutBody.copy(entity = r.entity.withContentType(ContentType.parse(contentType).right.get))
+  }
 
   def anInvalidResponseWith(body: String) = aResponseWith(body).copy(status = BadRequest)
 }
