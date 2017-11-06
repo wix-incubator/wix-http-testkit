@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/wix/wix-http-testkit.svg?branch=master)](https://travis-ci.org/wix/wix-http-testkit)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.wix/http-testkit_2.12/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.wix/http-testkit_2.12/badge.svg?style=plastic)
 
 # HTTP Testkit
 
