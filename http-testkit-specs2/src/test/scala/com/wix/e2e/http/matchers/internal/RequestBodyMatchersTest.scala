@@ -3,7 +3,8 @@ package com.wix.e2e.http.matchers.internal
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
-import com.wix.e2e.http.matchers.drivers.{CustomMarshallerProvider, HttpMessageTestSupport, MarshallerTestSupport, MatchersTestSupport}
+import com.wix.e2e.http.matchers.drivers._
+import org.specs2.matcher.CaseClassDiffs._
 import org.specs2.matcher.ResultMatchers._
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
@@ -50,7 +51,7 @@ class RequestBodyMatchersTest extends Spec with MatchersTestSupport {
       givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
 
       failureMessageFor(haveBodyEntityThat(must = be_===(anotherObject)), matchedOn = aRequestWith(content)) must_===
-        s"Failed to match: ['$someObject' is not equal to '$anotherObject'] with content: [$content]"
+        s"Failed to match: [SomeCaseClass(s: '${someObject.s}' != '${anotherObject.s}',              i: ${someObject.i} != ${anotherObject.i})] with content: [$content]"
     }
 
     "provide a proper message to user sent a matcher to an entity matcher" in new ctx {

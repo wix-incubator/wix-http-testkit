@@ -14,9 +14,12 @@ object depends {
   private def specs2DepsFor(version: String) =
     Seq("org.specs2" %% "specs2-core" % version,
         "org.specs2" %% "specs2-junit" % version,
+      "org.specs2" %% "specs2-shapeless" % version,
         "org.specs2" %% "specs2-mock" % version )
 
-  private def specs2VersionFor(scalaVersion: String) = if ( scalaVersion.startsWith("2.13") ) "4.0.1" else "3.8.6"
+  private def specs2VersionFor(scalaVersion: String) = "4.0.2"
+
+//    if ( scalaVersion.startsWith("2.13") ) "4.0.2" else "3.8.6"
 
 
   def akkaHttp(scalaVersion: String) = "com.typesafe.akka" %% "akka-http" % "10.0.10" // missing 2.13
