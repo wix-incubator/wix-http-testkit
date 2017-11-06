@@ -31,6 +31,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
       server must receivedAnyRequestThat( beGet and
                                           havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1)).eventually
     }
@@ -44,6 +45,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
       server must receivedAnyRequestThat( bePost and
                                           havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
                                           haveBodyWith(someObject)).eventually
@@ -58,6 +60,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
       server must receivedAnyRequestThat( bePost and
                                           havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
                                           haveBodyWith(bodyContent = s"${formData._1}=${formData._2}")).eventually
@@ -72,6 +75,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
       server must receivedAnyRequestThat( bePut and
                                           havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
                                           haveBodyWith(someObject)).eventually
@@ -86,6 +90,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
       server must receivedAnyRequestThat( beDelete and
                                           havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
                                           haveBodyWith(someObject)).eventually
@@ -100,6 +105,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
       server must receivedAnyRequestThat( bePatch and
                                           havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
                                           haveBodyWith(someObject)).eventually
@@ -114,6 +120,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
       server must receivedAnyRequestThat( beOptions and
                                           havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
                                           haveBodyWith(someObject)).eventually
@@ -127,6 +134,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
       server must receivedAnyRequestThat( beTrace and
                                           havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1)).eventually
     }

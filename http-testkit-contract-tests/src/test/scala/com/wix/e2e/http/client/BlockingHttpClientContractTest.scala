@@ -19,6 +19,18 @@ class BlockingHttpClientContractTest extends Spec {
 
   "BlockingHttpClient" should {
 
+    "support url with parameters" in new ctx {
+      get(s"$path?${parameter._1}=${parameter._2}",
+        but = withHeader(header)
+          and withCookie(cookie) )
+
+      server must receivedAnyRequestThat( beGet and
+                                          havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
+                                          haveAnyHeadersOf(header) and
+                                          receivedCookieWith(cookie._1))
+    }
+
     "support generating get request" in new ctx {
       get(path,
           but = withParam(parameter)
@@ -27,6 +39,7 @@ class BlockingHttpClientContractTest extends Spec {
 
       server must receivedAnyRequestThat( beGet and
                                           havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1))
     }
@@ -46,6 +59,7 @@ class BlockingHttpClientContractTest extends Spec {
 
       server must receivedAnyRequestThat( bePost and
                                           havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
                                           haveBodyWith(someObject))
@@ -60,6 +74,7 @@ class BlockingHttpClientContractTest extends Spec {
 
       server must receivedAnyRequestThat( bePut and
                                           havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
                                           haveBodyWith(someObject))
@@ -74,6 +89,7 @@ class BlockingHttpClientContractTest extends Spec {
 
       server must receivedAnyRequestThat( beDelete and
                                           havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
                                           haveBodyWith(someObject))
@@ -88,6 +104,7 @@ class BlockingHttpClientContractTest extends Spec {
 
       server must receivedAnyRequestThat( bePatch and
                                           havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
                                           haveBodyWith(someObject))
@@ -102,6 +119,7 @@ class BlockingHttpClientContractTest extends Spec {
 
       server must receivedAnyRequestThat( beOptions and
                                           havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1) and
                                           haveBodyWith(someObject))
@@ -115,6 +133,7 @@ class BlockingHttpClientContractTest extends Spec {
 
       server must receivedAnyRequestThat( beTrace and
                                           havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1))
     }
