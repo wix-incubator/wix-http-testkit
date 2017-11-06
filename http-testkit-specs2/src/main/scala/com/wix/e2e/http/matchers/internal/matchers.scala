@@ -1,8 +1,8 @@
 package com.wix.e2e.http.matchers.internal
 
 import akka.http.scaladsl.model.MediaType.NotCompressible
-import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.StatusCodes._
+import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import com.wix.e2e.http.api.Marshaller
@@ -10,6 +10,7 @@ import com.wix.e2e.http.exceptions.{ConnectionRefusedException, MarshallerErrorE
 import com.wix.e2e.http.matchers.ResponseMatcher
 import com.wix.e2e.http.utils._
 import com.wix.e2e.http.{HttpResponse, WixHttpTestkitResources}
+import org.specs2.matcher.CaseClassDiffs._
 import org.specs2.matcher.Matchers._
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 

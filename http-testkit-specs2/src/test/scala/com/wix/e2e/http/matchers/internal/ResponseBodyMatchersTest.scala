@@ -5,6 +5,7 @@ import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
 import com.wix.e2e.http.matchers.drivers.{CustomMarshallerProvider, HttpResponseTestSupport, MarshallerTestSupport, MatchersTestSupport}
+import org.specs2.matcher.CaseClassDiffs._
 import org.specs2.matcher.ResultMatchers._
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
@@ -52,7 +53,7 @@ class ResponseBodyMatchersTest extends Spec with MatchersTestSupport {
       givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
 
       failureMessageFor(haveBodyThat(must = be_===(anotherObject)), matchedOn = aResponseWith(content)) must_===
-        s"Failed to match: ['$someObject' is not equal to '$anotherObject'] with content: [$content]"
+        s"Failed to match: [SomeCaseClass(s: '${someObject.s}' != '${anotherObject.s}',              i: ${someObject.i} != ${anotherObject.i})] with content: [$content]"
     }
 
     "provide a proper message to user in case of a badly behaving marshaller" in new ctx {
