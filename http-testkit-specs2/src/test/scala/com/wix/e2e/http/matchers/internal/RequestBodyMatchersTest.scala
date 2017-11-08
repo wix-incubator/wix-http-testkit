@@ -1,6 +1,5 @@
 package com.wix.e2e.http.matchers.internal
 
-import com.wix.e2e.http.api.Marshaller
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
@@ -12,9 +11,7 @@ import org.specs2.specification.Scope
 
 class RequestBodyMatchersTest extends Spec with MatchersTestSupport {
 
-  trait ctxNoMarshaller extends Scope with HttpResponseTestSupport with MarshallerTestSupport
-  trait ctx extends ctxNoMarshaller with CustomMarshallerProvider
-
+  trait ctx extends Scope with HttpResponseTestSupport with MarshallerTestSupport with CustomMarshallerProvider
 
   "ResponseBodyMatchers" should {
 
@@ -67,10 +64,6 @@ class RequestBodyMatchersTest extends Spec with MatchersTestSupport {
 
       aRequestWith(content) must haveBodyEntityThat(must = be_===(someObject))
       aRequestWith(content) must not( haveBodyEntityThat(must = be_===(anotherObject)) )
-    }
-
-    "provide a default json marshaller in case no marshaller is specified" in new ctxNoMarshaller {
-      aRequestWith(Marshaller.marshaller.marshall(someObject)) must haveBodyWith(someObject)
     }
   }
 }

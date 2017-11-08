@@ -1,5 +1,6 @@
 package com.wix.e2e.http.marshaller
 
+import com.wix.e2e.http.api.Marshaller.Implicits._
 import com.wix.e2e.http.client.transformers.HttpClientTransformers
 import com.wix.e2e.http.drivers.MarshallerMatchers._
 import com.wix.e2e.http.drivers.MarshallerTestSupport
