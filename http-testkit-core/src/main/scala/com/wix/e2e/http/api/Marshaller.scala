@@ -19,7 +19,7 @@ object Marshaller {
     DefaultMarshaller.lookup
                      .orElse( ExternalMarshaller.lookup )
                      .map( newInstance )
-                     .getOrElse( new NopMarshpper )
+                     .getOrElse( new NopMarshaller )
 
   private def newInstance(clazz: Class[_]) =
     clazz.getConstructor()
@@ -39,11 +39,11 @@ object DefaultMarshaller {
 object ExternalMarshaller {
   def lookup: Option[Class[_]] =
     new Reflections().getSubTypesOf(classOf[Marshaller]).asScala
-                     .filterNot( _ == classOf[NopMarshpper])
+                     .filterNot( _ == classOf[NopMarshaller])
                      .headOption
 }
 
-class NopMarshpper extends Marshaller {
+class NopMarshaller extends Marshaller {
   def marshall[T](t: T): String = throwMissingMarshallerError
   def unmarshall[T: Manifest](jsonStr: String): T = throwMissingMarshallerError
 
