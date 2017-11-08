@@ -2,6 +2,7 @@ package com.wix.e2e.http.matchers.internal
 
 import com.wix.e2e.http.api.Marshaller
 import com.wix.e2e.http.matchers.ResponseMatchers._
+import com.wix.e2e.http.api.Marshaller.Implicits._
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
 import com.wix.e2e.http.matchers.drivers.HttpResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseTestSupport
@@ -47,19 +48,18 @@ class ResponseBodyAndStatusMatchersTest extends Spec {
     }
 
     "match successful request with entity" in new ctx {
-      aSuccessfulResponseWith(Marshaller.marshaller.marshall(someObject)) must beSuccessfulWith( someObject )
-      aSuccessfulResponseWith(Marshaller.marshaller.marshall(someObject)) must not( beSuccessfulWith( anotherObject ) )
+      aSuccessfulResponseWith(marshaller.marshall(someObject)) must beSuccessfulWith( someObject )
+      aSuccessfulResponseWith(marshaller.marshall(someObject)) must not( beSuccessfulWith( anotherObject ) )
     }
 
     "match successful request with entity with custom marshaller" in new ctx {
-      implicit val marshaller = Marshaller.marshaller
-      aSuccessfulResponseWith(Marshaller.marshaller.marshall(someObject)) must beSuccessfulWith( someObject )
-      aSuccessfulResponseWith(Marshaller.marshaller.marshall(someObject)) must not( beSuccessfulWith( anotherObject ) )
+      aSuccessfulResponseWith(marshaller.marshall(someObject)) must beSuccessfulWith( someObject )
+      aSuccessfulResponseWith(marshaller.marshall(someObject)) must not( beSuccessfulWith( anotherObject ) )
     }
 
     "match successful request with entity matcher" in new ctx {
-      aSuccessfulResponseWith(Marshaller.marshaller.marshall(someObject)) must beSuccessfulWithEntityThat( must = be_===( someObject ) )
-      aSuccessfulResponseWith(Marshaller.marshaller.marshall(someObject)) must not( beSuccessfulWithEntityThat( must = be_===( anotherObject ) ) )
+      aSuccessfulResponseWith(marshaller.marshall(someObject)) must beSuccessfulWithEntityThat( must = be_===( someObject ) )
+      aSuccessfulResponseWith(marshaller.marshall(someObject)) must not( beSuccessfulWithEntityThat( must = be_===( anotherObject ) ) )
     }
 
     "match successful request with headers" in new ctx {

@@ -4,7 +4,7 @@ import java.net.URLEncoder
 
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.HttpCookiePair
-import com.wix.e2e.http.api.Marshaller
+import com.wix.e2e.http.api.Marshaller.Implicits._
 import com.wix.e2e.http.client.transformers.HttpClientTransformers
 import com.wix.e2e.http.exceptions.UserAgentModificationNotSupportedException
 import com.wix.e2e.http.matchers.RequestMatchers._
@@ -128,7 +128,7 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
 
   "ResponseTransformers" should {
     "easily extract content from response" in new ctx {
-      HttpResponse(entity = Marshaller.marshaller.marshall(payload)).extractAs[SomePayload] must_=== payload
+      HttpResponse(entity = marshaller.marshall(payload)).extractAs[SomePayload] must_=== payload
     }
   }
 }

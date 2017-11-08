@@ -12,8 +12,9 @@ trait Marshaller {
 
 
 object Marshaller {
-
-  implicit val marshaller: Marshaller = defaultMarshaller
+  object Implicits {
+    implicit val marshaller: Marshaller = defaultMarshaller
+  }
 
   private def defaultMarshaller =
     DefaultMarshaller.lookup
