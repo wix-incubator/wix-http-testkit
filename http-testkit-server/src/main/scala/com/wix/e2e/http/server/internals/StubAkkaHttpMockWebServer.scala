@@ -22,12 +22,12 @@ class StubAkkaHttpMockWebServer(initialHandlers: Seq[RequestHandler], specificPo
   private val requests = ListBuffer.empty[HttpRequest]
 
   private val SuccessfulHandler: RequestHandler = { case _ => HttpResponse(status = StatusCodes.OK) }
-  private def MockServerHandlers = (currentHandlers :+ SuccessfulHandler).reduce(_ orElse _)
+  private def StubServerHandlers = (currentHandlers :+ SuccessfulHandler).reduce(_ orElse _)
   private val RequestRecorderHandler: RequestHandler = { case r =>
     this.synchronized {
       requests.append(r)
     }
-    MockServerHandlers.apply(r)
+    StubServerHandlers.apply(r)
   }
 
   protected val serverBehavior = RequestRecorderHandler
@@ -38,9 +38,12 @@ class MockAkkaHttpWebServer(initialHandlers: Seq[RequestHandler], specificPort: 
   with MockWebServer {
 
   private val NotFoundHandler: RequestHandler = { case _ => HttpResponse(status = StatusCodes.NotFound) }
-  protected def serverBehavior: RequestHandler = {
-    (currentHandlers :+ NotFoundHandler).reduce(_ orElse _)
+  private def MockServerHandlers = (currentHandlers :+ NotFoundHandler).reduce(_ orElse _)
+  private val AdjustableHandler: RequestHandler = { case r =>
+    MockServerHandlers.apply(r)
   }
+
+  protected val serverBehavior = AdjustableHandler
 }
 
 trait AdjustableServerBehaviorSupport extends AdjustableServerBehavior {

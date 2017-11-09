@@ -122,16 +122,23 @@ class WebServerContractTest extends Spec {
 
     "define at least one handler and respond according to the defined behavior" in new ctx {
       val server = aMockWebServerWith(handlerFor(path, returnsBody = content)).build
-                                                                                  .start()
+                                                                              .start()
 
-      implicit lazy val sut = server.baseUri
+      get(path)(server.baseUri) must beSuccessfulWith(content)
+    }
 
-      get(path) must beSuccessfulWith(content)
+    "allow to dynamically replace handlers" in new ctx {
+      val server = aMockWebServerWith(handlerFor(path, returnsBody = content)).build
+                                                                              .start()
+
+      server.replaceWith(handlerFor(path, returnsBody = anotherContent))
+
+      get(path)(server.baseUri) must beSuccessfulWith(anotherContent)
     }
 
     "return 404 if no handler is found to handle the request" in new ctx {
       val server = aMockWebServerWith(handlerFor(path, returnsBody = content)).build
-                                                                                  .start()
+                                                                              .start()
 
       implicit lazy val sut = server.baseUri
 
