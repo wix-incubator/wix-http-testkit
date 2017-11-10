@@ -1,5 +1,6 @@
 package com.wix.e2e.http.drivers
 
+import akka.http.scaladsl.model._
 import com.wix.e2e.http.BaseUri
 import com.wix.e2e.http.server.WebServerFactory.aStubWebServer
 import org.specs2.mutable.After
@@ -7,6 +8,11 @@ import org.specs2.mutable.After
 trait StubWebServerProvider extends After {
   val server = aStubWebServer.build
                              .start()
+
+  server.appendAll({
+    case HttpRequest(HttpMethods.GET, uri, _, _, _) if uri.path.toString() == "//big-response/512_KiB" =>
+      HttpResponse(entity = HttpEntity("." * 1024 * 512))
+  })
 
   def after = server.stop()
 

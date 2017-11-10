@@ -1,7 +1,8 @@
 package com.wix.e2e.http.client
 
-import akka.http.scaladsl.model.HttpResponse
+import akka.http.scaladsl.model.{HttpEntity, HttpResponse}
 import com.wix.e2e.http.api.Marshaller.Implicits._
+import com.wix.e2e.http.client.sync.get
 import com.wix.e2e.http.drivers.{HttpClientTestSupport, StubWebServerProvider}
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.ResponseMatchers.beConnectionRefused
@@ -150,6 +151,11 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
     "match connection failed" in new ctx {
       get("/nowhere")(ClosedPort) must beConnectionRefused.await
+    }
+
+    "returns response with pre-consumed entity (frees up connection)" in new ctx {
+      val response = waitFor(get("/big-response/512_KiB"))
+      response.entity must beAnInstanceOf[HttpEntity.Strict]
     }
   }
 }
