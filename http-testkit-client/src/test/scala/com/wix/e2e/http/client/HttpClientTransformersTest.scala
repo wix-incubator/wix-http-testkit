@@ -127,8 +127,20 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
   }
 
   "ResponseTransformers" should {
-    "easily extract content from response" in new ctx {
-      HttpResponse(entity = marshaller.marshall(payload)).extractAs[SomePayload] must_=== payload
+    "extract response body" should {
+      "as unmarshalled JSON" in new ctx {
+        HttpResponse(entity = marshaller.marshall(payload)).extractAs[SomePayload] must_=== payload
+      }
+
+      "as string" in new ctx {
+        val stringPayload = "some text"
+        HttpResponse(entity = HttpEntity(stringPayload)).asString must_=== stringPayload
+      }
+
+      "as array of bytes" in new ctx {
+        val bytesPayload = Array[Byte](0x01, 0x02, 0x03)
+        HttpResponse(entity = HttpEntity(bytesPayload)).asBytes must_=== bytesPayload
+      }
     }
   }
 }
