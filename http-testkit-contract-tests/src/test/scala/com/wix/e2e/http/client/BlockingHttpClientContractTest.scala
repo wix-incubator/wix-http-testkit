@@ -1,6 +1,6 @@
 package com.wix.e2e.http.client
 
-import akka.http.scaladsl.model.HttpResponse
+import akka.http.scaladsl.model.{HttpEntity, HttpResponse}
 import com.wix.e2e.http.api.Marshaller.Implicits._
 import com.wix.e2e.http.client.sync._
 import com.wix.e2e.http.drivers.{HttpClientTestSupport, StubWebServerProvider}
@@ -149,6 +149,11 @@ class BlockingHttpClientContractTest extends Spec {
 
     "match connection failed" in new ctx {
       get(path)(ClosedPort) must beConnectionRefused
+    }
+
+    "returns response with pre-consumed entity (frees up connection)" in new ctx {
+      val response = get("/big-response/512_KiB")
+      response.entity must beAnInstanceOf[HttpEntity.Strict]
     }
   }
 }

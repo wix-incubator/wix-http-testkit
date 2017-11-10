@@ -2,7 +2,7 @@ package com.wix.e2e.http.client.internals
 
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.settings.ConnectionPoolSettings
-import akka.stream.StreamTcpException
+import akka.stream.{Materializer, StreamTcpException}
 import com.wix.e2e.http.WixHttpTestkitResources.system
 import com.wix.e2e.http._
 import com.wix.e2e.http.exceptions.ConnectionRefusedException
@@ -27,6 +27,13 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
     Http().singleRequest(request = transformed,
                          settings = settingsWith(withTimeout))
           .recoverWith( { case _: StreamTcpException => Future.failed(throw new ConnectionRefusedException(baseUri)) } )
+          .map(withMaterialisedContent(withTimeout))
+  }
+
+  private def withMaterialisedContent(withTimeout: FiniteDuration)(response: HttpResponse)(implicit materializer: Materializer): HttpResponse = {
+    val futureOfStrict = response.entity.toStrict(withTimeout)
+    val strictEntity = waitFor(futureOfStrict)(atMost = withTimeout)
+    response.copy(entity = strictEntity)
   }
 
   private def composeUrlFor(baseUri: BaseUri, path: String): RequestTransformer =
