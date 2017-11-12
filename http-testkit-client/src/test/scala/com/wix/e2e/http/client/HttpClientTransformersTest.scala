@@ -25,6 +25,7 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
     val someBody = randomStr
     val someBytes = randomBytes(100)
     val payload = SomePayload(randomStr, randomStr)
+    val strBody = randomStr
   }
 
 
@@ -133,13 +134,11 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
       }
 
       "as string" in new ctx {
-        val stringPayload = "some text"
-        HttpResponse(entity = HttpEntity(stringPayload)).asString must_=== stringPayload
+        HttpResponse(entity = HttpEntity(strBody)).extractAsString must_=== strBody
       }
 
       "as array of bytes" in new ctx {
-        val bytesPayload = Array[Byte](0x01, 0x02, 0x03)
-        HttpResponse(entity = HttpEntity(bytesPayload)).asBytes must_=== bytesPayload
+        HttpResponse(entity = HttpEntity(someBytes)).extractAsBytes must_=== someBytes
       }
     }
   }
