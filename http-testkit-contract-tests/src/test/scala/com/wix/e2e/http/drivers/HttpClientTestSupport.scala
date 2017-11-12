@@ -1,6 +1,7 @@
 package com.wix.e2e.http.drivers
 
-import akka.http.scaladsl.model.HttpResponse
+import akka.http.scaladsl.model.HttpMethods.GET
+import akka.http.scaladsl.model.{HttpEntity, HttpRequest, HttpResponse}
 import com.wix.e2e.http.{HttpRequest, RequestHandler}
 import com.wix.test.random._
 
@@ -20,6 +21,13 @@ trait HttpClientTestSupport {
 
   def handlerFor(path: String, returnsBody: String): RequestHandler = {
     case r: HttpRequest if r.uri.path.toString.endsWith(path) => HttpResponse(entity = returnsBody)
+  }
+
+  val bigResponse = 1024 * 1024
+
+  def bigResponseWith(size: Int): RequestHandler = {
+    case HttpRequest(GET, uri, _, _, _) if uri.path.toString().contains("big-response") =>
+      HttpResponse(entity = HttpEntity(randomStrWith(size)))
   }
 }
 

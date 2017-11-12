@@ -26,6 +26,7 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
     import WixHttpTestkitResources.{materializer, system}
     Http().singleRequest(request = transformed,
                          settings = settingsWith(withTimeout))
+          .flatMap( _.toStrict(timeout = withTimeout) )
           .recoverWith( { case _: StreamTcpException => Future.failed(throw new ConnectionRefusedException(baseUri)) } )
   }
 

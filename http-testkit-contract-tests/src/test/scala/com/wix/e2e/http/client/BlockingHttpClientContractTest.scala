@@ -5,6 +5,7 @@ import com.wix.e2e.http.api.Marshaller.Implicits._
 import com.wix.e2e.http.client.sync._
 import com.wix.e2e.http.drivers.{HttpClientTestSupport, StubWebServerProvider}
 import com.wix.e2e.http.matchers.RequestMatchers._
+import com.wix.e2e.http.matchers.ResponseMatchers
 import com.wix.e2e.http.matchers.ResponseMatchers.beConnectionRefused
 import com.wix.e2e.http.server.WebServerFactory.aStubWebServer
 import org.specs2.mutable.Spec
@@ -149,6 +150,13 @@ class BlockingHttpClientContractTest extends Spec {
 
     "match connection failed" in new ctx {
       get(path)(ClosedPort) must beConnectionRefused
+    }
+
+    "returns response with pre-consumed entity (frees up connection)" in new ctx {
+      server.appendAll(bigResponseWith(size = bigResponse))
+
+      get("/big-response") must
+        ResponseMatchers.beSuccessfulWithBodyThat(must = haveSize(bigResponse))
     }
   }
 }
