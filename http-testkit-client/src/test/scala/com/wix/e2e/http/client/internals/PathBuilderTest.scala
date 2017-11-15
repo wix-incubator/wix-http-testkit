@@ -41,6 +41,8 @@ class PathBuilderTest extends SpecWithJUnit {
 
     "allow to append relative path" in new ctx {
       baseUri.copy(contextRoot = None).asUriWith(relativePath) must beUrl(s"http://${baseUri.host}:${baseUri.port}$relativePath")
+      baseUri.copy(contextRoot = Some("")).asUriWith(relativePath) must beUrl(s"http://${baseUri.host}:${baseUri.port}$relativePath")
+      baseUri.copy(contextRoot = Some("/")).asUriWith(relativePath) must beUrl(s"http://${baseUri.host}:${baseUri.port}$relativePath")
     }
 
     "allow to append relative path with multiple parts" in new ctx {
