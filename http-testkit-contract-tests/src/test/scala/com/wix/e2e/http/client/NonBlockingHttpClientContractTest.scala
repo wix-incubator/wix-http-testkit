@@ -157,7 +157,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
       server.appendAll(bigResponseWith(size = bigResponse))
 
       get("/big-response") must
-        ResponseMatchers.beSuccessfulWithBodyThat(must = haveSize(bigResponse)).await
+        ResponseMatchers.beSuccessfulWithBodyThat(must = haveSize(bigResponse)).await(retries = 3, timeout = 1.second)
     }
 
   }
