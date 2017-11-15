@@ -141,6 +141,20 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
         HttpResponse(entity = HttpEntity(someBytes)).extractAsBytes must_=== someBytes
       }
     }
+
+    "extract response entity" should {
+      "as unmarshalled JSON" in new ctx {
+        HttpEntity(marshaller.marshall(payload)).extractAs[SomePayload] must_=== payload
+      }
+
+      "as string" in new ctx {
+        HttpEntity(strBody).extractAsString must_=== strBody
+      }
+
+      "as array of bytes" in new ctx {
+        HttpEntity(someBytes).extractAsBytes must_=== someBytes
+      }
+    }
   }
 }
 
