@@ -4,6 +4,7 @@ import scala.util.Random
 
 package object random {
 
+  def randomStrOpt: Option[String] = Some( randomStr )
   def randomStr: String = randomStrWith(length = 20)
   def randomStrWith(length: Int): String =
     Random.alphanumeric
