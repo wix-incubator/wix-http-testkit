@@ -43,7 +43,9 @@ package object internals {
     private def rebuildAndEscapeParams(p: String) =
       p.split("&")
        .map( _.split("=") )
-       .map( { case Array(k, v) => s"$k=${URLEncoder.encode(v, "UTF-8")}" })
+       .map( { case Array(k, v) => s"$k=${URLEncoder.encode(v, "UTF-8")}"
+          case Array(k) => k
+       } )
        .mkString("&")
   }
 }

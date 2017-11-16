@@ -66,5 +66,9 @@ class PathBuilderTest extends SpecWithJUnit {
     "support relative path with explicit request escaped params" in new ctx {
       baseUri.copy(contextRoot = None).asUriWith(s"$relativePath?key=val&encoded=$escapedCharacters") must beUrl(s"http://${baseUri.host}:${baseUri.port}$relativePath?key=val&encoded=${URLEncoder.encode(escapedCharacters, "UTF-8")}")
     }
+
+    "support relative path with explicit request params without value" in new ctx {
+      baseUri.copy(contextRoot = None).asUriWith(s"$relativePath?key") must beUrl(s"http://${baseUri.host}:${baseUri.port}$relativePath?key")
+    }
   }
 }
