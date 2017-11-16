@@ -3,6 +3,7 @@ package com.wix.e2e.http.server
 import com.wix.e2e.http.BaseUri
 import com.wix.e2e.http.client.sync._
 import com.wix.e2e.http.drivers.HttpClientTestSupport
+import com.wix.e2e.http.exceptions.MisconfiguredMockServerException
 import com.wix.e2e.http.matchers.RequestMatchers.{beGet, havePath}
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.server.WebServerFactory._
@@ -143,6 +144,17 @@ class WebServerContractTest extends Spec {
       implicit lazy val sut = server.baseUri
 
       get(anotherPath) must beNotFound
+    }
+
+    "allow server to be created with a seq of handlers" in new ctx {
+      val server = aMockWebServerWith(Seq(handlerFor(path, returnsBody = content))).build
+                                                                                   .start()
+
+      get(path)(server.baseUri) must beSuccessfulWith(content)
+    }
+
+    "not allow server to be created with no handlers" in new ctx {
+      val server = aMockWebServerWith(Seq.empty).build must throwAn[MisconfiguredMockServerException]
     }
   }
 }
