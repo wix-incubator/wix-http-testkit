@@ -5,31 +5,20 @@ import java.net.URLEncoder
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.HttpCookiePair
 import com.wix.e2e.http.api.Marshaller.Implicits._
-import com.wix.e2e.http.client.transformers.HttpClientTransformers
-import com.wix.e2e.http.exceptions.UserAgentModificationNotSupportedException
+import com.wix.e2e.http.client.transformers._
+import com.wix.e2e.http.drivers.HttpClientTransformersMatchers._
+import com.wix.e2e.http.drivers.{HttpClientTransformersTestSupport, SomePayload}
+import com.wix.e2e.http.exceptions.{MultipartFileReadError, UserAgentModificationNotSupportedException}
 import com.wix.e2e.http.matchers.RequestMatchers._
-import com.wix.test.random._
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 class HttpClientTransformersTest extends Spec with HttpClientTransformers {
 
-  trait ctx extends Scope {
-    val request = HttpRequest()
-
-    val keyValue1 = randomStrPair
-    val keyValue2 = randomStrPair
-    val keyValue3 = randomStrPair
-    val escapedCharacters = "!'();:@&=+$,/?%#[]\"'/\\"
-    val userAgent = randomStr
-    val someBody = randomStr
-    val someBytes = randomBytes(100)
-    val payload = SomePayload(randomStr, randomStr)
-    val strBody = randomStr
-  }
+  trait ctx extends Scope with HttpClientTransformersTestSupport
 
 
-  "RequestTransformers" should {
+  "Parameter Request Transformers" should {
 
     "add parameter to requested URI" in new ctx {
       withParam(keyValue1)(request) must haveTheSameParamsAs(keyValue1)
@@ -41,9 +30,13 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
 
     "chain several add parameters calls together" in new ctx {
       (withParams(keyValue1) and
-       withParam(keyValue2))(request) must
+        withParam(keyValue2)) (request) must
         haveTheSameParamsAs(keyValue1, keyValue2)
     }
+
+  }
+
+  "Header Request Transformers" should {
 
     "be able to add header to request" in new ctx {
       withHeaders(keyValue1, keyValue2)(request) must haveTheSameHeadersAs(keyValue1, keyValue2)
@@ -51,7 +44,7 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
 
     "chain more than one add headers calls to request" in new ctx {
       (withHeader(keyValue1) and
-       withHeader(keyValue2))(request) must haveTheSameHeadersAs(keyValue1, keyValue2)
+        withHeader(keyValue2)) (request) must haveTheSameHeadersAs(keyValue1, keyValue2)
     }
 
     "allow modifying user agent of the client" in new ctx {
@@ -62,6 +55,10 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
       withHeader("user-agent" -> userAgent)(request) must throwAn[UserAgentModificationNotSupportedException]
       withHeaders("user-agent" -> userAgent)(request) must throwAn[UserAgentModificationNotSupportedException]
     }
+
+  }
+
+  "Cookie Request Transformers" should {
 
     "add cookie to request" in new ctx {
       withCookie(keyValue1)(request) must receivedCookieThat(be_===(HttpCookiePair(keyValue1)))
@@ -77,6 +74,9 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
        withCookie(keyValue2))(request) must { receivedCookieThat(be_===(HttpCookiePair(keyValue1))) and
                                               receivedCookieThat(be_===(HttpCookiePair(keyValue2))) }
     }
+  }
+
+  "Body Request Transformers" should {
 
     "add string payload with content type" in new ctx {
       withPayload(body = someBody)(request) must (haveTextPlainBody and haveBodyWith(someBody))
@@ -102,6 +102,72 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
       withFormData(keyValue1, "escaped-characters" -> escapedCharacters)(request) must
         ( haveFormUrlEncodedBody and haveBodyWith(bodyContent = s"${keyValue1._1}=${keyValue1._2}&escaped-characters=${URLEncoder.encode(escapedCharacters, "UTF-8")}") )
     }
+  }
+
+  "Multipart Body Request Transformers" should {
+
+    "add multipart request data with simple string type" in new ctx {
+      withMultipartData(plainRequestPart)(request) must
+        ( haveMultipartFormBody and haveBodyPartWith(plainRequestPart) )
+    }
+
+    "add multipart request data with simple string type and content type" in new ctx {
+      withMultipartData(plainRequestXmlPart)(request) must
+        ( haveMultipartFormBody and haveBodyPartWith(plainRequestXmlPart) )
+    }
+
+    "add multipart request data with binary type" in new ctx {
+      withMultipartData(binaryRequestXmlPart)(request) must
+        ( haveMultipartFormBody and haveBinaryBodyPartWith(binaryRequestXmlPart) )
+    }
+
+
+    "add multipart request data with binary type and content type" in new ctx {
+      withMultipartData(binaryRequestPart)(request) must
+        ( haveMultipartFormBody and haveBinaryBodyPartWith(binaryRequestPart) )
+    }
+
+    "add multipart file data with binary type" in new ctx {
+      val f = givenFileWith(someBytes)
+      val fileRequestPart = partName -> FileRequestPart(f.toFile)
+
+      withMultipartData(partName -> FileRequestPart(f.toFile))(request) must
+        ( haveMultipartFormBody and haveFileBodyPartWith(partName -> FileRequestPart(f.toFile)) )
+    }
+
+    "add multipart file data with binary type and content type" in new ctx {
+      val f = givenFileWith(someBytes)
+      val fileRequestPart = partName -> FileRequestPart(f.toFile, HttpClientContentTypes.XmlContent)
+
+      withMultipartData(fileRequestPart)(request) must
+        ( haveMultipartFormBody and haveFileBodyPartWith(fileRequestPart) )
+    }
+
+    "add multipart file name data with binary type" in new ctx {
+      val f = givenFileWith(someBytes)
+      val fileNameRequestPart = partName -> FileNameRequestPart(f.toString)
+
+      withMultipartData(fileNameRequestPart)(request) must
+        ( haveMultipartFormBody and haveFileNameBodyPartWith(fileNameRequestPart) )
+    }
+
+    "add multipart file name data with binary type and content type" in new ctx {
+      val f = givenFileWith(someBytes)
+      val fileNameRequestPart = partName -> FileNameRequestPart(f.toString, HttpClientContentTypes.XmlContent)
+
+
+      withMultipartData(fileNameRequestPart)(request) must
+        ( haveMultipartFormBody and haveFileNameBodyPartWith(fileNameRequestPart) )
+    }
+
+    "properly handle file errors" in new ctx {
+      val fileNameRequestPart = partName -> FileNameRequestPart("non-existing-file")
+
+      withMultipartData(fileNameRequestPart)(request) must throwAn[MultipartFileReadError]("non-existing-file")
+    }
+  }
+
+  "Chained Transformers" should {
 
     "have all handlers chained together without loosing data" in new ctx {
       (withParam(keyValue1) and
@@ -158,6 +224,4 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
   }
 }
 
-
-case class SomePayload(key: String, value: String)
 

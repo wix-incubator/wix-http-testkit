@@ -2,7 +2,7 @@ package com.wix.e2e.http.matchers.internal
 
 import akka.http.scaladsl.model.ContentTypes._
 import com.wix.e2e.http.matchers.RequestMatchers._
-import com.wix.e2e.http.matchers.drivers.HttpRequestFactory.aRequestWith
+import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
 import com.wix.e2e.http.matchers.drivers.{HttpResponseTestSupport, MatchersTestSupport}
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
@@ -27,6 +27,10 @@ class RequestContentTypeMatchersTest extends Spec with MatchersTestSupport {
       aRequestWith(`application/x-www-form-urlencoded`) must haveFormUrlEncodedBody
       aRequestWith(`text/csv(UTF-8)`) must not( haveFormUrlEncodedBody )
     }
+
+    "exact match on multipart request content type" in new ctx {
+      aRequestWith(`multipart/form-data`) must haveMultipartFormBody
+      aRequestWith(`text/csv(UTF-8)`) must not( haveMultipartFormBody )
+    }
   }
 }
-

@@ -44,6 +44,7 @@ trait HttpResponseTestSupport {
   val anotherUrl = "http://example.com/another/path"
 
   val `application/x-www-form-urlencoded` = MediaTypes.`application/x-www-form-urlencoded`.withCharset(HttpCharsets.`UTF-8`)
+  val `multipart/form-data` = MediaTypes.`multipart/form-data`
 
   def randomStatusThatIsNot(status: StatusCode): StatusCode =
     Random.shuffle(AllResponseStatuses.filterNot(_ == status))
@@ -130,6 +131,11 @@ object HttpRequestFactory {
   def aRequestWith(contentType: ContentType) = HttpRequest(entity = HttpEntity.Empty.withContentType(contentType))
   def aRequestWith(binaryBody: Array[Byte]) = HttpRequest(entity = binaryBody)
   def aRequestWithoutBody = HttpRequest()
+
+  def aMultipartRequestWith(contentType: ContentType) = {
+    val multipart = Multipart.FormData(Multipart.FormData.BodyPart.Strict(randomStr, HttpEntity(contentType, randomBytes(20))))
+    HttpRequest()
+  }
 
   def aRandomRequest = aRequestWithPath(randomStr)
 }

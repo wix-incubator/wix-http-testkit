@@ -11,3 +11,4 @@ class MarshallerErrorException(content: String, t: Throwable) extends RuntimeExc
 class UserAgentModificationNotSupportedException
   extends IllegalArgumentException("`user-agent` is a special header and cannot be used in `withHeaders`. Use `withUserAgent` method instead.")
 
+class MultipartFileReadError(filename: String, t: Throwable) extends RuntimeException(s"Unable to read file $filename")

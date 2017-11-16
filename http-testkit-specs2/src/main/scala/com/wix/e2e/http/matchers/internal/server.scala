@@ -277,8 +277,11 @@ trait RequestContentTypeMatchers {
   def haveJsonBody: RequestMatcher = haveContent(ContentTypes.`application/json`)
   def haveTextPlainBody: RequestMatcher = haveContent(ContentTypes.`text/plain(UTF-8)`)
   def haveFormUrlEncodedBody: RequestMatcher = haveContent(MediaTypes.`application/x-www-form-urlencoded`.withCharset(HttpCharsets.`UTF-8`))
+  def haveMultipartFormBody: RequestMatcher = haveMediaType(MediaTypes.`multipart/form-data`)
 
 
   private def haveContent(contentType: ContentType): RequestMatcher =
     be_===(contentType) ^^ { (_: HttpRequest).entity.contentType aka "content type"}
+  private def haveMediaType(mediaType: MediaType): RequestMatcher =
+    be_===(mediaType) ^^ { (_: HttpRequest).entity.contentType.mediaType.withParams(Map.empty) aka "content type"}
 }
