@@ -8,6 +8,7 @@ import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.ResponseMatchers
 import com.wix.e2e.http.matchers.ResponseMatchers.beConnectionRefused
 import com.wix.e2e.http.server.WebServerFactory.aStubWebServer
+import org.specs2.execute.PendingUntilFixed._
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
@@ -139,6 +140,19 @@ class BlockingHttpClientContractTest extends Spec {
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1))
     }
+
+    "support generating head request" in new ctx {
+      head(path,
+            but = withParam(parameter)
+              and withHeader(header)
+              and withCookie(cookie))
+
+      server must receivedAnyRequestThat( beHead and
+                                          havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
+                                          haveAnyHeadersOf(header) and
+                                          receivedCookieWith(cookie._1))
+    }.pendingUntilFixed
 
     "throw timeout if response takes more than default timeout" in {
       val server = aStubWebServer.addHandler( { case _ => Thread.sleep(500); HttpResponse() } )
