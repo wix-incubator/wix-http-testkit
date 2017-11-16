@@ -2,6 +2,7 @@ package com.wix.e2e.http.server.internals
 
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.Http.ServerBinding
+import akka.http.scaladsl.settings.ServerSettings
 import com.wix.e2e.http.api.BaseWebServer
 import com.wix.e2e.http.utils._
 import com.wix.e2e.http.{BaseUri, RequestHandler, WixHttpTestkitResources}
@@ -18,6 +19,7 @@ abstract class AkkaHttpMockWebServer(specificPort: Option[Int], val initialHandl
   def start() = this.synchronized {
     val s = waitFor( Http().bindAndHandleSync(handler = serverBehavior,
                                               interface = "localhost",
+                                              settings = customSettings,
                                               port = specificPort.getOrElse( AllocateDynamicPort )) )
     serverBinding = Option(s)
     println(s"Web server started on port: ${baseUri.port}.")
@@ -39,4 +41,5 @@ abstract class AkkaHttpMockWebServer(specificPort: Option[Int], val initialHandl
 
   private var serverBinding: Option[ServerBinding] = None
   private val AllocateDynamicPort = 0
+  private def customSettings = ServerSettings(system).withTransparentHeadRequests(false)
 }

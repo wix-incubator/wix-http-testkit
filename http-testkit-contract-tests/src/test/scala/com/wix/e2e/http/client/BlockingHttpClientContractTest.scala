@@ -8,7 +8,6 @@ import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.ResponseMatchers
 import com.wix.e2e.http.matchers.ResponseMatchers.beConnectionRefused
 import com.wix.e2e.http.server.WebServerFactory.aStubWebServer
-import org.specs2.execute.PendingUntilFixed._
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
@@ -152,7 +151,7 @@ class BlockingHttpClientContractTest extends Spec {
                                           haveTheSameParamsAs(parameter) and
                                           haveAnyHeadersOf(header) and
                                           receivedCookieWith(cookie._1))
-    }.pendingUntilFixed
+    }
 
     "throw timeout if response takes more than default timeout" in {
       val server = aStubWebServer.addHandler( { case _ => Thread.sleep(500); HttpResponse() } )

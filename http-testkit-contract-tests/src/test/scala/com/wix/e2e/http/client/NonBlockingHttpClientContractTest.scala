@@ -141,6 +141,21 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
                                           receivedCookieWith(cookie._1)).eventually
     }
 
+    "support generating head request" in new ctx {
+      head(path,
+        but = withParam(parameter)
+          and withHeader(header)
+          and withCookie(cookie))
+
+      server must receivedAnyRequestThat( beHead and
+                                          havePath(s"/$path") and
+                                          haveTheSameParamsAs(parameter) and
+                                          haveAnyHeadersOf(header) and
+                                          receivedCookieWith(cookie._1)).eventually
+    }
+
+
+
     "throw timeout if response takes more than default timeout" in {
       val server = aStubWebServer.addHandler( { case _ => Thread.sleep(500); HttpResponse() } )
                                  .build
