@@ -29,3 +29,7 @@ sealed trait RequestPart
 case class PlainRequestPart(body: String, contentType: ContentType = TextPlain) extends RequestPart
 case class BinaryRequestPart(body: Array[Byte], contentType: ContentType = BinaryStream) extends RequestPart
 case class FileRequestPart(file: File, contentType: ContentType = BinaryStream, filename: Option[String] = None) extends RequestPart
+case class BinaryAsFileRequestPart(body: Array[Byte],
+                                   name: String,
+                                   contentType: ContentType = BinaryStream,
+                                   filename: Option[String] = None) extends RequestPart

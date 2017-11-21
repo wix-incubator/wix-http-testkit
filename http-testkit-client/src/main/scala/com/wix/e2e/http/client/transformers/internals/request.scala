@@ -53,6 +53,10 @@ trait HttpClientRequestBodyTransformers extends HttpClientContentTypes {
       case (name, FileRequestPart(file, contentType, filename)) =>
         val additionalParams = filename.fold(Map.empty[String, String])(fn => Map("filename" -> fn))
         Multipart.FormData.BodyPart(name, HttpEntity.fromPath(contentType, file.toPath), additionalParams)
+      case (name, BinaryAsFileRequestPart(body, nameAttr, contentType, filenameAttr)) =>
+        val additionalParams = Map("name" -> nameAttr) ++
+          filenameAttr.fold(Map.empty[String, String])(fn => Map("filename" -> fn))
+        Multipart.FormData.BodyPart(name, HttpEntity(contentType, body), additionalParams)
       case (name, PlainRequestPart(body, contentType)) =>
         Multipart.FormData.BodyPart(name, HttpEntity(body).withContentType(contentType))
       case (name, BinaryRequestPart(body, contentType)) =>
