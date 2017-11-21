@@ -1,5 +1,6 @@
 package com.wix.e2e.http.client
 
+import java.io.File
 import java.net.URLEncoder
 
 import akka.http.scaladsl.model._
@@ -149,6 +150,20 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
 
       withMultipartData(fileRequestPart)(request) must
         ( haveMultipartFormBody and haveFileBodyPartWith(fileRequestPart) )
+    }
+
+    "add multipart file part from array" in new ctx {
+      val part = BinaryAsFileRequestPart(someBytes, "file.name")
+
+      withMultipartData(partName -> part)(request) must
+        ( haveMultipartFormBody and haveFileBodyPartWith(partName -> FileRequestPart(new File("file.name"))) )
+    }
+
+    "add multipart file part from array with filename" in new ctx {
+      val part = BinaryAsFileRequestPart("body".getBytes(), "file.name", ContentTypes.`text/plain(UTF-8)`, Some("filename"))
+
+      withMultipartData(partName -> part)(request) must
+        ( haveMultipartFormBody and haveFileBodyPartWith(partName -> FileRequestPart(new File("file.name"), ContentTypes.`text/plain(UTF-8)`, Some("filename"))) )
     }
   }
 
