@@ -28,5 +28,4 @@ object HttpClientContentTypes extends HttpClientContentTypes
 sealed trait RequestPart
 case class PlainRequestPart(body: String, contentType: ContentType = TextPlain) extends RequestPart
 case class BinaryRequestPart(body: Array[Byte], contentType: ContentType = BinaryStream) extends RequestPart
-case class FileRequestPart(file: File, contentType: ContentType = BinaryStream) extends RequestPart
-case class FileNameRequestPart(filename: String, contentType: ContentType = BinaryStream) extends RequestPart
+case class FileRequestPart(file: File, contentType: ContentType = BinaryStream, filename: Option[String] = None) extends RequestPart

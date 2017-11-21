@@ -8,7 +8,7 @@ import com.wix.e2e.http.api.Marshaller.Implicits._
 import com.wix.e2e.http.client.transformers._
 import com.wix.e2e.http.drivers.HttpClientTransformersMatchers._
 import com.wix.e2e.http.drivers.{HttpClientTransformersTestSupport, SomePayload}
-import com.wix.e2e.http.exceptions.{MultipartFileReadError, UserAgentModificationNotSupportedException}
+import com.wix.e2e.http.exceptions.UserAgentModificationNotSupportedException
 import com.wix.e2e.http.matchers.RequestMatchers._
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
@@ -143,27 +143,12 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
         ( haveMultipartFormBody and haveFileBodyPartWith(fileRequestPart) )
     }
 
-    "add multipart file name data with binary type" in new ctx {
+    "add multipart file with custom filename" in new ctx {
       val f = givenFileWith(someBytes)
-      val fileNameRequestPart = partName -> FileNameRequestPart(f.toString)
+      val fileRequestPart = partName -> FileRequestPart(f.toFile, filename = Some("custom.file"))
 
-      withMultipartData(fileNameRequestPart)(request) must
-        ( haveMultipartFormBody and haveFileNameBodyPartWith(fileNameRequestPart) )
-    }
-
-    "add multipart file name data with binary type and content type" in new ctx {
-      val f = givenFileWith(someBytes)
-      val fileNameRequestPart = partName -> FileNameRequestPart(f.toString, HttpClientContentTypes.XmlContent)
-
-
-      withMultipartData(fileNameRequestPart)(request) must
-        ( haveMultipartFormBody and haveFileNameBodyPartWith(fileNameRequestPart) )
-    }
-
-    "properly handle file errors" in new ctx {
-      val fileNameRequestPart = partName -> FileNameRequestPart("non-existing-file")
-
-      withMultipartData(fileNameRequestPart)(request) must throwAn[MultipartFileReadError]("non-existing-file")
+      withMultipartData(fileRequestPart)(request) must
+        ( haveMultipartFormBody and haveFileBodyPartWith(fileRequestPart) )
     }
   }
 

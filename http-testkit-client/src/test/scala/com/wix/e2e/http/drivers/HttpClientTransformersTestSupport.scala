@@ -51,12 +51,10 @@ object HttpClientTransformersMatchers extends HttpClientTransformers {
       contain(part._2.body)*/ ) ^^ { (_: HttpRequest).entity.extractAsString } // todo: match body
 
   def haveFileBodyPartWith(part: (String, FileRequestPart)): RequestMatcher =
-    ( contain(s"""Content-Disposition: form-data; name="${part._1}"""") and
-      contain(s"""Content-Type: ${part._2.contentType.value}""") /*and
-      contain(part._2.body)*/ ) ^^ { (_: HttpRequest).entity.extractAsString } // todo: match body
-
-  def haveFileNameBodyPartWith(part: (String, FileNameRequestPart)): RequestMatcher =
-    ( contain(s"""Content-Disposition: form-data; name="${part._1}"""") and
+    ( contain(s"""Content-Disposition: form-data;""") and
+      contain(s"""; name="${part._1}"""") and
+      (if (part._2.filename.isEmpty) contain(";") else contain(s"""; filename="${part._2.filename.get}""")) and
+      contain(s"""Content-Type: ${part._2.contentType.value}""") and
       contain(s"""Content-Type: ${part._2.contentType.value}""") /*and
       contain(part._2.body)*/ ) ^^ { (_: HttpRequest).entity.extractAsString } // todo: match body
 
