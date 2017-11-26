@@ -1,11 +1,14 @@
 package com.wix.e2e.http.client.transformers.internals
 
+import java.io.File
+
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{Cookie, RawHeader, `User-Agent`}
 import akka.util.ByteString
 import com.wix.e2e.http.api.Marshaller
 import com.wix.e2e.http.client.transformers._
+import com.wix.e2e.http.client.transformers.internals.RequestPartOps._
 import com.wix.e2e.http.exceptions.UserAgentModificationNotSupportedException
 import com.wix.e2e.http.{RequestTransformer, WixHttpTestkitResources}
 
@@ -48,25 +51,40 @@ trait HttpClientRequestBodyTransformers extends HttpClientContentTypes {
 
   def withFormData(formParams: (String, String)*): RequestTransformer = setBody(FormData(formParams.toMap).toEntity)
 
-  def withMultipartData(parts: (String, RequestPart)*): RequestTransformer = {
-    val bodyParts = parts.map {
-      case (name, FileRequestPart(file, contentType, filename)) =>
-        val additionalParams = filename.fold(Map.empty[String, String])(fn => Map("filename" -> fn))
-        Multipart.FormData.BodyPart(name, HttpEntity.fromPath(contentType, file.toPath), additionalParams)
-      case (name, BinaryAsFileRequestPart(body, nameAttr, contentType, filenameAttr)) =>
-        val additionalParams = Map("name" -> nameAttr) ++
-          filenameAttr.fold(Map.empty[String, String])(fn => Map("filename" -> fn))
-        Multipart.FormData.BodyPart(name, HttpEntity(contentType, body), additionalParams)
-      case (name, PlainRequestPart(body, contentType)) =>
-        Multipart.FormData.BodyPart(name, HttpEntity(body).withContentType(contentType))
-      case (name, BinaryRequestPart(body, contentType)) =>
-        Multipart.FormData.BodyPart(name, HttpEntity(contentType, body))
-    }
-    setBody(Multipart.FormData(bodyParts: _*).toEntity)
-  }
-
+  def withMultipartData(parts: (String, RequestPart)*): RequestTransformer =
+    setBody( Multipart.FormData(parts.map {
+      case (n, p) => Multipart.FormData.BodyPart(n, p.asBodyPartEntity, p.withAdditionalParams)
+    }:_*)
+      .toEntity)
 
   private def setBody(entity: RequestEntity): RequestTransformer = _.copy(entity = entity)
+}
+
+object RequestPartOps {
+
+      implicit class `RequestPart --> HttpEntity`(private val r: RequestPart) extends AnyVal {
+        def asBodyPartEntity: BodyPartEntity = r match {
+          case PlainRequestPart(v, c) => HttpEntity(v).withContentType(c)
+          case BinaryRequestPart(b, c, _) => HttpEntity(c, b)
+          case FileRequestPart(f, c, _) => HttpEntity.fromPath(c, f.toPath)
+          case FileNameRequestPart(p, c, fn) => FileRequestPart(new File(p), c, fn).asBodyPartEntity
+        }
+      }
+
+      implicit class `RequestPart --> AdditionalParams`(private val r: RequestPart) extends AnyVal {
+        def withAdditionalParams: Map[String, String] = r match {
+          case _: PlainRequestPart => NoAdditionalParams
+          case BinaryRequestPart(_, _, fn) => additionalParams(fn)
+          case FileRequestPart(_, _, fn) => additionalParams(fn)
+          case FileNameRequestPart(_, _, fn) => additionalParams(fn)
+        }
+
+        private def additionalParams(filenameOpt: Option[String]) =
+          filenameOpt.map(fn => Map("filename" -> fn))
+                     .getOrElse( NoAdditionalParams )
+
+        private def NoAdditionalParams = Map.empty[String, String]
+      }
 }
 
 

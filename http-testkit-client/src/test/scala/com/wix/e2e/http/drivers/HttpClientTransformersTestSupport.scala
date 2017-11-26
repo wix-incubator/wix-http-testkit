@@ -6,7 +6,7 @@ import akka.http.scaladsl.model.HttpRequest
 import com.wix.e2e.http.HttpRequest
 import com.wix.e2e.http.client.transformers._
 import com.wix.e2e.http.matchers.RequestMatcher
-import com.wix.test.random.{randomBytes, randomStr, randomStrPair}
+import com.wix.test.random._
 import org.specs2.matcher.Matchers.contain
 
 trait HttpClientTransformersTestSupport {
@@ -21,12 +21,16 @@ trait HttpClientTransformersTestSupport {
   val someBytes = randomBytes(100)
   val payload = SomePayload(randomStr, randomStr)
   val strBody = randomStr
+
+  val partName = randomStr
+  val fileNameOpt = randomStrOpt
+
   val plainRequestPart = randomStr -> PlainRequestPart(randomStr)
   val plainRequestXmlPart = randomStr -> PlainRequestPart(randomStr, HttpClientContentTypes.XmlContent)
   val binaryRequestPart = randomStr -> BinaryRequestPart(randomBytes(20))
   val binaryRequestXmlPart = randomStr -> BinaryRequestPart(randomBytes(20), HttpClientContentTypes.XmlContent)
+  val binaryRequestXmlPartAndFilename = randomStr -> BinaryRequestPart(randomBytes(20), HttpClientContentTypes.XmlContent, fileNameOpt)
 
-  val partName = randomStr
 
   def givenFileWith(content: Array[Byte]): Path = {
     val f = Files.createTempFile("multipart", ".tmp")
@@ -46,7 +50,10 @@ object HttpClientTransformersMatchers extends HttpClientTransformers {
 
   // todo: matcher binary data on multipart request
   def haveBinaryBodyPartWith(part: (String, BinaryRequestPart)): RequestMatcher =
-    ( contain(s"""Content-Disposition: form-data; name="${part._1}"""") and
+    ( contain(s"""Content-Disposition: form-data;""") and
+      contain(s"""; name="${part._1}"""") and
+      (if (part._2.filename.isEmpty) contain(";") else contain(s"""; filename="${part._2.filename.get}""")) and
+      contain(s"""Content-Type: ${part._2.contentType.value}""") and
       contain(s"""Content-Type: ${part._2.contentType.value}""") /*and
       contain(part._2.body)*/ ) ^^ { (_: HttpRequest).entity.extractAsString } // todo: match body
 

@@ -122,6 +122,10 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
         ( haveMultipartFormBody and haveBinaryBodyPartWith(binaryRequestXmlPart) )
     }
 
+    "add multipart request data with binary type and filename" in new ctx {
+      withMultipartData(binaryRequestXmlPartAndFilename)(request) must
+        ( haveMultipartFormBody and haveBinaryBodyPartWith(binaryRequestXmlPartAndFilename) )
+    }
 
     "add multipart request data with binary type and content type" in new ctx {
       withMultipartData(binaryRequestPart)(request) must
@@ -146,24 +150,10 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
 
     "add multipart file with custom filename" in new ctx {
       val f = givenFileWith(someBytes)
-      val fileRequestPart = partName -> FileRequestPart(f.toFile, filename = Some("custom.file"))
+      val fileRequestPart = partName -> FileRequestPart(f.toFile, filename = fileNameOpt)
 
       withMultipartData(fileRequestPart)(request) must
         ( haveMultipartFormBody and haveFileBodyPartWith(fileRequestPart) )
-    }
-
-    "add multipart file part from array" in new ctx {
-      val part = BinaryAsFileRequestPart(someBytes, "file.name")
-
-      withMultipartData(partName -> part)(request) must
-        ( haveMultipartFormBody and haveFileBodyPartWith(partName -> FileRequestPart(new File("file.name"))) )
-    }
-
-    "add multipart file part from array with filename" in new ctx {
-      val part = BinaryAsFileRequestPart("body".getBytes(), "file.name", ContentTypes.`text/plain(UTF-8)`, Some("filename"))
-
-      withMultipartData(partName -> part)(request) must
-        ( haveMultipartFormBody and haveFileBodyPartWith(partName -> FileRequestPart(new File("file.name"), ContentTypes.`text/plain(UTF-8)`, Some("filename"))) )
     }
   }
 
