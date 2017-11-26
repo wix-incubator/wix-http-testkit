@@ -1,9 +1,11 @@
 package com.wix.e2e.http.matchers.drivers
 
+import akka.http.scaladsl.model.ContentTypes.`text/plain(UTF-8)`
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.Uri.{Path, Query}
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers._
+import akka.stream.scaladsl.Source
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
 import com.wix.test.random._
 import org.specs2.matcher.Matcher
@@ -29,6 +31,11 @@ trait HttpResponseTestSupport {
   val content = randomStr
   val anotherContent = randomStr
 
+  val length = randomInt(1, 30)
+  val anotherLength = randomInt(32, 60)
+
+  def contentWith(length: Int) = randomStrWith(length = length)
+
   val binaryContent = Array[Byte](1, 1, 1, 1)
   val anotherBinaryContent = Array[Byte](2, 2, 2, 2)
 
@@ -36,6 +43,7 @@ trait HttpResponseTestSupport {
   val contentType = "application/json"
   val anotherContentType = "text/plain"
   val contentTypeHeader = "content-type" -> contentType
+  val contentLengthHeader = "content-length" -> randomInt(1, 66666).toString
 
   val someObject = SomeCaseClass(randomStr, randomInt)
   val anotherObject = SomeCaseClass(randomStr, randomInt)
@@ -100,6 +108,13 @@ object HttpResponseFactory {
     aResponseWithoutBody.copy(entity = r.entity.withContentType(ContentType.parse(contentType).right.get))
   }
 
+  def aResponseWithoutContentLength =
+    HttpResponse(entity = Multipart.FormData(Multipart.FormData
+                                                      .BodyPart(randomStr,
+                                                                HttpEntity.IndefiniteLength(`text/plain(UTF-8)`,
+                                                                                            Source(immutable.Iterable.newBuilder.result))))
+                                   .toEntity)
+
   def anInvalidResponseWith(body: String) = aResponseWith(body).copy(status = BadRequest)
 }
 
@@ -131,11 +146,6 @@ object HttpRequestFactory {
   def aRequestWith(contentType: ContentType) = HttpRequest(entity = HttpEntity.Empty.withContentType(contentType))
   def aRequestWith(binaryBody: Array[Byte]) = HttpRequest(entity = binaryBody)
   def aRequestWithoutBody = HttpRequest()
-
-  def aMultipartRequestWith(contentType: ContentType) = {
-    val multipart = Multipart.FormData(Multipart.FormData.BodyPart.Strict(randomStr, HttpEntity(contentType, randomBytes(20))))
-    HttpRequest()
-  }
 
   def aRandomRequest = aRequestWithPath(randomStr)
 }

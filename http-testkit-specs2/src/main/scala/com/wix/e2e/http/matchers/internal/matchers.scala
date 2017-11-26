@@ -104,6 +104,9 @@ trait ResponseHeadersMatchers {
       if (matchAgainstContentTypeHeader)
         failure("""`content-type` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
                   |Use `haveContentType` matcher instead (or `beJsonResponse`, `beTextPlainResponse`, `beFormUrlEncodedResponse`).""".stripMargin, t)
+      else if (matchAgainstContentLengthHeader)
+        failure("""`content-length` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
+                  |Use `haveContentLength` matcher instead.""".stripMargin, t)
       else if ( comparator(comparisonResult) ) success("ok", t)
       else if (responseHeaders.isEmpty) failure("Response did not contain any headers.", t)
       else failure(errorMessage(comparisonResult), t)
@@ -120,6 +123,7 @@ trait ResponseHeadersMatchers {
     }
 
     private def matchAgainstContentTypeHeader = headers.exists( h => "content-type".compareToIgnoreCase(h._1) == 0 )
+    private def matchAgainstContentLengthHeader = headers.exists( h => "content-length".compareToIgnoreCase(h._1) == 0 )
   }
 
   def haveAnyHeaderThat(must: Matcher[String], withHeaderName: String): ResponseMatcher = new ResponseMatcher {
@@ -229,3 +233,26 @@ trait ResponseContentTypeMatchers {
     }
   }
 }
+
+trait ResponseContentLengthMatchers {
+  def haveContentLength(length: Long): ResponseMatcher = haveContentWithOptionalLengthOf(Some(length))
+  def haveNoContentLength: ResponseMatcher = haveContentWithOptionalLengthOf(None)
+
+  private def haveContentWithOptionalLengthOf(expected: Option[Long]): ResponseMatcher = new ResponseMatcher {
+    def apply[S <: HttpResponse](t: Expectable[S]) = {
+      val response = t.value
+      val actual = response.entity.contentLengthOption
+
+      (actual, expected) match {
+        case (Some(a), Some(e)) if a == e => success("ok", t)
+        case (Some(a), Some(e)) if a != e => failure(s"Expected content length [$e] does not match actual content length [$a]", t)
+        case (None, Some(e)) => failure(s"Expected content length [$e] but response did not contain `content-length` header.", t)
+        case (Some(a), None) => failure(s"Expected no `content-length` header but response did contain `content-length` header with size [$a].", t)
+        case (None, None) => success("ok", t)
+      }
+    }
+  }
+}
+
+trait ResponseSpecialHeadersMatchers extends ResponseContentTypeMatchers
+                                        with ResponseContentLengthMatchers
