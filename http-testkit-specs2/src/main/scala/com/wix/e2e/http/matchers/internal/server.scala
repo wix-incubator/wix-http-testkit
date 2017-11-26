@@ -46,7 +46,7 @@ trait RequestUrlMatchers {
     haveParameterInternal(params, r => r.extra.isEmpty && r.missing.isEmpty,
                           req => s"Request parameters are not identical, missing parameters from request: [${req.missing.map(_._1).mkString(", ")}], request contained extra parameters: [${req.extra.map(_._1).mkString(", ")}]." )
 
-  private def haveParameterInternal(params: Seq[(String, String)], comparator: ParamterComparisonResult => Boolean, errorMessage: ParamterComparisonResult => String): RequestMatcher = new RequestMatcher {
+  private def haveParameterInternal(params: Seq[(String, String)], comparator: ParameterComparisonResult => Boolean, errorMessage: ParameterComparisonResult => String): RequestMatcher = new RequestMatcher {
 
     def apply[S <: HttpRequest](t: Expectable[S]): MatchResult[S] = {
       val request = t.value
@@ -60,12 +60,12 @@ trait RequestUrlMatchers {
 
     private def compareParam(param1: (String, String), param2: (String, String)) = param1._1 == param2._1 && param1._2 == param2._2
 
-    private def compare(params: Seq[(String, String)], requestParams: Seq[(String, String)]): ParamterComparisonResult = {
+    private def compare(params: Seq[(String, String)], requestParams: Seq[(String, String)]): ParameterComparisonResult = {
       val identical = params.filter( h1 => requestParams.exists( h2 => compareParam(h1, h2) ) )
       val missing = params.filter( h1 => !identical.exists( h2 => compareParam(h1, h2) ) )
       val extra = requestParams.filter( h1 => !identical.exists( h2 => compareParam(h1, h2) ) )
 
-      ParamterComparisonResult(identical, missing, extra)
+      ParameterComparisonResult(identical, missing, extra)
     }
   }
 
@@ -86,7 +86,7 @@ trait RequestUrlMatchers {
     }
   }
 
-  private case class ParamterComparisonResult(identical: Seq[(String, String)], missing: Seq[(String, String)], extra: Seq[(String, String)])
+  private case class ParameterComparisonResult(identical: Seq[(String, String)], missing: Seq[(String, String)], extra: Seq[(String, String)])
 }
 
 trait RequestHeadersMatchers {
