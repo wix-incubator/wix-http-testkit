@@ -27,7 +27,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
     "support generating get request" in new ctx {
       get(path,
-        but = withParam(parameter)
+        apply = withParam(parameter)
           and withHeader(header)
           and withCookie(cookie) )
 
@@ -40,7 +40,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
     "support generating post request" in new ctx {
       post(path,
-        but = withParam(parameter)
+        apply = withParam(parameter)
           and withHeader(header)
           and withCookie(cookie)
           and withPayload(someObject))
@@ -55,7 +55,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
     "support generating post url encoded request" in new ctx {
       post(path,
-        but = withParam(parameter)
+        apply = withParam(parameter)
           and withHeader(header)
           and withCookie(cookie)
           and withFormData(formData))
@@ -70,7 +70,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
     "support generating put request" in new ctx {
       put(path,
-        but = withParam(parameter)
+        apply = withParam(parameter)
           and withHeader(header)
           and withCookie(cookie)
           and withPayload(someObject))
@@ -85,7 +85,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
     "support generating delete request" in new ctx {
       delete(path,
-        but = withParam(parameter)
+        apply = withParam(parameter)
           and withHeader(header)
           and withCookie(cookie)
           and withPayload(someObject))
@@ -100,7 +100,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
     "support generating patch request" in new ctx {
       patch(path,
-        but = withParam(parameter)
+        apply = withParam(parameter)
           and withHeader(header)
           and withCookie(cookie)
           and withPayload(someObject))
@@ -115,7 +115,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
     "support generating options request" in new ctx {
       options(path,
-        but = withParam(parameter)
+        apply = withParam(parameter)
           and withHeader(header)
           and withCookie(cookie)
           and withPayload(someObject))
@@ -130,7 +130,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
     "support generating trace request" in new ctx {
       trace(path,
-        but = withParam(parameter)
+        apply = withParam(parameter)
           and withHeader(header)
           and withCookie(cookie))
 
@@ -143,7 +143,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
     "support generating head request" in new ctx {
       head(path,
-        but = withParam(parameter)
+        apply = withParam(parameter)
           and withHeader(header)
           and withCookie(cookie))
 

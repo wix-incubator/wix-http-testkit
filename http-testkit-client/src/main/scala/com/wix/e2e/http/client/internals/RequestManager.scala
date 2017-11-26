@@ -14,14 +14,14 @@ import scala.concurrent.duration._
 
 
 trait RequestManager[R] {
-  def apply(path: String, but: RequestTransformer = identity, withTimeout: FiniteDuration = 5.seconds)(implicit baseUri: BaseUri): R
+  def apply(path: String, apply: RequestTransformer = identity, withTimeout: FiniteDuration = 5.seconds)(implicit baseUri: BaseUri): R
 }
 
 class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Future[HttpResponse]] {
 
 
-  def apply(path: String, but: RequestTransformer, withTimeout: FiniteDuration)(implicit baseUri: BaseUri): Future[HttpResponse] = {
-    val transformed = Seq(composeUrlFor(baseUri, path), but)
+  def apply(path: String, apply: RequestTransformer, withTimeout: FiniteDuration)(implicit baseUri: BaseUri): Future[HttpResponse] = {
+    val transformed = Seq(composeUrlFor(baseUri, path), apply)
                                 .foldLeft(request) { case (r, tr) => tr(r) }
     import WixHttpTestkitResources.{materializer, system}
     Http().singleRequest(request = transformed,
@@ -46,8 +46,8 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
 
 class BlockingRequestManager(request: HttpRequest) extends RequestManager[HttpResponse] {
 
-  def apply(path: String, but: RequestTransformer, withTimeout: FiniteDuration)(implicit baseUri: BaseUri): HttpResponse =
-    waitFor( nonBlockingRequestManager(path, but, withTimeout) )(Duration.Inf)
+  def apply(path: String, apply: RequestTransformer, withTimeout: FiniteDuration)(implicit baseUri: BaseUri): HttpResponse =
+    waitFor( nonBlockingRequestManager(path, apply, withTimeout) )(Duration.Inf)
 
   private val nonBlockingRequestManager = new NonBlockingRequestManager(request)
 }
