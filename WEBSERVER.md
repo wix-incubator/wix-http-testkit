@@ -73,7 +73,18 @@ A Stub server can, but is not required to, have custom handlers (the same as the
 
 
 ```
-
+#### Editing handlers in test
+You can update the handlers by calling : 
+```scala
+val newHandler = // create your own
+mockWebServer.replaceWith(newHandler)
+```
+This will reset the handlers and set it to the new one 
+Or you can add handlers to the existing ones : 
+```scala
+val newHandler = // create your own
+mockWebServer.appendAll(newHandler)
+```
 
 #### Recorded Requests
 
