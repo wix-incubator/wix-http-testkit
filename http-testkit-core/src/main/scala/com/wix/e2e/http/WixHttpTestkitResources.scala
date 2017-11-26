@@ -9,7 +9,7 @@ object WixHttpTestkitResources {
   implicit val system = ActorSystem("wix-http-testkit")
   implicit val materializer = ActorMaterializer()
 
-  lazy val xmlPrinter = new PrettyPrinter(80, 2)
+  def xmlPrinter = new PrettyPrinter(80, 2)
 
   sys.addShutdownHook {
     system.terminate()
