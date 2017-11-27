@@ -2,6 +2,8 @@ package com.wix.e2e.http.drivers
 
 import akka.http.scaladsl.model.HttpMethods.GET
 import akka.http.scaladsl.model.{HttpEntity, HttpRequest, HttpResponse}
+import com.wix.e2e.http.info.HttpTestkitVersion
+import com.wix.e2e.http.matchers.{RequestMatcher, ResponseMatcher}
 import com.wix.e2e.http.{HttpRequest, RequestHandler}
 import com.wix.test.random._
 
@@ -32,3 +34,17 @@ trait HttpClientTestSupport {
 }
 
 case class SomeCaseClass(s: String, i: Int)
+
+object HttpClientMatchers {
+  import com.wix.e2e.http.matchers.RequestMatchers._
+
+  def haveClientHttpTestkitUserAgentWithLibraryVersion: RequestMatcher =
+    haveAnyHeadersOf("User-Agent" -> s"client-http-testkit/$HttpTestkitVersion")
+}
+
+object HttpServerMatchers {
+  import com.wix.e2e.http.matchers.ResponseMatchers._
+
+  def haveServerHttpTestkitHeaderWithLibraryVersion: ResponseMatcher =
+    haveAnyHeadersOf("Server" -> s"server-http-testkit/$HttpTestkitVersion")
+}

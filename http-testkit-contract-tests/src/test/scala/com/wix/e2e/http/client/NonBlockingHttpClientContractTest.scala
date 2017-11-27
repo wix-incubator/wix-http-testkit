@@ -2,6 +2,7 @@ package com.wix.e2e.http.client
 
 import akka.http.scaladsl.model.HttpResponse
 import com.wix.e2e.http.api.Marshaller.Implicits._
+import com.wix.e2e.http.drivers.HttpClientMatchers._
 import com.wix.e2e.http.drivers.{HttpClientTestSupport, StubWebServerProvider}
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.ResponseMatchers
@@ -175,5 +176,10 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
         ResponseMatchers.beSuccessfulWithBodyThat(must = haveSize(bigResponse)).await(retries = 3, timeout = 1.second)
     }
 
+    "set user agent to client-http-testkit with version" in new ctx {
+      waitFor( get(path) )
+
+      server must receivedAnyRequestThat( haveClientHttpTestkitUserAgentWithLibraryVersion )
+    }
   }
 }

@@ -3,6 +3,7 @@ package com.wix.e2e.http.server
 import com.wix.e2e.http.BaseUri
 import com.wix.e2e.http.client.sync._
 import com.wix.e2e.http.drivers.HttpClientTestSupport
+import com.wix.e2e.http.drivers.HttpServerMatchers._
 import com.wix.e2e.http.exceptions.MisconfiguredMockServerException
 import com.wix.e2e.http.matchers.RequestMatchers.{beGet, havePath}
 import com.wix.e2e.http.matchers.ResponseMatchers._
@@ -117,6 +118,13 @@ class WebServerContractTest extends Spec {
 
       get(path)(server.baseUri) must beSuccessfulWith(anotherContent)
     }
+
+    "have an http server header including version" in new ctx {
+      val server = aStubWebServer.build
+                                 .start()
+
+      get(path)(server.baseUri) must haveServerHttpTestkitHeaderWithLibraryVersion
+    }
   }
 
   "Mock web server" should {
@@ -155,6 +163,13 @@ class WebServerContractTest extends Spec {
 
     "not allow server to be created with no handlers" in new ctx {
       val server = aMockWebServerWith(Seq.empty).build must throwAn[MisconfiguredMockServerException]
+    }
+
+    "have an http server header including version" in new ctx {
+      val server = aMockWebServerWith(Seq(handlerFor(path, returnsBody = content))).build
+                                                                                   .start()
+
+      get(path)(server.baseUri) must haveServerHttpTestkitHeaderWithLibraryVersion
     }
   }
 }

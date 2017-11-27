@@ -1,11 +1,13 @@
 package com.wix.e2e.http.client.internals
 
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.headers.{ProductVersion, `User-Agent`}
 import akka.http.scaladsl.settings.ConnectionPoolSettings
 import akka.stream.StreamTcpException
 import com.wix.e2e.http.WixHttpTestkitResources.system
 import com.wix.e2e.http._
 import com.wix.e2e.http.exceptions.ConnectionRefusedException
+import com.wix.e2e.http.info.HttpTestkitVersion
 import com.wix.e2e.http.utils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -37,7 +39,8 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
     val settings = ConnectionPoolSettings(system)
     settings.withConnectionSettings( settings.connectionSettings
                                              .withConnectingTimeout(timeout)
-                                             .withIdleTimeout(timeout) )
+                                             .withIdleTimeout(timeout)
+                                             .withUserAgentHeader(Some(`User-Agent`(ProductVersion("client-http-testkit", HttpTestkitVersion)))) )
             .withMaxConnections(32)
             .withPipeliningLimit(4)
             .withMaxRetries(0)

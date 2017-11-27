@@ -3,6 +3,7 @@ package com.wix.e2e.http.client
 import akka.http.scaladsl.model.HttpResponse
 import com.wix.e2e.http.api.Marshaller.Implicits._
 import com.wix.e2e.http.client.sync._
+import com.wix.e2e.http.drivers.HttpClientMatchers._
 import com.wix.e2e.http.drivers.{HttpClientTestSupport, StubWebServerProvider}
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.ResponseMatchers
@@ -170,6 +171,12 @@ class BlockingHttpClientContractTest extends Spec {
 
       get("/big-response") must
         ResponseMatchers.beSuccessfulWithBodyThat(must = haveSize(bigResponse))
+    }
+
+    "set user agent to client-http-testkit with version" in new ctx {
+      get(path)
+
+      server must receivedAnyRequestThat( haveClientHttpTestkitUserAgentWithLibraryVersion )
     }
   }
 }
