@@ -2,27 +2,29 @@ import sbt._
 
 object depends {
 
-  private val Specs2Version = "3.8.6"
   private val JacksonVersion = "2.9.1"
 
-  val specs2 =
-    Seq("org.specs2" %% "specs2-core" % Specs2Version,
-        "org.specs2" %% "specs2-junit" % Specs2Version,
-        "org.specs2" %% "specs2-mock" % Specs2Version )
+  def specs2(scalaVersion: String) = specs2DepsFor(specs2VersionFor(scalaVersion))
+  def specs2Test(scalaVersion: String) = specs2(scalaVersion).map(_ % Test)
 
-  val akkaHttp =
-    Seq("com.typesafe.akka" %% "akka-http" % "10.0.10"/*,
-        "com.typesafe.akka" %% "akka-actor" % "2.4.20"*/)
+  private def specs2DepsFor(version: String) =
+    Seq("org.specs2" %% "specs2-core" % version,
+        "org.specs2" %% "specs2-junit" % version,
+        "org.specs2" %% "specs2-mock" % version )
 
-  val jackson = jacksonFor(JacksonVersion)
-  val jackson2_6 = jacksonFor("2.6.7")
-  def jacksonFor(version: String) =
+  private def specs2VersionFor(scalaVersion: String) = if ( scalaVersion.startsWith("2.13") ) "4.0.1" else "3.8.6"
+
+
+  def akkaHttp(scalaVersion: String) = "com.typesafe.akka" %% "akka-http" % "10.0.10" // missing 2.13
+
+  def jackson(scalaVersion: String) = jacksonFor(JacksonVersion, scalaVersion)
+  def jacksonFor(version: String, scalaVersion: String) =
     Seq("com.fasterxml.jackson.core" % "jackson-databind" % version,
         "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % version,
         "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % version,
         "com.fasterxml.jackson.module" % "jackson-module-parameter-names" % version,
         "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % version,
-        "com.fasterxml.jackson.module" %% "jackson-module-scala" % version )
+        "com.fasterxml.jackson.module" %% "jackson-module-scala" % version ) // missing 2.13
 
   val joda = Seq("joda-time" % "joda-time" % "2.9.9",
                  "org.joda" % "joda-convert" % "1.9.2" )

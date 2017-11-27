@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/wix/wix-http-testkit.svg?branch=master)](https://travis-ci.org/wix/wix-http-testkit)
 [![Maven Central (2.12)](https://maven-badges.herokuapp.com/maven-central/com.wix/http-testkit_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.wix/http-testkit_2.12)
 [![Maven Central (2.11)](https://maven-badges.herokuapp.com/maven-central/com.wix/http-testkit_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.wix/http-testkit_2.11)
+[![Maven Central (2.13-M2)](https://maven-badges.herokuapp.com/maven-central/com.wix/http-testkit_2.13-M3/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.wix/http-testkit_2.13-M2)
 
 # HTTP Testkit
 

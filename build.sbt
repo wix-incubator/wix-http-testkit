@@ -28,7 +28,7 @@ lazy val publishSettings = Seq(
 
 lazy val compileOptions = Seq(
   scalaVersion := "2.12.4",
-  crossScalaVersions := Seq("2.11.12", "2.12.4"),
+  crossScalaVersions := Seq("2.11.12", "2.12.4", "2.13-M2"),
   //  sbtVersion in Global := "1.0.0",
   //  scalaCompilerBridgeSource := {
   //    val sv = appConfiguration.value.provider.id.version
@@ -71,7 +71,7 @@ lazy val httpTestkitCore =
   (project in file("http-testkit-core"))
     .settings(Seq(
       name := "http-testkit-core",
-      libraryDependencies ++= akkaHttp ++ joda ++ specs2.map(_ % Test) :+ scalaXml :+ reflections :+ jsr305 :+ slf4jApi,
+      libraryDependencies ++= joda ++ specs2Test(scalaVersion.value) :+ akkaHttp(scalaVersion.value) :+ scalaXml :+ reflections :+ jsr305 :+ slf4jApi,
       description := "Commonly used util code also client and server interfaces"
     ) ++ baseSettings)
     .dependsOn(httpTestkitTestCommons % Test)
@@ -80,7 +80,7 @@ lazy val httpTestkitClient =
   (project in file("http-testkit-client"))
     .settings(Seq(
       name := "http-testkit-client",
-      libraryDependencies ++= specs2.map(_ % Test) ,
+      libraryDependencies ++= specs2(scalaVersion.value) ,
       description := "All code related to REST client, blocking and non-blocking"
     ) ++ baseSettings)
     .dependsOn(httpTestkitCore, httpTestkitSpecs2, httpTestkitTestCommons % Test, httpTestkitMarshallerJackson % Test)
@@ -97,7 +97,7 @@ lazy val httpTestkitSpecs2 =
   (project in file("http-testkit-specs2"))
     .settings(Seq(
       name := "http-testkit-specs2",
-      libraryDependencies ++= specs2,
+      libraryDependencies ++= specs2(scalaVersion.value),
       description := "Specs2 Matcher suites - Request and Response."
     ) ++ baseSettings)
     .dependsOn(httpTestkitCore, httpTestkitTestCommons % Test, httpTestkitMarshallerJackson % Test)
@@ -106,7 +106,7 @@ lazy val httpTestkitMarshallerJackson =
   (project in file("http-testkit-marshaller-jackson"))
     .settings(Seq(
       name := "http-testkit-marshaller-jackson",
-      libraryDependencies ++= jackson ++ specs2,
+      libraryDependencies ++= jackson(scalaVersion.value) ++ specs2(scalaVersion.value),
       description := "Marshaller implementation - jackson"
     ) ++ baseSettings)
     .dependsOn(httpTestkitCore, httpTestkitTestCommons % Test)
@@ -123,7 +123,7 @@ lazy val httpTestkitContractTests =
   (project in file("http-testkit-contract-tests"))
     .settings(Seq(
       name := "http-testkit-contract-tests",
-      libraryDependencies ++= specs2.map(_ % "test") ,
+      libraryDependencies ++= specs2Test(scalaVersion.value),
       description := "Contract tests for both client and server"
     ) ++ baseSettings ++ noPublish)
     .dependsOn(httpTestkit, httpTestkitMarshallerJackson, httpTestkitTestCommons % Test)
@@ -132,7 +132,7 @@ lazy val httpTestkitContractTestsCustomMarshaller =
   (project in file("http-testkit-contract-tests-custom-marshaller"))
     .settings(Seq(
       name := "http-testkit-contract-tests-custom-marshaller",
-      libraryDependencies ++= specs2.map(_ % "test") ,
+      libraryDependencies ++= specs2Test(scalaVersion.value),
       description := "Contract tests for both client and server"
     ) ++ baseSettings ++ noPublish)
     .dependsOn(httpTestkit, httpTestkitTestCommons % Test)
@@ -141,7 +141,7 @@ lazy val httpTestkitContractTestsNoCustomMarshaller =
   (project in file("http-testkit-contract-tests-no-custom-marshaller"))
     .settings(Seq(
       name := "http-testkit-contract-tests-no-custom-marshaller",
-      libraryDependencies ++= specs2.map(_ % "test") ,
+      libraryDependencies ++= specs2Test(scalaVersion.value),
       description := "Contract tests for both client and server"
     ) ++ baseSettings ++ noPublish)
     .dependsOn(httpTestkit, httpTestkitTestCommons % Test)
