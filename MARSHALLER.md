@@ -15,6 +15,6 @@ It can also allow you to create your own custom marshaller:
     // on call site, define implicit marshaller
     implicit val customMarshaller = myMarshaller 
 
-    put("/somePath", apply = withPayload(SomeCaseClass("Hi There !!!")))
+    put("/somePath", but = withPayload(SomeCaseClass("Hi There !!!")))
     
 ```

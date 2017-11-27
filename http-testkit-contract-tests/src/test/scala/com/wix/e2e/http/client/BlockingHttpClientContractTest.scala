@@ -23,7 +23,7 @@ class BlockingHttpClientContractTest extends Spec {
 
     "support url with parameters" in new ctx {
       get(s"$path?${parameter._1}=${parameter._2}",
-        apply = withHeader(header)
+        but = withHeader(header)
           and withCookie(cookie) )
 
       server must receivedAnyRequestThat( beGet and
@@ -35,7 +35,7 @@ class BlockingHttpClientContractTest extends Spec {
 
     "support generating get request" in new ctx {
       get(path,
-          apply = withParam(parameter)
+          but = withParam(parameter)
             and withHeader(header)
             and withCookie(cookie) )
 
@@ -47,14 +47,14 @@ class BlockingHttpClientContractTest extends Spec {
     }
 
     "support modification of user agent" in new ctx {
-      get(path, apply = withUserAgent(userAgent) )
+      get(path, but = withUserAgent(userAgent) )
 
       server must receivedAnyRequestThat( haveAnyHeadersOf("user-agent" -> userAgent))
     }
 
     "support generating post request" in new ctx {
       post(path,
-           apply = withParam(parameter)
+           but = withParam(parameter)
              and withHeader(header)
              and withCookie(cookie)
              and withPayload(someObject))
@@ -69,7 +69,7 @@ class BlockingHttpClientContractTest extends Spec {
 
     "support generating put request" in new ctx {
       put(path,
-          apply = withParam(parameter)
+          but = withParam(parameter)
             and withHeader(header)
             and withCookie(cookie)
             and withPayload(someObject))
@@ -84,7 +84,7 @@ class BlockingHttpClientContractTest extends Spec {
 
     "support generating delete request" in new ctx {
       delete(path,
-             apply = withParam(parameter)
+             but = withParam(parameter)
                and withHeader(header)
                and withCookie(cookie)
                and withPayload(someObject))
@@ -99,7 +99,7 @@ class BlockingHttpClientContractTest extends Spec {
 
     "support generating patch request" in new ctx {
       patch(path,
-            apply = withParam(parameter)
+            but = withParam(parameter)
               and withHeader(header)
               and withCookie(cookie)
               and withPayload(someObject))
@@ -114,7 +114,7 @@ class BlockingHttpClientContractTest extends Spec {
 
     "support generating options request" in new ctx {
       options(path,
-            apply = withParam(parameter)
+            but = withParam(parameter)
               and withHeader(header)
               and withCookie(cookie)
               and withPayload(someObject))
@@ -129,7 +129,7 @@ class BlockingHttpClientContractTest extends Spec {
 
     "support generating trace request" in new ctx {
       trace(path,
-            apply = withParam(parameter)
+            but = withParam(parameter)
               and withHeader(header)
               and withCookie(cookie))
 
@@ -142,7 +142,7 @@ class BlockingHttpClientContractTest extends Spec {
 
     "support generating head request" in new ctx {
       head(path,
-            apply = withParam(parameter)
+            but = withParam(parameter)
               and withHeader(header)
               and withCookie(cookie))
 

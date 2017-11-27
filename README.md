@@ -31,7 +31,7 @@ Issue Call
 
 
     get("/somePath", 
-        apply = withParam("param1" -> "value") 
+        but = withParam("param1" -> "value") 
           and header("header" -> "value") 
           and withCookie("cookie" -> "cookieValue"))
 ```

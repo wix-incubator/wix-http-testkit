@@ -57,19 +57,19 @@ Each request can be easily customized with a set of basic transformers allowing 
 ```scala
 
     get("/somePath", 
-        apply = withParam("param1" -> "value") 
+        but = withParam("param1" -> "value") 
           and header("header" -> "value") 
           and withCookie("cookie" -> "cookieValue"))
           
     // post plain text data to api
     post("/somePath", 
-         apply = withPayload("Hi There !!!"))
+         but = withPayload("Hi There !!!"))
     
     // or post entity that would be marshalled using testkit marshaller (or custom user marshaller)
     case class SomeCaseClass(str: String)
     
     // request will automatically be marshalled to json
-    put("/somePath", apply = withPayload(SomeCaseClass("Hi There !!!")))
+    put("/somePath", but = withPayload(SomeCaseClass("Hi There !!!")))
 ```
 
 Handlers can be also be defined by developer, it can use existing transformers or to implement transformers from scratch
@@ -77,7 +77,7 @@ Handlers can be also be defined by developer, it can use existing transformers o
 
     def withSiteId(id: String): RequestTransformer = withParam("site-id" -> id) and withHeader("x-user-custom" -> "whatever")
      
-    get("/path", apply = withSiteId("someId"))
+    get("/path", but = withSiteId("someId"))
 
 ```
 
