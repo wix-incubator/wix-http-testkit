@@ -28,7 +28,7 @@ lazy val publishSettings = Seq(
 
 lazy val compileOptions = Seq(
   scalaVersion := "2.12.4",
-  crossScalaVersions := Seq("2.11.12", "2.12.4", "2.13-M2"),
+  crossScalaVersions := Seq("2.11.12", "2.12.4"/*, "2.13-M2"*/),
   //  sbtVersion in Global := "1.0.0",
   //  scalaCompilerBridgeSource := {
   //    val sv = appConfiguration.value.provider.id.version
