@@ -1,6 +1,5 @@
 package com.wix.e2e.http.client
 
-import java.io.File
 import java.net.URLEncoder
 
 import akka.http.scaladsl.model._
