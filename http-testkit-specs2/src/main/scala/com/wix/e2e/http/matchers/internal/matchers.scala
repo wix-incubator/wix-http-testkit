@@ -101,11 +101,14 @@ trait ResponseHeadersMatchers {
       val comparisonResult = compare(headers, responseHeaders)
 
       if (matchAgainstContentTypeHeader)
-        failure("""`content-type` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
+        failure("""`Content-Type` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
                   |Use `haveContentType` matcher instead (or `beJsonResponse`, `beTextPlainResponse`, `beFormUrlEncodedResponse`).""".stripMargin, t)
       else if (matchAgainstContentLengthHeader)
-        failure("""`content-length` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
+        failure("""`Content-Length` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
                   |Use `haveContentLength` matcher instead.""".stripMargin, t)
+      else if (matchAgainstTransferEncodingHeader)
+        failure("""`Transfer-Encoding` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
+                  |Use `beChunkedResponse` or `haveTransferEncodings` matcher instead.""".stripMargin, t)
       else if ( comparator(comparisonResult) ) success("ok", t)
       else if (responseHeaders.isEmpty) failure("Response did not contain any headers.", t)
       else failure(errorMessage(comparisonResult), t)
@@ -121,6 +124,7 @@ trait ResponseHeadersMatchers {
       HeaderComparisonResult(identical, missing, extra)
     }
 
+    private def matchAgainstTransferEncodingHeader = headers.exists( h => "transfer-encoding".compareToIgnoreCase(h._1) == 0 )
     private def matchAgainstContentTypeHeader = headers.exists( h => "content-type".compareToIgnoreCase(h._1) == 0 )
     private def matchAgainstContentLengthHeader = headers.exists( h => "content-length".compareToIgnoreCase(h._1) == 0 )
   }
@@ -245,6 +249,38 @@ trait ResponseContentLengthMatchers {
         case (None, Some(e)) => failure(s"Expected content length [$e] but response did not contain `content-length` header.", t)
         case (Some(a), None) => failure(s"Expected no `content-length` header but response did contain `content-length` header with size [$a].", t)
         case (None, None) => success("ok", t)
+      }
+    }
+  }
+}
+
+trait ResponseTransferEncodingMatchers {
+
+  def beChunkedResponse: ResponseMatcher = new ResponseMatcher {
+    def apply[S <: HttpResponse](t: Expectable[S]) = {
+      val response = t.value
+      val encodings = response.header[`Transfer-Encoding`]
+                              .map( _.encodings.map( _.name ) )
+
+      if (response.entity.isChunked) success("ok", t)
+      else if (encodings.isEmpty) failure("Expected Chunked response while response did not contain `Transfer-Encoding` header", t)
+      else failure(s"Expected Chunked response while response has `Transfer-Encoding` header with values [${encodings.toSeq.flatten.map(s => s"'$s'").mkString(", ")}]", t)
+    }
+  }
+
+  def haveTransferEncodings(encodings: String*): ResponseMatcher = new ResponseMatcher {
+    def apply[S <: HttpResponse](t: Expectable[S]) = {
+      val response = t.value
+      val chunked = if(response.entity.isChunked) Set("chunked") else Set.empty[String]
+      val actual = response.header[`Transfer-Encoding`]
+                           .map( _.encodings.map( _.name ).toSet )
+                           .getOrElse( Set.empty ) ++ chunked
+      val expected = encodings.toSet
+
+      (actual, expected) match {
+        case (a, e) if a.isEmpty && e.nonEmpty => failure("Response did not contain `Transfer-Encoding` header.", t)
+        case (a, e) if e.forall( a.contains ) => success("ok", t)
+        case (a, e) if e.exists( x => !a.contains(x) ) => failure(s"Expected transfer encodings [${e.map(s => s"'$s'").mkString(", ")}] does not match actual transfer encoding [${a.toSeq.sorted.map(s => s"'$s'").mkString(", ")}]", t)
       }
     }
   }

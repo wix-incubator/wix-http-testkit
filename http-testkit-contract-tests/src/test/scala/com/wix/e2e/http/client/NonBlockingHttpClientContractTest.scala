@@ -1,8 +1,9 @@
 package com.wix.e2e.http.client
 
-import akka.http.scaladsl.model.HttpResponse
+import akka.http.scaladsl.model.TransferEncodings
 import com.wix.e2e.http.api.Marshaller.Implicits._
 import com.wix.e2e.http.drivers.HttpClientMatchers._
+import com.wix.e2e.http.drivers.HttpClientTestResponseHandlers._
 import com.wix.e2e.http.drivers.{HttpClientTestSupport, StubWebServerProvider}
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.ResponseMatchers
@@ -158,7 +159,7 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
 
     "throw timeout if response takes more than default timeout" in {
-      val server = aStubWebServer.addHandler( { case _ => Thread.sleep(500); HttpResponse() } )
+      val server = aStubWebServer.addHandler( slowRespondingServer )
                                  .build
                                  .start()
 
@@ -181,5 +182,18 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
 
       server must receivedAnyRequestThat( haveClientHttpTestkitUserAgentWithLibraryVersion )
     }
+
+    "properly detect chunked responses" in new ctx {
+      server.appendAll(chunkedResponseFor(path))
+
+      get(path)(server.baseUri) must ResponseMatchers.beChunkedResponse.await
+    }
+
+    "properly detect other transfer encoding responses" in new ctx {
+      server.appendAll(alwaysRespondWith(TransferEncodings.compress, path))
+
+      get(path)(server.baseUri) must ResponseMatchers.haveTransferEncodings("compress").await
+    }
+
   }
 }

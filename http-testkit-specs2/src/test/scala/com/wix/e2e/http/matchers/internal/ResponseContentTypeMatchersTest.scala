@@ -50,13 +50,13 @@ class ResponseContentTypeMatchersTest extends Spec with MatchersTestSupport {
 
     "failure message if someone tries to match content-type in headers matchers" in new ctx {
       failureMessageFor(haveAllHeadersOf(contentTypeHeader), matchedOn = aResponseWithContentType(contentType)) must_===
-        """`content-type` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
+        """`Content-Type` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
           |Use `haveContentType` matcher instead (or `beJsonResponse`, `beTextPlainResponse`, `beFormUrlEncodedResponse`).""".stripMargin
       failureMessageFor(haveAnyHeadersOf(contentTypeHeader), matchedOn = aResponseWithContentType(contentType)) must_===
-        """`content-type` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
+        """`Content-Type` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
           |Use `haveContentType` matcher instead (or `beJsonResponse`, `beTextPlainResponse`, `beFormUrlEncodedResponse`).""".stripMargin
       failureMessageFor(haveTheSameHeadersAs(contentTypeHeader), matchedOn = aResponseWithContentType(contentType)) must_===
-        """`content-type` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
+        """`Content-Type` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
           |Use `haveContentType` matcher instead (or `beJsonResponse`, `beTextPlainResponse`, `beFormUrlEncodedResponse`).""".stripMargin
     }
 

@@ -2,6 +2,7 @@ package com.wix.e2e.http.server
 
 import com.wix.e2e.http.BaseUri
 import com.wix.e2e.http.client.sync._
+import com.wix.e2e.http.drivers.HttpClientTestResponseHandlers._
 import com.wix.e2e.http.drivers.HttpClientTestSupport
 import com.wix.e2e.http.drivers.HttpServerMatchers._
 import com.wix.e2e.http.exceptions.MisconfiguredMockServerException

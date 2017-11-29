@@ -44,13 +44,13 @@ class ResponseContentLengthMatchersTest extends Spec with MatchersTestSupport {
 
     "failure message if someone tries to match content-length in headers matchers" in new ctx {
       failureMessageFor(haveAllHeadersOf(contentLengthHeader), matchedOn = aResponseWithContentType(contentType)) must_===
-        """`content-length` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
+        """`Content-Length` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
           |Use `haveContentLength` matcher instead.""".stripMargin
       failureMessageFor(haveAnyHeadersOf(contentLengthHeader), matchedOn = aResponseWithContentType(contentType)) must_===
-        """`content-length` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
+        """`Content-Length` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
           |Use `haveContentLength` matcher instead.""".stripMargin
       failureMessageFor(haveTheSameHeadersAs(contentLengthHeader), matchedOn = aResponseWithContentType(contentType)) must_===
-        """`content-length` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
+        """`Content-Length` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
           |Use `haveContentLength` matcher instead.""".stripMargin
     }
   }

@@ -43,6 +43,7 @@ trait HttpResponseTestSupport {
   val contentType = "application/json"
   val anotherContentType = "text/plain"
   val contentTypeHeader = "content-type" -> contentType
+  val transferEncodingHeader = "transfer-encoding" -> randomStr
   val contentLengthHeader = "content-length" -> randomInt(1, 66666).toString
 
   val someObject = SomeCaseClass(randomStr, randomInt)
@@ -107,6 +108,15 @@ object HttpResponseFactory {
     val r = aResponseWithoutBody
     aResponseWithoutBody.copy(entity = r.entity.withContentType(ContentType.parse(contentType).right.get))
   }
+
+  def aChunkedResponse = HttpResponse(entity = HttpEntity.Chunked(ContentTypes.`text/plain(UTF-8)`, Source.single(randomStr)) )
+  def aChunkedResponseWith(transferEncoding: TransferEncoding) =
+    HttpResponse(entity = HttpEntity.Chunked(ContentTypes.`text/plain(UTF-8)`, Source.single(randomStr)),
+                 headers = immutable.Seq(`Transfer-Encoding`(transferEncoding)) )
+
+  def aResponseWithoutTransferEncoding = HttpResponse()
+  def aResponseWithTransferEncodings(transferEncoding: TransferEncoding, tail: TransferEncoding*) =
+    HttpResponse(headers = immutable.Seq(`Transfer-Encoding`(transferEncoding, tail:_*)))
 
   def aResponseWithoutContentLength =
     HttpResponse(entity = Multipart.FormData(Multipart.FormData
