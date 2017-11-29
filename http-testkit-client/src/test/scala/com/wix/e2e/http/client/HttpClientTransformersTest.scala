@@ -181,36 +181,6 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
           haveBodyWith(bodyContent = s"${keyValue1._1}=${keyValue1._2}") }
     }
   }
-
-  "ResponseTransformers" should {
-    "extract response body" should {
-      "as unmarshalled JSON" in new ctx {
-        HttpResponse(entity = marshaller.marshall(payload)).extractAs[SomePayload] must_=== payload
-      }
-
-      "as string" in new ctx {
-        HttpResponse(entity = HttpEntity(strBody)).extractAsString must_=== strBody
-      }
-
-      "as array of bytes" in new ctx {
-        HttpResponse(entity = HttpEntity(someBytes)).extractAsBytes must_=== someBytes
-      }
-    }
-
-    "extract response entity" should {
-      "as unmarshalled JSON" in new ctx {
-        HttpEntity(marshaller.marshall(payload)).extractAs[SomePayload] must_=== payload
-      }
-
-      "as string" in new ctx {
-        HttpEntity(strBody).extractAsString must_=== strBody
-      }
-
-      "as array of bytes" in new ctx {
-        HttpEntity(someBytes).extractAsBytes must_=== someBytes
-      }
-    }
-  }
 }
 
 

@@ -10,8 +10,6 @@ trait HttpClientTransformers extends HttpClientRequestUrlTransformers
                                 with HttpClientRequestHeadersTransformers
                                 with HttpClientRequestBodyTransformers
                                 with HttpClientRequestTransformersOps
-                                with HttpClientResponseTransformers {
-}
 
 object HttpClientTransformers extends HttpClientTransformers
 

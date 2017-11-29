@@ -1,6 +1,7 @@
 package com.wix.e2e.http.marshaller
 
 import com.wix.e2e.http.api.Marshaller.Implicits._
+import com.wix.e2e.http.client.extractors.HttpMessageExtractors
 import com.wix.e2e.http.client.transformers.HttpClientTransformers
 import com.wix.e2e.http.drivers.MarshallerTestSupport
 import com.wix.e2e.http.drivers.MarshallingTestObjects.SomeCaseClass
@@ -8,7 +9,7 @@ import com.wix.e2e.http.matchers.{RequestMatchers, ResponseMatchers}
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
-class HttpClientCustomMarshallerContractTest extends Spec with HttpClientTransformers {
+class HttpClientCustomMarshallerContractTest extends Spec with HttpClientTransformers with HttpMessageExtractors {
 
   trait ctx extends Scope with MarshallerTestSupport
 

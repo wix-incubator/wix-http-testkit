@@ -5,7 +5,7 @@ import java.net.{HttpURLConnection, URL}
 
 import akka.http.scaladsl.model.HttpMethods.GET
 import akka.http.scaladsl.model.{HttpEntity, HttpRequest, HttpResponse}
-import akka.http.scaladsl.unmarshalling.Unmarshal
+import com.wix.e2e.http.client.extractors.HttpMessageExtractors._
 import com.wix.e2e.http.info.HttpTestkitVersion
 import com.wix.e2e.http.matchers.{RequestMatcher, ResponseMatcher}
 import com.wix.e2e.http.{BaseUri, HttpRequest, RequestHandler}
@@ -35,9 +35,7 @@ trait HttpClientTestSupport {
 
   def unmarshallingAndStoringHandlerFor(path: String, storeTo: ListBuffer[String]): RequestHandler = {
       case r: HttpRequest if r.uri.path.toString.endsWith(path) =>
-        import com.wix.e2e.http.WixHttpTestkitResources.{executionContext, materializer}
-        Unmarshal(r.entity).to[String]
-                           .map( storeTo.append(_) )
+        storeTo.append( r.extractAsString )
         HttpResponse()
     }
 
