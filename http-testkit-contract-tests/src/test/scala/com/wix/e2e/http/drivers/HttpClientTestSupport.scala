@@ -37,7 +37,7 @@ trait HttpClientTestSupport {
       case r: HttpRequest if r.uri.path.toString.endsWith(path) =>
         import com.wix.e2e.http.WixHttpTestkitResources.{executionContext, materializer}
         Unmarshal(r.entity).to[String]
-          .map( storeTo.append(_) )
+                           .map( storeTo.append(_) )
         HttpResponse()
     }
 
