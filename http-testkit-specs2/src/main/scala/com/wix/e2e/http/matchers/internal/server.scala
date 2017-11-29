@@ -1,7 +1,7 @@
 package com.wix.e2e.http.matchers.internal
 
-import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.HttpMethods._
+import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{Cookie, HttpCookiePair}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import com.wix.e2e.http.HttpRequest
@@ -12,7 +12,6 @@ import com.wix.e2e.http.utils._
 import org.specs2.matcher.Matchers._
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 
-import scala.concurrent.ExecutionContext
 import scala.util.control.Exception._
 
 trait RequestMethodMatchers {
@@ -168,10 +167,7 @@ trait RequestCookiesMatchers {
 }
 
 trait RequestBodyMatchers {
-  import com.wix.e2e.http.WixHttpTestkitResources.materializer
-
-  import ExecutionContext.Implicits.global
-
+  import com.wix.e2e.http.WixHttpTestkitResources.{executionContext, materializer}
 
   def haveBodyWith(bodyContent: String): RequestMatcher = haveBodyThat( must = be_===(bodyContent) )
   def haveBodyThat(must: Matcher[String]): RequestMatcher = must ^^ httpRequestAsString

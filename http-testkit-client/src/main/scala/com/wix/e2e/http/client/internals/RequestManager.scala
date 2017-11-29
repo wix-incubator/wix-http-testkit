@@ -4,13 +4,11 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.headers.{ProductVersion, `User-Agent`}
 import akka.http.scaladsl.settings.ConnectionPoolSettings
 import akka.stream.StreamTcpException
-import com.wix.e2e.http.WixHttpTestkitResources.system
 import com.wix.e2e.http._
 import com.wix.e2e.http.exceptions.ConnectionRefusedException
 import com.wix.e2e.http.info.HttpTestkitVersion
 import com.wix.e2e.http.utils._
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
@@ -25,7 +23,7 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
   def apply(path: String, but: RequestTransformer, withTimeout: FiniteDuration)(implicit baseUri: BaseUri): Future[HttpResponse] = {
     val transformed = Seq(composeUrlFor(baseUri, path), but)
                                 .foldLeft(request) { case (r, tr) => tr(r) }
-    import WixHttpTestkitResources.{materializer, system}
+    import WixHttpTestkitResources.{executionContext, materializer, system}
     Http().singleRequest(request = transformed,
                          settings = settingsWith(withTimeout))
           .flatMap( _.toStrict(timeout = withTimeout) )
@@ -36,7 +34,7 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
     _.copy(uri = baseUri.asUriWith(path) )
 
   private def settingsWith(timeout: FiniteDuration) = {
-    val settings = ConnectionPoolSettings(system)
+    val settings = ConnectionPoolSettings(WixHttpTestkitResources.system)
     settings.withConnectionSettings( settings.connectionSettings
                                              .withConnectingTimeout(timeout)
                                              .withIdleTimeout(timeout)
