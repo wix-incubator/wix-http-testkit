@@ -5,7 +5,7 @@ import com.wix.e2e.http.client.sync._
 import com.wix.e2e.http.drivers.HttpClientTestSupport
 import com.wix.e2e.http.drivers.HttpServerMatchers._
 import com.wix.e2e.http.exceptions.MisconfiguredMockServerException
-import com.wix.e2e.http.matchers.RequestMatchers.{beGet, havePath}
+import com.wix.e2e.http.matchers.RequestMatchers.{beGet, bePost, haveBodyWith, havePath}
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.server.WebServerFactory._
 import org.specs2.mutable.Spec
@@ -92,6 +92,17 @@ class WebServerContractTest extends Spec {
       server.recordedRequests must beEmpty
     }
 
+    "handle chunked requests" in new ctx {
+      val server = aStubWebServer.build.start()
+
+      implicit lazy val sut = server.baseUri
+
+      issueChunkedPostRequestWith(content, toPath = path)
+
+      server.recordedRequests must contain( bePost and havePath(s"/$path") and haveBodyWith(content)).eventually
+    }
+
+
     "allow to define custom handlers" in new ctx {
       val server = aStubWebServer.addHandler(handlerFor(path, returnsBody = content))
                                  .build
@@ -152,6 +163,16 @@ class WebServerContractTest extends Spec {
       implicit lazy val sut = server.baseUri
 
       get(anotherPath) must beNotFound
+    }
+
+    "handle chunked requests" in new ctx {
+      val server = aMockWebServerWith(unmarshallingAndStoringHandlerFor(path, storeTo = requestData)).build.start()
+
+      implicit lazy val sut = server.baseUri
+
+      issueChunkedPostRequestWith(content, toPath = path)
+
+      requestData must containTheSameElementsAs( Seq(content) ).eventually
     }
 
     "allow server to be created with a seq of handlers" in new ctx {
