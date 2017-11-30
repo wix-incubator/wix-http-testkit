@@ -10,5 +10,3 @@ class MarshallerErrorException(content: String, t: Throwable) extends RuntimeExc
 
 class UserAgentModificationNotSupportedException
   extends IllegalArgumentException("`user-agent` is a special header and cannot be used in `withHeaders`. Use `withUserAgent` method instead.")
-
-class MisconfiguredMockServerException extends RuntimeException("Mock server must have at least one handler defined\nfor more information please check documentation at https://github.com/wix/wix-http-testkit/blob/master/WEBSERVER.md")
