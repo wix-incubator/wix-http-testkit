@@ -1,7 +1,7 @@
 package com.wix.e2e.http.client.internals
 
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.headers.{ProductVersion, `User-Agent`}
+import akka.http.scaladsl.model.headers.{ProductVersion, `Transfer-Encoding`, `User-Agent`}
 import akka.http.scaladsl.settings.ConnectionPoolSettings
 import akka.stream.StreamTcpException
 import com.wix.e2e.http._
@@ -26,6 +26,15 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
     import WixHttpTestkitResources.{executionContext, materializer, system}
     Http().singleRequest(request = transformed,
                          settings = settingsWith(withTimeout))
+          .map({ response =>
+            if (response.entity.isChunked())
+              response.copy(headers = response.headers.map {
+                case t: `Transfer-Encoding` => t.withChunked
+                case h => h
+              })
+            else
+              response
+          })
           .recoverWith( { case _: StreamTcpException => Future.failed(throw new ConnectionRefusedException(baseUri)) } )
   }
 
@@ -46,8 +55,11 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
 
 class BlockingRequestManager(request: HttpRequest) extends RequestManager[HttpResponse] {
 
-  def apply(path: String, but: RequestTransformer, withTimeout: FiniteDuration)(implicit baseUri: BaseUri): HttpResponse =
-    waitFor( nonBlockingRequestManager(path, but, withTimeout) )(Duration.Inf)
+  def apply(path: String, but: RequestTransformer, withTimeout: FiniteDuration)(implicit baseUri: BaseUri): HttpResponse = {
+    import WixHttpTestkitResources.{executionContext, materializer}
+    
+    waitFor(nonBlockingRequestManager(path, but, withTimeout).flatMap(_.toStrict(withTimeout)))(Duration.Inf)
+  }
 
   private val nonBlockingRequestManager = new NonBlockingRequestManager(request)
 }
