@@ -58,6 +58,11 @@ class ResponseBodyMatchersTest extends Spec with MatchersTestSupport {
       haveBodyWith(entity = someObject).apply( aResponseWith(content) ) must beError(s"Failed to unmarshall: \\[$content\\]")
     }
 
+    "provide a proper message to user sent a matcher to an entity matcher" in new ctx {
+      failureMessageFor(haveBodyWith(entity = be_===(someObject)), matchedOn = aResponseWith(content)) must_===
+        s"Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyThat` instead."
+    }
+
     "support custom matcher for user object" in new ctx {
       givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
 

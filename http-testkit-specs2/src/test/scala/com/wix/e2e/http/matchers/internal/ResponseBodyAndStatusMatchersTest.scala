@@ -1,16 +1,15 @@
 package com.wix.e2e.http.matchers.internal
 
-import com.wix.e2e.http.api.Marshaller
-import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.api.Marshaller.Implicits._
+import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
 import com.wix.e2e.http.matchers.drivers.HttpResponseMatchers._
-import com.wix.e2e.http.matchers.drivers.HttpResponseTestSupport
+import com.wix.e2e.http.matchers.drivers.{HttpResponseTestSupport, MatchersTestSupport}
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 
-class ResponseBodyAndStatusMatchersTest extends Spec {
+class ResponseBodyAndStatusMatchersTest extends Spec with MatchersTestSupport {
 
   trait ctx extends Scope with HttpResponseTestSupport
 
@@ -20,6 +19,11 @@ class ResponseBodyAndStatusMatchersTest extends Spec {
     "match successful request with body content" in new ctx {
       aSuccessfulResponseWith(content) must beSuccessfulWith(content)
       aSuccessfulResponseWith(content) must not( beSuccessfulWith(anotherContent) )
+    }
+
+    "provide a proper message to user sent a matcher to an entity matcher" in new ctx {
+      failureMessageFor(beSuccessfulWith(entity = be_===(content)), matchedOn = aResponseWith(content)) must_===
+        s"Matcher misuse: `beSuccessfulWith` received a matcher to match against, please use `beSuccessfulWithEntityThat` instead."
     }
 
     "match successful request with body content matcher" in new ctx {
@@ -81,5 +85,11 @@ class ResponseBodyAndStatusMatchersTest extends Spec {
       aSuccessfulResponseWithCookies(cookie) must beSuccessfulWithCookieThat(must = cookieWith(cookie.value))
       aSuccessfulResponseWithCookies(cookie) must not( beSuccessfulWithCookieThat(must = cookieWith(anotherCookie.value)) )
     }
+
+    "provide a proper message to user sent a matcher to an entity matcher" in new ctx {
+      failureMessageFor(haveBodyWith(entity = be_===(someObject)), matchedOn = aResponseWith(content)) must_===
+        s"Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyThat` instead."
+    }
+
   }
 }

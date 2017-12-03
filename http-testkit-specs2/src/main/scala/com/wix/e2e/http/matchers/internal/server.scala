@@ -175,6 +175,9 @@ trait RequestBodyMatchers {
   def haveBodyWith(data: Array[Byte]): RequestMatcher = haveBodyDataThat( must = be_===(data) )
   def haveBodyDataThat(must: Matcher[Array[Byte]]): RequestMatcher = must ^^ httpRequestAsBinary
 
+  def haveBodyWith[T <: Matcher[_]](entity: T): RequestMatcher = new RequestMatcher {
+    def apply[S <: HttpRequest](t: Expectable[S]): MatchResult[S] = failure("Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyThat` instead.", t)
+  }
   def haveBodyWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): RequestMatcher = haveBodyEntityThat[T]( must = be_===(entity) )
   def haveBodyEntityThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): RequestMatcher = new RequestMatcher {
 

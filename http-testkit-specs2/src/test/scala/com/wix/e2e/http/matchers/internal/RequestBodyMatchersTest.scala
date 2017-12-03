@@ -53,6 +53,11 @@ class RequestBodyMatchersTest extends Spec with MatchersTestSupport {
         s"Failed to match: ['$someObject' is not equal to '$anotherObject'] with content: [$content]"
     }
 
+    "provide a proper message to user sent a matcher to an entity matcher" in new ctx {
+      failureMessageFor(haveBodyWith(entity = be_===(someObject)), matchedOn = aRequestWith(content)) must_===
+        "Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyThat` instead."
+    }
+
     "provide a proper message to user in case of a badly behaving marshaller" in new ctx {
       givenBadlyBehavingUnmarshallerFor[SomeCaseClass](withContent = content)
 
