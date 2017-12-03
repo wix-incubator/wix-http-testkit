@@ -17,10 +17,10 @@ object Marshaller {
   }
 
   private def defaultMarshaller =
-    DefaultMarshaller.lookup
-                     .orElse( ExternalMarshaller.lookup )
-                     .map( newInstance )
-                     .getOrElse( new NopMarshaller )
+    ExternalMarshaller.lookup
+                      .orElse( DefaultMarshaller.lookup )
+                      .map( newInstance )
+                      .getOrElse( new NopMarshaller )
 
   private def newInstance(clazz: Class[_]) =
     clazz.getConstructor()
