@@ -15,7 +15,7 @@ object depends {
   private def specs2VersionFor(scalaVersion: String) = if ( scalaVersion.startsWith("2.13") ) "4.0.1" else "3.8.6"
 
 
-  def akkaHttp(scalaVersion: String) = "com.typesafe.akka" %% "akka-http" % "10.0.10" // missing 2.13
+  def akkaHttp(scalaVersion: String) = "com.typesafe.akka" %% "akka-http" % "10.0.11" // missing 2.13
 
   def jackson(scalaVersion: String) = jacksonFor(JacksonVersion, scalaVersion)
   def jacksonFor(version: String, scalaVersion: String) =
