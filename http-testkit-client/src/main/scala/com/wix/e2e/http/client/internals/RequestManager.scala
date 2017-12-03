@@ -1,6 +1,7 @@
 package com.wix.e2e.http.client.internals
 
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.TransferEncodings.chunked
 import akka.http.scaladsl.model.headers.{ProductVersion, `Transfer-Encoding`, `User-Agent`}
 import akka.http.scaladsl.settings.ConnectionPoolSettings
 import akka.stream.StreamTcpException
@@ -26,20 +27,23 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
     import WixHttpTestkitResources.{executionContext, materializer, system}
     Http().singleRequest(request = transformed,
                          settings = settingsWith(withTimeout))
-          .map({ response =>
-            if (response.entity.isChunked())
-              response.copy(headers = response.headers.map {
-                case t: `Transfer-Encoding` => t.withChunked
-                case h => h
-              })
-            else
-              response
-          })
+          .map( recreateTransferEncodingHeader )
+          .flatMap( _.toStrict(withTimeout) )
           .recoverWith( { case _: StreamTcpException => Future.failed(throw new ConnectionRefusedException(baseUri)) } )
   }
 
   private def composeUrlFor(baseUri: BaseUri, path: String): RequestTransformer =
     _.copy(uri = baseUri.asUriWith(path) )
+
+  private def recreateTransferEncodingHeader(r: HttpResponse) =
+    if ( !r.entity.isChunked ) r
+    else {
+      val encodings = r.header[`Transfer-Encoding`]
+                       .map( _.encodings )
+                       .getOrElse( Seq.empty )
+      r.removeHeader("Transfer-Encoding")
+       .addHeader(`Transfer-Encoding`(chunked, encodings:_*))
+    }
 
   private def settingsWith(timeout: FiniteDuration) = {
     val settings = ConnectionPoolSettings(WixHttpTestkitResources.system)
@@ -55,11 +59,8 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
 
 class BlockingRequestManager(request: HttpRequest) extends RequestManager[HttpResponse] {
 
-  def apply(path: String, but: RequestTransformer, withTimeout: FiniteDuration)(implicit baseUri: BaseUri): HttpResponse = {
-    import WixHttpTestkitResources.{executionContext, materializer}
-    
-    waitFor(nonBlockingRequestManager(path, but, withTimeout).flatMap(_.toStrict(withTimeout)))(Duration.Inf)
-  }
+  def apply(path: String, but: RequestTransformer, withTimeout: FiniteDuration)(implicit baseUri: BaseUri): HttpResponse =
+    waitFor(nonBlockingRequestManager(path, but, withTimeout))(Duration.Inf)
 
   private val nonBlockingRequestManager = new NonBlockingRequestManager(request)
 }

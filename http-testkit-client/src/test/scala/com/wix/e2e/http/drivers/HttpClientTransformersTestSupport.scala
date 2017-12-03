@@ -4,7 +4,7 @@ import java.nio.file.{Files, Path}
 
 import akka.http.scaladsl.model.HttpRequest
 import com.wix.e2e.http.HttpRequest
-import com.wix.e2e.http.client.extractors.HttpMessageExtractors._
+import com.wix.e2e.http.client.extractors._
 import com.wix.e2e.http.client.transformers._
 import com.wix.e2e.http.matchers.RequestMatcher
 import com.wix.test.random._

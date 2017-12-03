@@ -7,7 +7,7 @@ import akka.http.scaladsl.model.HttpMethods.GET
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.`Transfer-Encoding`
 import akka.stream.scaladsl.Source
-import com.wix.e2e.http.client.extractors.HttpMessageExtractors._
+import com.wix.e2e.http.client.extractors._
 import com.wix.e2e.http.info.HttpTestkitVersion
 import com.wix.e2e.http.matchers.{RequestMatcher, ResponseMatcher}
 import com.wix.e2e.http.{BaseUri, HttpRequest, RequestHandler}
@@ -73,7 +73,6 @@ object HttpClientTestResponseHandlers {
   def chunkedResponseFor(path: String): RequestHandler = {
     case r: HttpRequest if r.uri.path.toString.endsWith(path) =>
       HttpResponse(entity = HttpEntity.Chunked(ContentTypes.`text/plain(UTF-8)`, Source.single(randomStr)))
-                            .withHeaders(immutable.Seq(`Transfer-Encoding`(TransferEncodings.compress)))
   }
 
   def alwaysRespondWith(transferEncoding: TransferEncoding, toPath: String): RequestHandler = {
