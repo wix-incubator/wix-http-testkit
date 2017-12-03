@@ -20,6 +20,7 @@ class ResponseTransferEncodingMatchersTest extends Spec with MatchersTestSupport
       aChunkedResponse must beChunkedResponse
       aResponseWithoutTransferEncoding must not( beChunkedResponse )
       aResponseWithTransferEncodings(compress) must not( beChunkedResponse )
+      aResponseWithTransferEncodings(chunked) must beChunkedResponse
     }
 
     "failure message in case no transfer encoding header should state that response did not have the proper header" in new ctx {

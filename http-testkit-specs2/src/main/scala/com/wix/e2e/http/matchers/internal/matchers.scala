@@ -259,13 +259,12 @@ trait ResponseTransferEncodingMatchers {
   def beChunkedResponse: ResponseMatcher = new ResponseMatcher {
     def apply[S <: HttpResponse](t: Expectable[S]) = {
       val response = t.value
-      val header = response.header[`Transfer-Encoding`]
+      val encodings = response.header[`Transfer-Encoding`]
+                              .map( _.encodings.map( _.name ) )
 
-      header match {
-        case Some(`Transfer-Encoding`(encodings)) if encodings.contains(TransferEncodings.chunked) => success("ok", t)
-        case Some(`Transfer-Encoding`(encodings)) => failure(s"Expected Chunked response while response has `Transfer-Encoding` header with values [${encodings.map(s => s"'${s.name}'").mkString(", ")}]", t)
-        case None => failure("Expected Chunked response while response did not contain `Transfer-Encoding` header", t)
-      }
+      if (response.entity.isChunked || encodings.exists( _.contains("chunked") )) success("ok", t)
+      else if (encodings.isEmpty) failure("Expected Chunked response while response did not contain `Transfer-Encoding` header", t)
+      else failure(s"Expected Chunked response while response has `Transfer-Encoding` header with values [${encodings.toSeq.flatten.map(s => s"'$s'").mkString(", ")}]", t)
     }
   }
 
