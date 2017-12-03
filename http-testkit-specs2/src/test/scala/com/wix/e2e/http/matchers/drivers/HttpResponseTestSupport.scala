@@ -109,10 +109,13 @@ object HttpResponseFactory {
     aResponseWithoutBody.copy(entity = r.entity.withContentType(ContentType.parse(contentType).right.get))
   }
 
-  def aChunkedResponse = HttpResponse(entity = HttpEntity.Chunked(ContentTypes.`text/plain(UTF-8)`, Source.single(randomStr)) )
+  def aChunkedResponse = 
+    HttpResponse(entity = HttpEntity.Chunked(ContentTypes.`text/plain(UTF-8)`, Source.single(randomStr)),
+                 headers = immutable.Seq(`Transfer-Encoding`(TransferEncodings.chunked)))
+  
   def aChunkedResponseWith(transferEncoding: TransferEncoding) =
     HttpResponse(entity = HttpEntity.Chunked(ContentTypes.`text/plain(UTF-8)`, Source.single(randomStr)),
-                 headers = immutable.Seq(`Transfer-Encoding`(transferEncoding)) )
+                 headers = immutable.Seq(`Transfer-Encoding`(transferEncoding, TransferEncodings.chunked)) )
 
   def aResponseWithoutTransferEncoding = HttpResponse()
   def aResponseWithTransferEncodings(transferEncoding: TransferEncoding, tail: TransferEncoding*) =

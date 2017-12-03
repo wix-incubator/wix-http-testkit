@@ -259,22 +259,22 @@ trait ResponseTransferEncodingMatchers {
   def beChunkedResponse: ResponseMatcher = new ResponseMatcher {
     def apply[S <: HttpResponse](t: Expectable[S]) = {
       val response = t.value
-      val encodings = response.header[`Transfer-Encoding`]
-                              .map( _.encodings.map( _.name ) )
+      val header = response.header[`Transfer-Encoding`]
 
-      if (response.entity.isChunked) success("ok", t)
-      else if (encodings.isEmpty) failure("Expected Chunked response while response did not contain `Transfer-Encoding` header", t)
-      else failure(s"Expected Chunked response while response has `Transfer-Encoding` header with values [${encodings.toSeq.flatten.map(s => s"'$s'").mkString(", ")}]", t)
+      header match {
+        case Some(`Transfer-Encoding`(encodings)) if encodings.contains(TransferEncodings.chunked) => success("ok", t)
+        case Some(`Transfer-Encoding`(encodings)) => failure(s"Expected Chunked response while response has `Transfer-Encoding` header with values [${encodings.map(s => s"'${s.name}'").mkString(", ")}]", t)
+        case None => failure("Expected Chunked response while response did not contain `Transfer-Encoding` header", t)
+      }
     }
   }
 
   def haveTransferEncodings(encodings: String*): ResponseMatcher = new ResponseMatcher {
     def apply[S <: HttpResponse](t: Expectable[S]) = {
       val response = t.value
-      val chunked = if(response.entity.isChunked) Set("chunked") else Set.empty[String]
       val actual = response.header[`Transfer-Encoding`]
                            .map( _.encodings.map( _.name ).toSet )
-                           .getOrElse( Set.empty ) ++ chunked
+                           .getOrElse( Set.empty )
       val expected = encodings.toSet
 
       (actual, expected) match {
