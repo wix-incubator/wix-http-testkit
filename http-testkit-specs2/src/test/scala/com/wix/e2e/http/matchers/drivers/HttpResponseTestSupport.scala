@@ -50,6 +50,7 @@ trait HttpResponseTestSupport {
   val anotherObject = SomeCaseClass(randomStr, randomInt)
 
   val url = "http://example.com/some/path"
+  val malformedUrl = "http://www.example.com/name with spaces/"
   val anotherUrl = "http://example.com/another/path"
 
   val `application/x-www-form-urlencoded` = MediaTypes.`application/x-www-form-urlencoded`.withCharset(HttpCharsets.`UTF-8`)
@@ -99,7 +100,9 @@ object HttpResponseFactory {
   def aResponseWith(status: StatusCode) = HttpResponse(status)
 
   def aRedirectResponseTo(url: String) = HttpResponse(status = Found, headers = immutable.Seq( Location(Uri(url)) ) )
+  def aRedirectResponseWithoutLocationHeader = aRedirectResponseTo("http://example.com").removeHeader("Location")
   def aPermanentlyRedirectResponseTo(url: String) = aRedirectResponseTo(url).copy(status = MovedPermanently)
+  def aPermanentlyRedirectResponseWithoutLocationHeader = aRedirectResponseWithoutLocationHeader.copy(status = MovedPermanently)
 
   def aResponseWith(body: String) = HttpResponse(entity = body)
   def aResponseWith(binaryBody: Array[Byte]) = HttpResponse(entity = binaryBody)

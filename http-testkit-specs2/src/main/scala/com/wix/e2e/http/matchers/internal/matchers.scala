@@ -13,6 +13,7 @@ import com.wix.e2e.http.{HttpResponse, WixHttpTestkitResources}
 import org.specs2.matcher.Matchers._
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 
+import scala.util.{Failure, Try}
 import scala.util.control.Exception.handling
 
 trait ResponseStatusMatchers {
@@ -56,7 +57,7 @@ trait ResponseStatusMatchers {
 
 
   private def haveStatus(status: StatusCode): ResponseMatcher = be_===(status) ^^ httpResponseStatus
-  private def httpResponseStatus = (_: HttpResponse).status aka "response status"
+  private def httpResponseStatus = (_: HttpResponse).status aka "Response status"
 }
 
 
@@ -210,10 +211,37 @@ trait ResponseBodyAndStatusMatchers { self: ResponseBodyMatchers with ResponseSt
 
 trait ResponseStatusAndHeaderMatchers { self: ResponseStatusMatchers with ResponseHeadersMatchers =>
 
-  def beRedirectedTo(url: String): ResponseMatcher = beRedirect and haveLocationHeaderWith(url)
-  def bePermanentlyRedirectedTo(url: String): ResponseMatcher = bePermanentlyRedirect and haveLocationHeaderWith(url)
+  def beRedirectedTo(url: String): ResponseMatcher = haveLocationHeaderWith(url, beRedirect)
+  def bePermanentlyRedirectedTo(url: String): ResponseMatcher = haveLocationHeaderWith(url, bePermanentlyRedirect)
 
-  private def haveLocationHeaderWith(value: String) = haveAnyHeaderThat(be_===(value), withHeaderName = "Location")
+  private def haveLocationHeaderWith(url: String, statusMatcher: ResponseMatcher): ResponseMatcher = new ResponseMatcher {
+    def apply[S <: HttpResponse](t: Expectable[S]): MatchResult[S] = {
+      val statusResult = statusMatcher.apply(t)
+      if (!statusResult.isSuccess) statusResult
+      else {
+        val response = t.value
+        val header = response.header[`Location`]
+        val expected = Try(Uri(url))
+        (header, expected) match {
+          case (_, Failure(_)) => failure(s"Matching against a malformed url: [$url].", t)
+          case (None, _) => failure("Response does not contain Location header.", t)
+          case (Some(`Location`(a)), scala.util.Success(e)) if compareUrl(a, e) => success("ok", t)
+          case (Some(`Location`(a)), _) =>
+            failure(s"""Response is redirected to a different url:
+                       |actual:   $a
+                       |expected: $url
+                       |""".stripMargin, t)
+        }
+      }
+    }
+
+    private def compareUrl(actual: Uri, expected: Uri) =
+      actual.scheme == expected.scheme &&
+      actual.authority == expected.authority &&
+      actual.path == expected.path &&
+      actual.query().toMap == expected.query().toMap &&
+      actual.fragment == expected.fragment
+  }
 }
 
 trait ResponseContentTypeMatchers {
