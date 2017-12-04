@@ -1,5 +1,6 @@
 package com.wix.e2e.http.api
 
+import com.wix.e2e.http.api.DefaultMarshaller.HttpTestkitBundledMarshallers
 import com.wix.e2e.http.exceptions.MissingMarshallerException
 import org.reflections.Reflections
 
@@ -29,19 +30,23 @@ object Marshaller {
 }
 
 object DefaultMarshaller {
+  val DefaultMarshallerClassName = "com.wix.e2e.http.json.JsonJacksonMarshaller"
+  val HttpTestkitBundledMarshallers = Seq(DefaultMarshallerClassName, classOf[NopMarshaller].getName)
+
   def lookup: Option[Class[_]] =
     try {
-      Option(Class.forName("com.wix.e2e.http.json.JsonJacksonMarshaller"))
+      Option(Class.forName(DefaultMarshallerClassName))
     } catch {
       case _: Exception => None
     }
 }
 
 object ExternalMarshaller {
-  def lookup: Option[Class[_]] =
+  def lookup: Option[Class[_]] = {
     new Reflections().getSubTypesOf(classOf[Marshaller]).asScala
-                     .filterNot( _ == classOf[NopMarshaller])
+                     .filterNot( c => HttpTestkitBundledMarshallers.contains(c.getName) )
                      .headOption
+  }
 }
 
 class NopMarshaller extends Marshaller {
