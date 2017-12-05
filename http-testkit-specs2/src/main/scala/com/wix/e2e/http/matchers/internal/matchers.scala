@@ -321,3 +321,4 @@ trait ResponseTransferEncodingMatchers {
 
 trait ResponseSpecialHeadersMatchers extends ResponseContentTypeMatchers
                                         with ResponseContentLengthMatchers
+                                        with ResponseTransferEncodingMatchers
