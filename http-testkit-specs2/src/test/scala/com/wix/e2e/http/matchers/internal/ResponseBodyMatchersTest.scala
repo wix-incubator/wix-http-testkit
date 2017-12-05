@@ -48,7 +48,7 @@ class ResponseBodyMatchersTest extends Spec with MatchersTestSupport {
     "provide a meaningful explanation why match failed" in new ctx {
       givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
 
-      failureMessageFor(haveBodyThat(must = be_===(anotherObject)), matchedOn = aResponseWith(content)) must_===
+      failureMessageFor(haveBodyWithEntityThat(must = be_===(anotherObject)), matchedOn = aResponseWith(content)) must_===
         s"Failed to match: ['$someObject' is not equal to '$anotherObject'] with content: [$content]"
     }
 
@@ -60,14 +60,14 @@ class ResponseBodyMatchersTest extends Spec with MatchersTestSupport {
 
     "provide a proper message to user sent a matcher to an entity matcher" in new ctx {
       failureMessageFor(haveBodyWith(entity = be_===(someObject)), matchedOn = aResponseWith(content)) must_===
-        s"Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyThat` instead."
+        s"Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyWithEntityThat` instead."
     }
 
     "support custom matcher for user object" in new ctx {
       givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
 
-      aResponseWith(content) must haveBodyThat(must = be_===(someObject))
-      aResponseWith(content) must not( haveBodyThat(must = be_===(anotherObject)) )
+      aResponseWith(content) must haveBodyWithEntityThat(must = be_===(someObject))
+      aResponseWith(content) must not( haveBodyWithEntityThat(must = be_===(anotherObject)) )
     }
   }
 }

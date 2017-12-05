@@ -1,6 +1,6 @@
 package com.wix.e2e.http.matchers.internal
 
-import com.wix.e2e.http.api.Marshaller.Implicits._
+import com.wix.e2e.http.api.Marshaller.Implicits.marshaller
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
 import com.wix.e2e.http.matchers.drivers.HttpResponseMatchers._
@@ -88,7 +88,7 @@ class ResponseBodyAndStatusMatchersTest extends Spec with MatchersTestSupport {
 
     "provide a proper message to user sent a matcher to an entity matcher" in new ctx {
       failureMessageFor(haveBodyWith(entity = be_===(someObject)), matchedOn = aResponseWith(content)) must_===
-        s"Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyThat` instead."
+        s"Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyWithEntityThat` instead."
     }
 
   }

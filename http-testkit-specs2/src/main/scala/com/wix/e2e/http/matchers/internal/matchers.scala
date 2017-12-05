@@ -160,10 +160,10 @@ trait ResponseBodyMatchers {
   def haveBodyDataThat(must: Matcher[Array[Byte]]): ResponseMatcher = must ^^ httpResponseAsBinary
 
   def haveBodyWith[T <: Matcher[_]](entity: T): ResponseMatcher = new ResponseMatcher {
-    def apply[S <: HttpResponse](t: Expectable[S]): MatchResult[S] = failure("Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyThat` instead.",t)
+    def apply[S <: HttpResponse](t: Expectable[S]): MatchResult[S] = failure("Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyWithEntityThat` instead.",t)
   }
-  def haveBodyWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): ResponseMatcher = haveBodyThat[T]( must = be_===(entity) )
-  def haveBodyThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): ResponseMatcher = new ResponseMatcher {
+  def haveBodyWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): ResponseMatcher = haveBodyWithEntityThat[T]( must = be_===(entity) )
+  def haveBodyWithEntityThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): ResponseMatcher = new ResponseMatcher {
 
     def apply[S <: HttpResponse](t: Expectable[S]): MatchResult[S] = {
       val response = t.value
@@ -194,7 +194,7 @@ trait ResponseBodyAndStatusMatchers { self: ResponseBodyMatchers with ResponseSt
     def apply[S <: HttpResponse](t: Expectable[S]): MatchResult[S] = failure("Matcher misuse: `beSuccessfulWith` received a matcher to match against, please use `beSuccessfulWithEntityThat` instead.",t)
   }
   def beSuccessfulWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): ResponseMatcher = beSuccessful and haveBodyWith(entity)
-  def beSuccessfulWithEntityThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): ResponseMatcher = beSuccessful and haveBodyThat(must)
+  def beSuccessfulWithEntityThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): ResponseMatcher = beSuccessful and haveBodyWithEntityThat[T](must)
 
   def beSuccessfulWith(data: Array[Byte]): ResponseMatcher = beSuccessful and haveBodyWith(data)
   def beSuccessfulWithBodyDataThat(must: Matcher[Array[Byte]]): ResponseMatcher = beSuccessful and haveBodyDataThat(must)
