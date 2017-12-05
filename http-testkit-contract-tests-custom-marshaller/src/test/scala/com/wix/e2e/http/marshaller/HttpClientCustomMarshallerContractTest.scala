@@ -55,7 +55,7 @@ class HttpClientCustomMarshallerContractTest extends Spec with HttpClientTransfo
     "in haveBodyThat matcher, detect custom marshaller from classpath and use it to unmarshal request" in new ctx {
       givenMarshallerThatUnmarshalWith(someObject, forContent = content)
 
-      aResponseWith(content) must ResponseMatchers.haveBodyThat(must = be_===(someObject))
+      aResponseWith(content) must ResponseMatchers.haveBodyWithEntityThat(must = be_===(someObject))
     }
 
     "in beSuccessfulWith matcher, detect custom marshaller from classpath and use it to unmarshal request" in new ctx {

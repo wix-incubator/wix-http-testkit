@@ -44,7 +44,7 @@ class HttpClientNoCustomMarshallerContractTest extends Spec with HttpClientTrans
     }
 
     "in haveBodyThat matcher, print informative error message when marshaller is not included2" in new ctx {
-      ResponseMatchers.haveBodyThat(must = be_===(someObject)).apply(aResponseWith(content)) must beMissingMarshallerMatcherError
+      ResponseMatchers.haveBodyWithEntityThat(must = be_===(someObject)).apply(aResponseWith(content)) must beMissingMarshallerMatcherError
     }
   }
 }
