@@ -55,11 +55,6 @@ trait ResponseStatusMatchers {
   def beNotImplemented: ResponseMatcher = haveStatus(NotImplemented)
 
 
-  // client errors
-  // todo: fix this matcher !!!
-  def beConnectionRefused: ResponseMatcher = ??? //throwA[ConnectionRefusedException]
-
-
   private def haveStatus(status: StatusCode): ResponseMatcher = be(status) compose httpResponseStatus
   private def httpResponseStatus = (_: HttpResponse).status /*aka "Response status"*/
 }
