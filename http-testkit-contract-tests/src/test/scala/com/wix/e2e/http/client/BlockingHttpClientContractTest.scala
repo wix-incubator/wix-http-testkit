@@ -1,7 +1,7 @@
 package com.wix.e2e.http.client
 
 import akka.http.scaladsl.model._
-import com.wix.e2e.http.api.Marshaller.Implicits._
+import com.wix.e2e.http.api.Marshaller.Implicits.marshaller
 import com.wix.e2e.http.client.sync._
 import com.wix.e2e.http.drivers.HttpClientMatchers._
 import com.wix.e2e.http.drivers.HttpClientTestResponseHandlers._
@@ -26,7 +26,7 @@ class BlockingHttpClientContractTest extends Spec {
     "support url with parameters" in new ctx {
       get(s"$path?${parameter._1}=${parameter._2}",
         but = withHeader(header)
-          and withCookie(cookie) )
+          and withCookie(cookie), withTimeout = 7.seconds )
 
       server must receivedAnyRequestThat( beGet and
                                           havePath(s"/$path") and
