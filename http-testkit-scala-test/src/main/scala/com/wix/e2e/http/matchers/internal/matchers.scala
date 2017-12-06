@@ -56,6 +56,7 @@ trait ResponseStatusMatchers {
 
 
   // client errors
+  // todo: fix this matcher !!!
   def beConnectionRefused: ResponseMatcher = ??? //throwA[ConnectionRefusedException]
 
 
@@ -147,13 +148,6 @@ trait ResponseHeadersMatchers {
 
   private case class HeaderComparisonResult(identical: Seq[(String, String)], missing: Seq[(String, String)], extra: Seq[(String, String)])
 }
-
-/*
-       MatchResult(matches = true, "ok", "not-ok")
-   MatchResult(matches = false, "Request did not contain any request parameters.", "not-ok")
-
-  */
-
 
 trait ResponseBodyMatchers {
   import WixHttpTestkitResources.{executionContext, materializer}

@@ -4,13 +4,14 @@ import com.wix.e2e.http.exceptions.MarshallerErrorException
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
-import com.wix.e2e.http.matchers.drivers.{HttpResponseTestSupport, MarshallerTestSupport, MatchersTestSupport}
+import com.wix.e2e.http.matchers.drivers.{CustomMarshallerProvider, HttpResponseTestSupport, MarshallerTestSupport, MatchersTestSupport}
 import org.scalatest.Matchers._
 import org.scalatest._
 
+
 class RequestBodyMatchersTest extends WordSpec with MatchersTestSupport {
 
-  trait ctx extends HttpResponseTestSupport with MarshallerTestSupport
+  trait ctx extends HttpResponseTestSupport with MarshallerTestSupport with CustomMarshallerProvider
 
   "ResponseBodyMatchers" should {
 
@@ -39,14 +40,14 @@ class RequestBodyMatchersTest extends WordSpec with MatchersTestSupport {
     }
 
     "support unmarshalling body content with user custom unmarshaller" in new ctx {
-      implicit val marshaller = givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
+      givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content, times = 2)
 
       aRequestWith(content) should haveBodyWith(entity = someObject)
       aRequestWith(content) should not( haveBodyWith(entity = anotherObject) )
     }
 
     "provide a meaningful explanation why match failed" in new ctx {
-      implicit val marshaller = givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
+      givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
 
       failureMessageFor(haveBodyEntityThat(must = be(anotherObject)), matchedOn = aRequestWith(content)) should
         be( s"Failed to match: ['$someObject' != '$anotherObject'] with content: ['$content']" )
@@ -58,13 +59,13 @@ class RequestBodyMatchersTest extends WordSpec with MatchersTestSupport {
     }
 
     "provide a proper message to user in case of a badly behaving marshaller" in new ctx {
-      implicit val marshaller = givenBadlyBehavingUnmarshallerFor[SomeCaseClass](withContent = content)
+      givenBadlyBehavingUnmarshallerFor[SomeCaseClass](withContent = content)
 
       the [MarshallerErrorException] thrownBy haveBodyWith(entity = someObject).apply( aRequestWith(content) )
     }
 
     "support custom matcher for user object" in new ctx {
-      implicit val marshaller = givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
+      givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content, times = 2)
 
       aRequestWith(content) should haveBodyEntityThat(must = be(someObject))
       aRequestWith(content) should not( haveBodyEntityThat(must = be(anotherObject)) )

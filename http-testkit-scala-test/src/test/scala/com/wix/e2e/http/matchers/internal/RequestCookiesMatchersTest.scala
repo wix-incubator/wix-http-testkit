@@ -8,10 +8,6 @@ import com.wix.test.random._
 import org.scalatest.WordSpec
 import org.scalatest.matchers.Matcher
 import org.scalatest.Matchers._
-//import org.specs2.matcher.Matcher
-//import org.specs2.matcher.Matchers._
-//import org.specs2.mutable.Spec
-//import org.specs2.specification.Scope
 
 
 class RequestCookiesMatchersTest extends WordSpec with MatchersTestSupport {

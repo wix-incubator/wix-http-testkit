@@ -7,7 +7,6 @@ import org.scalatest.Matchers._
 import org.scalatest.WordSpec
 import org.scalatest.matchers.{MatchResult, Matcher}
 
-
 class RequestHeadersMatchersTest extends WordSpec with MatchersTestSupport {
 
   trait ctx extends HttpResponseTestSupport

@@ -1,18 +1,18 @@
 package com.wix.e2e.http.matchers.internal
 
-import com.wix.e2e.http.api.Marshaller.Implicits.marshaller
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
 import com.wix.e2e.http.matchers.drivers.HttpResponseMatchers._
+import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
 import com.wix.e2e.http.matchers.drivers.{HttpResponseTestSupport, MatchersTestSupport}
 import org.scalatest.Matchers._
 import org.scalatest._
 
 
 class ResponseBodyAndStatusMatchersTest extends WordSpec with MatchersTestSupport {
+  import com.wix.e2e.http.api.Marshaller.Implicits.marshaller
 
   trait ctx extends HttpResponseTestSupport
-
 
   "ResponseBodyAndStatusMatchers" should {
 
@@ -62,8 +62,8 @@ class ResponseBodyAndStatusMatchersTest extends WordSpec with MatchersTestSuppor
     }
 
     "match successful request with entity matcher" in new ctx {
-      aSuccessfulResponseWith(marshaller.marshall(someObject)) should beSuccessfulWithEntityThat( must = be( someObject ) )
-      aSuccessfulResponseWith(marshaller.marshall(someObject)) should not( beSuccessfulWithEntityThat( must = be( anotherObject ) ) )
+      aSuccessfulResponseWith(marshaller.marshall(someObject)) should beSuccessfulWithEntityThat[SomeCaseClass]( must = be( someObject ) )
+      aSuccessfulResponseWith(marshaller.marshall(someObject)) should not( beSuccessfulWithEntityThat[SomeCaseClass]( must = be( anotherObject ) ) )
     }
 
     "match successful request with headers" in new ctx {
@@ -90,6 +90,5 @@ class ResponseBodyAndStatusMatchersTest extends WordSpec with MatchersTestSuppor
       failureMessageFor(haveBodyWith(entity = be(someObject)), matchedOn = aResponseWith(content)) shouldBe
         s"Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyThat` instead."
     }
-
   }
 }
