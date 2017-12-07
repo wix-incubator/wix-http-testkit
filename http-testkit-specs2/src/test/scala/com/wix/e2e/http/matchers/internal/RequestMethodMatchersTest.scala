@@ -1,21 +1,16 @@
 package com.wix.e2e.http.matchers.internal
 
-import akka.http.scaladsl.model.HttpMethod
 import akka.http.scaladsl.model.HttpMethods._
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
+import com.wix.e2e.http.matchers.drivers.HttpMessageTestSupport
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
-
-import scala.util.Random
 
 
 class RequestMethodMatchersTest extends Spec {
 
-  trait ctx extends Scope {
-    def randomMethodThatIsNot(method: HttpMethod) =
-      Random.shuffle(Seq(CONNECT, DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT, TRACE).filterNot( _ == method)).head
-  }
+  trait ctx extends Scope with HttpMessageTestSupport
 
   "RequestMethodMatchers" should {
 

@@ -1,30 +1,15 @@
 package com.wix.e2e.http.matchers.internal
 
-import com.wix.e2e.http.HttpRequest
-import com.wix.e2e.http.api.RequestRecordSupport
 import com.wix.e2e.http.matchers.RequestMatchers._
-import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
-import com.wix.e2e.http.matchers.drivers.MatchersTestSupport
+import com.wix.e2e.http.matchers.drivers.RequestRecorderFactory._
+import com.wix.e2e.http.matchers.drivers.{MatchersTestSupport, RequestRecorderTestSupport}
 import org.specs2.matcher.AlwaysMatcher
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 class RequestRecorderMatchersTest extends Spec with MatchersTestSupport {
 
-  trait ctx extends Scope {
-    val request = aRandomRequest
-    val anotherRequest = aRandomRequest
-    val yetAnotherRequest = aRandomRequest
-    val andAnotherRequest = aRandomRequest
-
-    val anEmptyRequestRecorder = aRequestRecorderWith()
-
-    def aRequestRecorderWith(requests: HttpRequest*) = new RequestRecordSupport {
-      val recordedRequests = requests
-      def clearRecordedRequests() = {}
-    }
-  }
-
+  trait ctx extends Scope with RequestRecorderTestSupport
 
   "RequestRecorderMatchers" should {
 

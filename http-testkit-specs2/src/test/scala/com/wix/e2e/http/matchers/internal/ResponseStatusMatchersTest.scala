@@ -4,14 +4,14 @@ package com.wix.e2e.http.matchers.internal
 import akka.http.scaladsl.model.StatusCodes._
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
-import com.wix.e2e.http.matchers.drivers.HttpResponseTestSupport
+import com.wix.e2e.http.matchers.drivers.HttpMessageTestSupport
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 
 class ResponseStatusMatchersTest extends Spec {
 
-  trait ctx extends Scope with HttpResponseTestSupport
+  trait ctx extends Scope with HttpMessageTestSupport
 
 
   "ResponseStatusMatchers" should {

@@ -1,6 +1,7 @@
 package com.wix.e2e.http.matchers.drivers
 
 import akka.http.scaladsl.model.ContentTypes.`text/plain(UTF-8)`
+import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.Uri.{Path, Query}
 import akka.http.scaladsl.model._
@@ -14,19 +15,31 @@ import org.specs2.matcher.Matchers._
 import scala.collection.immutable
 import scala.util.Random
 
-trait HttpResponseTestSupport {
+trait HttpMessageTestSupport {
 
   val cookie = randomCookie
   val anotherCookie = randomCookie
   val yetAnotherCookie = randomCookie
 
   val cookiePair = randomStrPair
+  val anotherCookiePair = randomStrPair
+  val yetAnotherCookiePair = randomStrPair
 
   val nonExistingHeaderName = randomStr
   val header = randomHeader
   val anotherHeader = randomHeader
   val yetAnotherHeader = randomHeader
   val andAnotherHeader = randomHeader
+
+  val somePath = randomPath
+  val anotherPath = randomPath
+
+  val parameter = randomParameter
+  val anotherParameter = randomParameter
+  val yetAnotherParameter = randomParameter
+  val andAnotherParameter = randomParameter
+
+  val nonExistingParamName = randomStr
 
   val content = randomStr
   val anotherContent = randomStr
@@ -64,6 +77,10 @@ trait HttpResponseTestSupport {
     Random.shuffle(AllResponseStatuses)
           .head
 
+  def randomMethodThatIsNot(method: HttpMethod) =
+    Random.shuffle(Seq(CONNECT, DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT, TRACE).filterNot( _ == method)).head
+
+
   private val AllResponseStatuses =
     Seq(Continue, SwitchingProtocols, Processing, OK, Created, Accepted, NonAuthoritativeInformation,
         NoContent, ResetContent, PartialContent, MultiStatus, AlreadyReported, IMUsed, MultipleChoices,
@@ -79,7 +96,6 @@ trait HttpResponseTestSupport {
         NetworkConnectTimeout)
 
 
-  private def randomHeader = randomStr -> randomStr
   private def randomCookie = HttpCookie(randomStr, randomStr)
 }
 

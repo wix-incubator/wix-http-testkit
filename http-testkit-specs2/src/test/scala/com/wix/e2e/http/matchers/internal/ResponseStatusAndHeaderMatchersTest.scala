@@ -3,13 +3,13 @@ package com.wix.e2e.http.matchers.internal
 import akka.http.scaladsl.model.StatusCodes.{Found, MovedPermanently}
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
-import com.wix.e2e.http.matchers.drivers.{HttpResponseTestSupport, MatchersTestSupport}
+import com.wix.e2e.http.matchers.drivers.{HttpMessageTestSupport, MatchersTestSupport}
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 class ResponseStatusAndHeaderMatchersTest extends Spec with MatchersTestSupport {
 
-  trait ctx extends Scope with HttpResponseTestSupport
+  trait ctx extends Scope with HttpMessageTestSupport
 
   "ResponseStatusAndHeaderMatchers" should {
 

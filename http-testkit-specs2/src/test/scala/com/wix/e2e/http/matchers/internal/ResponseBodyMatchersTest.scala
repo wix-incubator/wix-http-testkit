@@ -3,14 +3,14 @@ package com.wix.e2e.http.matchers.internal
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
-import com.wix.e2e.http.matchers.drivers.{CustomMarshallerProvider, HttpResponseTestSupport, MarshallerTestSupport, MatchersTestSupport}
+import com.wix.e2e.http.matchers.drivers.{CustomMarshallerProvider, HttpMessageTestSupport, MarshallerTestSupport, MatchersTestSupport}
 import org.specs2.matcher.ResultMatchers._
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 class ResponseBodyMatchersTest extends Spec with MatchersTestSupport {
 
-  trait ctx extends Scope with HttpResponseTestSupport with MarshallerTestSupport with CustomMarshallerProvider
+  trait ctx extends Scope with HttpMessageTestSupport with MarshallerTestSupport with CustomMarshallerProvider
 
   "ResponseBodyMatchers" should {
 

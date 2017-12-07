@@ -4,14 +4,14 @@ import com.wix.e2e.http.api.Marshaller.Implicits.marshaller
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
 import com.wix.e2e.http.matchers.drivers.HttpResponseMatchers._
-import com.wix.e2e.http.matchers.drivers.{HttpResponseTestSupport, MatchersTestSupport}
+import com.wix.e2e.http.matchers.drivers.{HttpMessageTestSupport, MatchersTestSupport}
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 
 class ResponseBodyAndStatusMatchersTest extends Spec with MatchersTestSupport {
 
-  trait ctx extends Scope with HttpResponseTestSupport
+  trait ctx extends Scope with HttpMessageTestSupport
 
 
   "ResponseBodyAndStatusMatchers" should {

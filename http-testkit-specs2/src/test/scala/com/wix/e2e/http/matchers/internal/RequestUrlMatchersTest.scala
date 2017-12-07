@@ -2,8 +2,7 @@ package com.wix.e2e.http.matchers.internal
 
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
-import com.wix.e2e.http.matchers.drivers.MatchersTestSupport
-import com.wix.test.random._
+import com.wix.e2e.http.matchers.drivers.{HttpMessageTestSupport, MatchersTestSupport}
 import org.specs2.matcher.AlwaysMatcher
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
@@ -11,22 +10,7 @@ import org.specs2.specification.Scope
 
 class RequestUrlMatchersTest extends Spec with MatchersTestSupport {
 
-  trait ctx extends Scope {
-
-    val somePath = randomPath
-    val anotherPath = randomPath
-
-    val parameter = randomParameter
-    val anotherParameter = randomParameter
-    val yetAnotherParameter = randomParameter
-    val andAnotherParameter = randomParameter
-
-    val nonExistingParamName = randomStr
-
-    private def randomPath = "/" + Seq.fill(5)(randomStr).mkString("/")
-    private def randomParameter = randomStr -> randomStr
-  }
-
+  trait ctx extends Scope with HttpMessageTestSupport
 
   "RequestUrlMatchers" should {
 
