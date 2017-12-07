@@ -61,7 +61,7 @@ lazy val compileOptions = Seq(
     "-Ywarn-infer-any",                  // Warn when a type argument is inferred to be `Any`.
     "-Ywarn-nullary-override",           // Warn when non-nullary `def f()' overrides nullary `def f'.
     "-Ywarn-nullary-unit",               // Warn when nullary methods return Unit.
-    "-Ywarn-unused:imports",             // Warn if an import selector is not referenced.
+//    "-Ywarn-unused:imports",             // Warn if an import selector is not referenced.
     "-Ywarn-unused:locals",              // Warn if a local definition is unused.
     "-Ywarn-unused:patvars",             // Warn if a variable bound in a pattern is unused.
     "-Ywarn-unused:privates"            // Warn if a private member is unused.
@@ -119,6 +119,15 @@ lazy val httpTestkitSpecs2 =
       name := "http-testkit-specs2",
       libraryDependencies ++= specs2(scalaVersion.value),
       description := "Specs2 Matcher suites - Request and Response."
+    ) ++ baseSettings)
+    .dependsOn(httpTestkitCore, httpTestkitTestCommons % Test, httpTestkitMarshallerJackson % Test)
+
+lazy val httpTestkitScalaTest =
+  (project in file("http-testkit-scala-test"))
+    .settings(Seq(
+      name := "http-testkit-scala-test",
+      libraryDependencies ++= Seq(scalaTest) :+ scalaMock,
+      description := "Scala Test Matcher suites - Request and Response."
     ) ++ baseSettings)
     .dependsOn(httpTestkitCore, httpTestkitTestCommons % Test, httpTestkitMarshallerJackson % Test)
 
@@ -211,5 +220,5 @@ lazy val root =
   (project in file("."))
     .settings(Seq(name:= "Wix Http Testkit Modules") ++ baseSettings ++ noPublish)
     .aggregate(httpTestkitTestCommons,
-               httpTestkitCore, httpTestkitClient, httpTestkitServer, httpTestkitSpecs2, httpTestkit, httpTestkitMarshallerJackson,
+               httpTestkitCore, httpTestkitClient, httpTestkitServer, httpTestkitSpecs2, /*httpTestkitScalaTest,*/ httpTestkit, httpTestkitMarshallerJackson,
                contractTests)

@@ -7,6 +7,10 @@ object depends {
   def specs2(scalaVersion: String) = specs2DepsFor(specs2VersionFor(scalaVersion))
   def specs2Test(scalaVersion: String) = specs2(scalaVersion).map(_ % Test)
 
+  val scalaTest = "org.scalatest" %% "scalatest" % "3.0.4"
+
+  val scalaMock = "org.scalamock" %% "scalamock" % "4.0.0" % Test
+
   private def specs2DepsFor(version: String) =
     Seq("org.specs2" %% "specs2-core" % version,
         "org.specs2" %% "specs2-junit" % version,
