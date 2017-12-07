@@ -32,7 +32,7 @@ object Marshaller {
 
   private def newInstance(clazz: Class[_]): Option[Marshaller] =
     handling(classOf[Exception])
-      .by( { case e: Exception =>
+      .by( { _ =>
         println(s"[ERROR]: Failed to create marshaller instance [$clazz].")
         None
       }) {

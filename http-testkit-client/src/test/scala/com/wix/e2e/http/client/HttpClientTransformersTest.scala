@@ -7,7 +7,7 @@ import akka.http.scaladsl.model.headers.HttpCookiePair
 import com.wix.e2e.http.api.Marshaller.Implicits._
 import com.wix.e2e.http.client.transformers._
 import com.wix.e2e.http.drivers.HttpClientTransformersMatchers._
-import com.wix.e2e.http.drivers.{HttpClientTransformersTestSupport, SomePayload}
+import com.wix.e2e.http.drivers.HttpClientTransformersTestSupport
 import com.wix.e2e.http.exceptions.UserAgentModificationNotSupportedException
 import com.wix.e2e.http.matchers.RequestMatchers._
 import org.specs2.mutable.Spec

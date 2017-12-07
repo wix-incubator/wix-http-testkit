@@ -19,6 +19,6 @@ trait RequestRecordSupport {
 }
 
 trait AdjustableServerBehavior {
-  def appendAll(handlers: RequestHandler*)
-  def replaceWith(handlers: RequestHandler*)
+  def appendAll(handlers: RequestHandler*): Unit
+  def replaceWith(handlers: RequestHandler*): Unit
 }

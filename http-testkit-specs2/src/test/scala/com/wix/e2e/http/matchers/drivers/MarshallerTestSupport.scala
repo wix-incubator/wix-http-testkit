@@ -7,13 +7,11 @@ import org.specs2.mock.Mockito
 trait MarshallerTestSupport extends Mockito with ThrownExpectations {
   val marshaller: Marshaller = mock[Marshaller]
 
-  def givenUnmarshallerWith[T : Manifest](someEntity: T, forContent: String): Unit = {
+  def givenUnmarshallerWith[T : Manifest](someEntity: T, forContent: String): Unit =
     marshaller.unmarshall[T](forContent) returns someEntity
-  }
 
-  def givenBadlyBehavingUnmarshallerFor[T : Manifest](withContent: String): Unit = {
+  def givenBadlyBehavingUnmarshallerFor[T : Manifest](withContent: String): Unit =
     marshaller.unmarshall[T](withContent) throws new RuntimeException
-  }
 }
 
 trait CustomMarshallerProvider {

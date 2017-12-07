@@ -29,7 +29,7 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
                          settings = settingsWith(withTimeout))
           .map( recreateTransferEncodingHeader )
           .flatMap( _.toStrict(withTimeout) )
-          .recoverWith( { case _: StreamTcpException => Future.failed(throw new ConnectionRefusedException(baseUri)) } )
+          .recoverWith( { case _: StreamTcpException => Future.failed(new ConnectionRefusedException(baseUri)) } )
   }
 
   private def composeUrlFor(baseUri: BaseUri, path: String): RequestTransformer =

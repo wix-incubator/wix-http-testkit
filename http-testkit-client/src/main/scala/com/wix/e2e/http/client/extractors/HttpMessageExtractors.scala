@@ -9,7 +9,7 @@ import com.wix.e2e.http.utils.waitFor
 import scala.concurrent.duration._
 
 trait HttpMessageExtractors {
-  implicit class HttpMessageExtractorsOps[T <: HttpMessage](message: T) {
+  implicit class HttpMessageExtractorsOps[M <: HttpMessage](message: M) {
     def extractAs[T : Manifest](implicit marshaller: Marshaller, atMost: FiniteDuration = 5.seconds): T = message.entity.extractAs[T]
     def extractAsString(implicit atMost: FiniteDuration = 5.seconds): String = message.entity.extractAsString
     def extractAsBytes(implicit atMost: FiniteDuration = 5.seconds): Array[Byte] = message.entity.extractAsBytes
@@ -21,7 +21,7 @@ trait HttpMessageExtractors {
     def extractAsBytes(implicit atMost: FiniteDuration = 5.seconds): Array[Byte] = extract[Array[Byte]]
 
     import WixHttpTestkitResources.materializer
-    private def extract[T](implicit um: Unmarshaller[E, T], atMost: FiniteDuration = 5.seconds) = waitFor(Unmarshal(entity).to[T])(atMost)
+    private def extract[T](implicit um: Unmarshaller[E, T], atMost: FiniteDuration) = waitFor(Unmarshal(entity).to[T])(atMost)
   }
 }
 

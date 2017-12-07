@@ -3,7 +3,6 @@ package com.wix.e2e.http.client.transformers
 import java.io.File
 
 import akka.http.scaladsl.model.{ContentType, ContentTypes, HttpCharsets, MediaTypes}
-import com.wix.e2e.http.client.transformers.HttpClientContentTypes._
 import com.wix.e2e.http.client.transformers.internals._
 
 trait HttpClientTransformers extends HttpClientRequestUrlTransformers
