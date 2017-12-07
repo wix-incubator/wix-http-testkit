@@ -133,7 +133,7 @@ lazy val httpTestkitContractTestsCustomMarshaller =
     .settings(Seq(
       name := "http-testkit-contract-tests-custom-marshaller",
       libraryDependencies ++= specs2Test(scalaVersion.value),
-      description := "Contract tests for both client and server"
+      description := "Contract tests for marshaller: cover cases which custom marshaller exists on classpath"
     ) ++ baseSettings ++ noPublish)
     .dependsOn(httpTestkit, httpTestkitTestCommons % Test)
 
@@ -142,7 +142,7 @@ lazy val httpTestkitContractTestsNoCustomMarshaller =
     .settings(Seq(
       name := "http-testkit-contract-tests-no-custom-marshaller",
       libraryDependencies ++= specs2Test(scalaVersion.value),
-      description := "Contract tests for both client and server"
+      description := "Contract tests for marshaller: cover cases which no custom marshaller exists on classpath"
     ) ++ baseSettings ++ noPublish)
     .dependsOn(httpTestkit, httpTestkitTestCommons % Test)
 
@@ -151,7 +151,7 @@ lazy val httpTestkitContractTestsDualMarshallers =
     .settings(Seq(
       name := "http-testkit-contract-tests-dual-marshallers",
       libraryDependencies ++= specs2Test(scalaVersion.value),
-      description := "Contract tests for both client and server"
+      description := "Contract tests for marshaller: cover cases which custom marshaller and default marshaller exists on classpath"
     ) ++ baseSettings ++ noPublish)
     .dependsOn(httpTestkit, httpTestkitMarshallerJackson, httpTestkitTestCommons % Test)
 
@@ -160,7 +160,7 @@ lazy val httpTestkitContractTestsMalformedMarshaller =
     .settings(Seq(
       name := "http-testkit-contract-tests-malformed-marshaller",
       libraryDependencies ++= specs2Test(scalaVersion.value),
-      description := "Contract tests for both client and server"
+      description := "Contract tests for marshaller"
     ) ++ baseSettings ++ noPublish)
     .dependsOn(httpTestkitCore/*, httpTestkitMarshallerJackson, httpTestkitTestCommons % Test*/)
 
