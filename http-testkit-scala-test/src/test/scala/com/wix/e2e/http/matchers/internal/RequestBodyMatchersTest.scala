@@ -40,7 +40,7 @@ class RequestBodyMatchersTest extends WordSpec with MatchersTestSupport {
     }
 
     "support unmarshalling body content with user custom unmarshaller" in new ctx {
-      givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content, times = 2)
+      givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
 
       aRequestWith(content) should haveBodyWith(entity = someObject)
       aRequestWith(content) should not( haveBodyWith(entity = anotherObject) )
@@ -49,13 +49,19 @@ class RequestBodyMatchersTest extends WordSpec with MatchersTestSupport {
     "provide a meaningful explanation why match failed" in new ctx {
       givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
 
-      failureMessageFor(haveBodyEntityThat(must = be(anotherObject)), matchedOn = aRequestWith(content)) should
-        be( s"Failed to match: ['$someObject' != '$anotherObject'] with content: ['$content']" )
+      failureMessageFor(haveBodyEntityThat(must = be(anotherObject)), matchedOn = aRequestWith(content)) shouldBe
+        s"Failed to match: ['$someObject' != '$anotherObject'] with content: ['$content']"
+      failureMessageFor(not(haveBodyEntityThat(must = be(anotherObject))), matchedOn = aRequestWith(content)) shouldBe
+        s"Failed to match: ['$someObject'] was not equal to ['$anotherObject'] for content: ['$content']"
+      failureMessageFor(not( haveBodyEntityThat(must = be(someObject))), matchedOn = aRequestWith(content)) shouldBe
+        s"Failed to match: ['$someObject'] was equal to content: ['$content']"
     }
 
     "provide a proper message to user sent a matcher to an entity matcher" in new ctx {
-      failureMessageFor(haveBodyWith(entity = be(someObject)), matchedOn = aRequestWith(content)) should
-        be( "Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyThat` instead." )
+      failureMessageFor(haveBodyWith(entity = be(someObject)), matchedOn = aRequestWith(content)) shouldBe
+        "Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyThat` instead."
+      failureMessageFor(not( haveBodyWith(entity = be(someObject)) ), matchedOn = aRequestWith(content)) shouldBe
+        "Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyThat` instead."
     }
 
     "provide a proper message to user in case of a badly behaving marshaller" in new ctx {
@@ -65,7 +71,7 @@ class RequestBodyMatchersTest extends WordSpec with MatchersTestSupport {
     }
 
     "support custom matcher for user object" in new ctx {
-      givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content, times = 2)
+      givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
 
       aRequestWith(content) should haveBodyEntityThat(must = be(someObject))
       aRequestWith(content) should not( haveBodyEntityThat(must = be(anotherObject)) )

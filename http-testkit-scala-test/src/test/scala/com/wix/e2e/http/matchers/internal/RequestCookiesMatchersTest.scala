@@ -18,13 +18,17 @@ class RequestCookiesMatchersTest extends WordSpec with MatchersTestSupport {
     }
 
     "failure message should describe which cookies are present and which did not match" in new ctx {
-      failureMessageFor(receivedCookieWith(cookiePair._1), matchedOn = aRequestWithCookies(anotherCookiePair, yetAnotherCookiePair)) should
-        (include(cookiePair._1) and include(anotherCookiePair._1) and include(yetAnotherCookiePair._1))
+      failureMessageFor( receivedCookieWith(cookiePair._1), matchedOn = aRequestWithCookies(anotherCookiePair, yetAnotherCookiePair)) should
+        include(s"Could not find cookie that matches for request contained cookies with names: ['${anotherCookiePair._1}', '${yetAnotherCookiePair._1}'")
+      failureMessageFor( not( receivedCookieThat(be(cookiePair._1)) ), matchedOn = aRequestWithCookies(cookiePair, anotherCookiePair)) shouldBe
+        s"Request contained a cookie that matched, request has the following cookies: ['${cookiePair._1}', '${anotherCookiePair._1}'"
     }
 
     "failure message for response withoout cookies will print that the response did not contain any cookies" in new ctx {
-      receivedCookieWith(cookiePair._1).apply( aRequestWithNoCookies ).failureMessage should
-        include("Request did not contain any Cookie headers.")
+      failureMessageFor( receivedCookieWith(cookiePair._1), matchedOn = aRequestWithNoCookies) shouldBe
+        "Request did not contain any Cookie headers."
+      failureMessageFor( not( receivedCookieWith(cookiePair._1) ), matchedOn = aRequestWithNoCookies) shouldBe
+        "Request did not contain any Cookie headers."
     }
 
     "allow to compose matcher with custom cookiePair matcher" in new ctx {

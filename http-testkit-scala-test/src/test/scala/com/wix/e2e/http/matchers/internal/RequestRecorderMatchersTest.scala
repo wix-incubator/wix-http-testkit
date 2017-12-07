@@ -28,6 +28,15 @@ class RequestRecorderMatchersTest extends WordSpec with MatchersTestSupport {
            |but found those:
            |1: $yetAnotherRequest,
            |2: $yetAnotherRequest""".stripMargin
+
+      failureMessageFor(not( receivedAnyOf(request, anotherRequest) ), matchedOn = aRequestRecorderWith(yetAnotherRequest, yetAnotherRequest)) shouldBe
+        s"""Could find requests:
+           |1: $yetAnotherRequest,
+           |2: $yetAnotherRequest
+           |
+           |but didn't find those:
+           |1: $request,
+           |2: $anotherRequest""".stripMargin
     }
 
     "contain header will check if all requests are present" in new ctx {
@@ -42,6 +51,13 @@ class RequestRecorderMatchersTest extends WordSpec with MatchersTestSupport {
             |
             |but found those:
             |1: $request""".stripMargin
+
+      failureMessageFor(not( receivedAllOf(request, anotherRequest) ), matchedOn = aRequestRecorderWith(request, yetAnotherRequest)) shouldBe
+        s"""Could find requests:
+            |1: $request
+            |
+            |but didn't find those:
+            |1: $anotherRequest""".stripMargin
     }
 
     "same request as will check if the same requests is present" in new ctx {
@@ -57,6 +73,12 @@ class RequestRecorderMatchersTest extends WordSpec with MatchersTestSupport {
             |
             |added requests found:
             |1: $yetAnotherRequest""".stripMargin
+
+      // todo: fix this
+//      failureMessageFor(not( receivedTheSameRequestsAs(request, anotherRequest) ), matchedOn = aRequestRecorderWith(request, anotherRequest)) shouldBe
+//        s"""Requests are identical, requests found:
+//            |1: $request
+//            |2: $anotherRequest""".stripMargin
     }
 
     "if no recorded requests were found, error message returned will be 'no requests' message" in new ctx {
@@ -67,6 +89,15 @@ class RequestRecorderMatchersTest extends WordSpec with MatchersTestSupport {
         "Server did not receive any requests."
 
       failureMessageFor(receivedTheSameRequestsAs(request), matchedOn = anEmptyRequestRecorder ) shouldBe
+        "Server did not receive any requests."
+
+      failureMessageFor(not( receivedAnyOf(request) ), matchedOn = anEmptyRequestRecorder ) shouldBe
+        "Server did not receive any requests."
+
+      failureMessageFor(not( receivedAllOf(request) ), matchedOn = anEmptyRequestRecorder ) shouldBe
+        "Server did not receive any requests."
+
+      failureMessageFor(not( receivedTheSameRequestsAs(request) ), matchedOn = anEmptyRequestRecorder ) shouldBe
         "Server did not receive any requests."
     }
 

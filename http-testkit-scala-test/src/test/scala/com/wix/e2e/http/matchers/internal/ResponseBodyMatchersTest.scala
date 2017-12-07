@@ -39,7 +39,7 @@ class ResponseBodyMatchersTest extends WordSpec with MatchersTestSupport {
     }
 
     "support unmarshalling body content with user custom unmarshaller" in new ctx {
-      givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content, times = 2)
+      givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
 
       aResponseWith(content) should haveBodyWith(entity = someObject)
       aResponseWith(content) should not( haveBodyWith(entity = anotherObject) )
@@ -64,7 +64,7 @@ class ResponseBodyMatchersTest extends WordSpec with MatchersTestSupport {
     }
 
     "support custom matcher for user object" in new ctx {
-      givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content, times = 2)
+      givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
 
       aResponseWith(content) should haveBodyEntityThat(must = be(someObject))
       aResponseWith(content) should not( haveBodyEntityThat(must = be(anotherObject)) )

@@ -156,8 +156,13 @@ trait RequestCookiesMatchers {
                            .flatten[HttpCookiePair]
       val matchResult = cookies.map( c => must.apply(c) )
       if (matchResult.exists( _.matches) ) MatchResult(matches = true, "ok", "not-ok")
-      else if (matchResult.isEmpty) MatchResult(matches = false, "Request did not contain any Cookie headers.", "not-ok")
-      else MatchResult(matches = false, s"Could not find cookie that [${matchResult.map( _.failureMessage ).mkString(", ")}].", "not-ok")
+      else if (matchResult.isEmpty) MatchResult(matches = false, "Request did not contain any Cookie headers.", "Request did not contain any Cookie headers.")
+      else
+        MatchResult(matches = false,
+          s"""Could not find cookie that matches for request contained cookies with names: [${cookies.map( c => s"'${c.name}'" ).mkString(", ")}]
+             |${matchResult.map( _.failureMessage ).mkString("\n")}
+           """.stripMargin,
+          s"Request contained a cookie that matched, request has the following cookies: [${cookies.map( c => s"'${c.name}'" ).mkString(", ")}")
     }
   }
 }
@@ -173,7 +178,8 @@ trait RequestBodyMatchers {
 
   def haveBodyWith[T <: Matcher[_]](entity: T): RequestMatcher = new RequestMatcher {
     def apply(left: HttpRequest): MatchResult =
-      MatchResult(matches = false, "Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyThat` instead.", "not-ok")
+      MatchResult(matches = false, "Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyThat` instead.",
+                                   "Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyThat` instead.")
   }
   def haveBodyWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): RequestMatcher = haveBodyEntityThat[T]( must = be(entity) )
   def haveBodyEntityThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): RequestMatcher = new RequestMatcher {
@@ -186,8 +192,9 @@ trait RequestBodyMatchers {
         }) {
           val x = marshaller.unmarshall[T](content)
           val result = must(x)
-          if (result.matches) result
-          else MatchResult(matches = false, s"Failed to match: ['${result.failureMessageArgs.head}' != '${result.failureMessageArgs.last}'] with content: ['$content']", "not-ok")
+          if (result.matches) MatchResult(matches = true, "ok", s"Failed to match: ['$x'] was equal to content: ['$content']")
+          else MatchResult(matches = false, s"Failed to match: ['${result.failureMessageArgs.head}' != '${result.failureMessageArgs.last}'] with content: ['$content']",
+                                            s"Failed to match: ['${result.failureMessageArgs.head}'] was not equal to ['${result.failureMessageArgs.last}'] for content: ['$content']")
         }
     }
   }
@@ -205,7 +212,13 @@ trait RequestRecorderMatchers {
                                   |${requestsToStr(res.missing)}
                                   |
                                   |but found those:
-                                  |${requestsToStr(res.extra)}""".stripMargin )
+                                  |${requestsToStr(res.extra)}""".stripMargin,
+                             res =>
+                               s"""Could find requests:
+                                  |${requestsToStr(res.extra)}
+                                  |
+                                  |but didn't find those:
+                                  |${requestsToStr(res.missing)}""".stripMargin )
 
   private def requestsToStr(rs: Seq[HttpRequest]) = rs.zipWithIndex.map{ case (r, i) => s"${i + 1}: $r"}.mkString(",\n")
 
@@ -215,7 +228,12 @@ trait RequestRecorderMatchers {
                                          |${requestsToStr(res.missing)}
                                          |
                                          |but found those:
-                                         |${requestsToStr(res.identical)}""".stripMargin )
+                                         |${requestsToStr(res.identical)}""".stripMargin,
+                              res => s"""Could find requests:
+                                         |${requestsToStr(res.identical)}
+                                         |
+                                         |but didn't find those:
+                                         |${requestsToStr(res.missing)}""".stripMargin)
 
   def receivedTheSameRequestsAs[T <: RequestRecordSupport](requests: HttpRequest*): Matcher[T] =
   receivedRequestsInternal( requests, r => r.extra.isEmpty && r.missing.isEmpty,
@@ -223,18 +241,18 @@ trait RequestRecorderMatchers {
                                        |${requestsToStr(res.missing)}
                                        |
                                        |added requests found:
-                                       |${requestsToStr(res.extra)}""".stripMargin)
+                                       |${requestsToStr(res.extra)}""".stripMargin,
+                            res => s"""Requests are identical, requests found:
+                                       |${requestsToStr(requests)}""".stripMargin)
 
-  private def receivedRequestsInternal[T <: RequestRecordSupport](requests: Seq[HttpRequest], comparator: RequestComparisonResult => Boolean, errorMessage: RequestComparisonResult => String): Matcher[T] = new Matcher[T] {
-
-
+  private def receivedRequestsInternal[T <: RequestRecordSupport](requests: Seq[HttpRequest], comparator: RequestComparisonResult => Boolean, errorMessage: RequestComparisonResult => String, negateErrorMessage: RequestComparisonResult => String): Matcher[T] = new Matcher[T] {
     def apply(recorder: T): MatchResult = {
       val recordedRequests = recorder.recordedRequests
       val comparisonResult = compare(requests, recordedRequests)
 
-      if ( comparator(comparisonResult) ) MatchResult(matches = true, "ok", "not-ok")
-      else if (recordedRequests.isEmpty) MatchResult(matches = false, "Server did not receive any requests.", "not-ok")
-      else MatchResult(matches = false, errorMessage(comparisonResult), "not-ok")
+      if ( comparator(comparisonResult) ) MatchResult(matches = true, "ok", "ok")
+      else if (recordedRequests.isEmpty) MatchResult(matches = false, "Server did not receive any requests.", "Server did not receive any requests.")
+      else MatchResult(matches = false, errorMessage(comparisonResult), negateErrorMessage(comparisonResult))
     }
 
     private def compareRequest(request1: HttpRequest, request2: HttpRequest) = request1 == request2
@@ -255,8 +273,8 @@ trait RequestRecorderMatchers {
       val results = recordedRequests.map( r => must.apply(r) )
 
       results match {
-        case Nil => MatchResult(matches = false, "Server did not receive any requests.", "not-ok")
-        case rs if rs.exists( _.matches ) => MatchResult(matches = true, "ok", "not-ok")
+        case Nil => MatchResult(matches = false, "Server did not receive any requests.", "Server did not receive any requests.")
+        case rs if rs.exists( _.matches ) => MatchResult(matches = true, "ok", "ok")
         case rs => MatchResult(matches = false, s"""Could not find any request that matches:
                                                    |${rs.zipWithIndex.map { case (r, i) => s"${i + 1}: ${r.failureMessage.replaceAll("\n", "")}" }.mkString(",\n") }""".stripMargin, "not-ok")
       }
