@@ -5,7 +5,7 @@ import com.wix.e2e.http.exceptions.MissingMarshallerException
 import org.reflections.Reflections
 
 import scala.collection.JavaConverters._
-import scala.util.Try
+import scala.util.control.Exception.handling
 
 trait Marshaller {
   def unmarshall[T : Manifest](jsonStr: String): T
@@ -18,13 +18,12 @@ object Marshaller {
     implicit val marshaller: Marshaller = defaultMarshaller
   }
 
+
   private def defaultMarshaller =
     createFirst( ExternalMarshaller.lookup )
       .orElse( createFirst( DefaultMarshaller.lookup ) )
       .getOrElse( new NopMarshaller )
 
-  // todo: add test for failed matcher
-  // todo: add more info to user about failed attempts
   private def createFirst(classes: Iterable[Class[_]]): Option[Marshaller] =
     classes.foldLeft( Option.empty[Marshaller] ) {
       case (None, clazz) => newInstance(clazz)
@@ -32,11 +31,15 @@ object Marshaller {
     }
 
   private def newInstance(clazz: Class[_]): Option[Marshaller] =
-    Try {
-          clazz.getConstructor()
-               .newInstance()
-               .asInstanceOf[Marshaller]
-    }.toOption
+    handling(classOf[Exception])
+      .by( { case e: Exception =>
+        println(s"[ERROR]: Failed to create marshaller instance [$clazz].")
+        None
+      }) {
+        Some(clazz.getConstructor()
+                  .newInstance()
+                  .asInstanceOf[Marshaller])
+    }
 }
 
 object DefaultMarshaller {

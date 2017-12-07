@@ -155,6 +155,15 @@ lazy val httpTestkitContractTestsDualMarshallers =
     ) ++ baseSettings ++ noPublish)
     .dependsOn(httpTestkit, httpTestkitMarshallerJackson, httpTestkitTestCommons % Test)
 
+lazy val httpTestkitContractTestsMalformedMarshaller =
+  (project in file("contract-tests/marshaller-contract-tests/http-testkit-contract-tests-malformed-marshaller"))
+    .settings(Seq(
+      name := "http-testkit-contract-tests-malformed-marshaller",
+      libraryDependencies ++= specs2Test(scalaVersion.value),
+      description := "Contract tests for both client and server"
+    ) ++ baseSettings ++ noPublish)
+    .dependsOn(httpTestkitCore/*, httpTestkitMarshallerJackson, httpTestkitTestCommons % Test*/)
+
 //lazy val httpTestkitExamples =
 //  Project(
 //    id = "examples",
