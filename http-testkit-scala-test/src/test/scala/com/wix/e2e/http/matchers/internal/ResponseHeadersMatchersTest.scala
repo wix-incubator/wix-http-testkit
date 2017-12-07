@@ -1,15 +1,16 @@
 package com.wix.e2e.http.matchers.internal
 
 import com.wix.e2e.http.matchers.ResponseMatchers._
+import com.wix.e2e.http.matchers.drivers.CommonTestMatchers.AlwaysMatcher
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
-import com.wix.e2e.http.matchers.drivers.{HttpResponseTestSupport, MatchersTestSupport}
+import com.wix.e2e.http.matchers.drivers.{HttpMessageTestSupport, MatchersTestSupport}
 import org.scalatest.Matchers._
 import org.scalatest.WordSpec
 
 
 class ResponseHeadersMatchersTest extends WordSpec with MatchersTestSupport {
 
-  trait ctx extends HttpResponseTestSupport
+  trait ctx extends HttpMessageTestSupport
 
   "ResponseHeadersMatchers" should {
 

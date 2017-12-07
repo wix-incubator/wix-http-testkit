@@ -90,6 +90,5 @@ class ResponseBodyAndStatusMatchersTest extends Spec with MatchersTestSupport {
       failureMessageFor(haveBodyWith(entity = be_===(someObject)), matchedOn = aResponseWith(content)) must_===
         s"Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyWithEntityThat` instead."
     }
-
   }
 }

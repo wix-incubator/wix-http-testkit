@@ -8,25 +8,37 @@ import akka.http.scaladsl.model.headers._
 import akka.stream.scaladsl.Source
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
 import com.wix.test.random._
-import org.scalatest.matchers.Matcher
 import org.scalatest.Matchers._
+import org.scalatest.matchers.Matcher
 
 import scala.collection.immutable
 import scala.util.Random
 
-trait HttpResponseTestSupport {
+trait HttpMessageTestSupport {
 
-  val cookie = randomCookie
-  val anotherCookie = randomCookie
-  val yetAnotherCookie = randomCookie
+  val cookie = randomHttpCookie
+  val anotherCookie = randomHttpCookie
+  val yetAnotherCookie = randomHttpCookie
 
   val cookiePair = randomStrPair
+  val anotherCookiePair = randomStrPair
+  val yetAnotherCookiePair = randomStrPair
 
   val nonExistingHeaderName = randomStr
   val header = randomHeader
   val anotherHeader = randomHeader
   val yetAnotherHeader = randomHeader
   val andAnotherHeader = randomHeader
+
+  val somePath = randomPath
+  val anotherPath = randomPath
+
+  val parameter = randomParameter
+  val anotherParameter = randomParameter
+  val yetAnotherParameter = randomParameter
+  val andAnotherParameter = randomParameter
+
+  val nonExistingParamName = randomStr
 
   val content = randomStr
   val anotherContent = randomStr
@@ -79,8 +91,7 @@ trait HttpResponseTestSupport {
         NetworkConnectTimeout)
 
 
-  private def randomHeader = randomStr -> randomStr
-  private def randomCookie = HttpCookie(randomStr, randomStr)
+  private def randomHttpCookie = HttpCookie(randomStr, randomStr)
 }
 
 object HttpResponseFactory {
@@ -135,7 +146,7 @@ object HttpResponseFactory {
 }
 
 object HttpResponseMatchers {
-  def cookieWith(value: String): Matcher[HttpCookie] = be(value) compose { (_: HttpCookie).value /*aka "cookie value"*/ }
+  def cookieWith(value: String): Matcher[HttpCookie] = be(value) compose { (_: HttpCookie).value /*aka "cookiePair value"*/ }
 }
 
 object MarshallingTestObjects {

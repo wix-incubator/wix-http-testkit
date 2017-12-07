@@ -1,15 +1,15 @@
 package com.wix.e2e.http.matchers.internal
 
 import com.wix.e2e.http.matchers.RequestMatchers._
+import com.wix.e2e.http.matchers.drivers.CommonTestMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
-import com.wix.e2e.http.matchers.drivers.{HttpResponseTestSupport, MatchersTestSupport}
+import com.wix.e2e.http.matchers.drivers.{HttpMessageTestSupport, MatchersTestSupport}
 import org.scalatest.Matchers._
 import org.scalatest.WordSpec
-import org.scalatest.matchers.{MatchResult, Matcher}
 
 class RequestHeadersMatchersTest extends WordSpec with MatchersTestSupport {
 
-  trait ctx extends HttpResponseTestSupport
+  trait ctx extends HttpMessageTestSupport
 
   "RequestHeadersMatchers" should {
 
@@ -85,8 +85,4 @@ class RequestHeadersMatchersTest extends WordSpec with MatchersTestSupport {
         s"Request header [${header._1}], did not match { ${be(anotherHeader._2).apply(header._2).failureMessage} }"
     }
   }
-}
-
-case class AlwaysMatcher[T]() extends Matcher[T] {
-  def apply(left: T): MatchResult = MatchResult(matches = true, "", "")
 }

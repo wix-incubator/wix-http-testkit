@@ -3,17 +3,17 @@ package com.wix.e2e.http.matchers.internal
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
 import com.wix.e2e.http.matchers.drivers.HttpResponseMatchers._
-import com.wix.e2e.http.matchers.drivers.{HttpResponseTestSupport, MatchersTestSupport}
+import com.wix.e2e.http.matchers.drivers.{HttpMessageTestSupport, MatchersTestSupport}
 import org.scalatest.Matchers._
 import org.scalatest.WordSpec
 
 class ResponseCookiesMatchersTest extends WordSpec with MatchersTestSupport {
 
-  trait ctx extends HttpResponseTestSupport
+  trait ctx extends HttpMessageTestSupport
 
   "ResponseCookiesMatchers" should {
 
-    "match if cookie with name is found" in new ctx {
+    "match if cookiePair with name is found" in new ctx {
       aResponseWithCookies(cookie) should receivedCookieWith(cookie.name)
     }
 
@@ -27,7 +27,7 @@ class ResponseCookiesMatchersTest extends WordSpec with MatchersTestSupport {
         include("Response did not contain any `Set-Cookie` headers.")
     }
 
-    "allow to compose matcher with custom cookie matcher" in new ctx {
+    "allow to compose matcher with custom cookiePair matcher" in new ctx {
       aResponseWithCookies(cookie) should receivedCookieThat(must = cookieWith(cookie.value))
     }
   }

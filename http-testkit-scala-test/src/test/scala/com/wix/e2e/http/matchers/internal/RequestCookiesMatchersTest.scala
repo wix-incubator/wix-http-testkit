@@ -1,43 +1,34 @@
 package com.wix.e2e.http.matchers.internal
 
-import akka.http.scaladsl.model.headers.HttpCookiePair
 import com.wix.e2e.http.matchers.RequestMatchers._
+import com.wix.e2e.http.matchers.drivers.CommonTestMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
-import com.wix.e2e.http.matchers.drivers.MatchersTestSupport
-import com.wix.test.random._
-import org.scalatest.WordSpec
-import org.scalatest.matchers.Matcher
+import com.wix.e2e.http.matchers.drivers.{HttpMessageTestSupport, MatchersTestSupport}
 import org.scalatest.Matchers._
-
+import org.scalatest.WordSpec
 
 class RequestCookiesMatchersTest extends WordSpec with MatchersTestSupport {
 
-  trait ctx {
-    val cookie = randomStr -> randomStr
-    val anotherCookie = randomStr -> randomStr
-    val yetAnotherCookie = randomStr -> randomStr
-  }
-
-  def cookieWith(value: String): Matcher[HttpCookiePair] = be(value) compose { (_: HttpCookiePair).value /*aka "cookie value"*/ }
+  trait ctx extends HttpMessageTestSupport
 
   "ResponseCookiesMatchers" should {
 
-    "match if cookie with name is found" in new ctx {
-      aRequestWithCookies(cookie) should receivedCookieWith(cookie._1)
+    "match if cookiePair with name is found" in new ctx {
+      aRequestWithCookies(cookiePair) should receivedCookieWith(cookiePair._1)
     }
 
     "failure message should describe which cookies are present and which did not match" in new ctx {
-      failureMessageFor(receivedCookieWith(cookie._1), matchedOn = aRequestWithCookies(anotherCookie, yetAnotherCookie)) should
-        (include(cookie._1) and include(anotherCookie._1) and include(yetAnotherCookie._1))
+      failureMessageFor(receivedCookieWith(cookiePair._1), matchedOn = aRequestWithCookies(anotherCookiePair, yetAnotherCookiePair)) should
+        (include(cookiePair._1) and include(anotherCookiePair._1) and include(yetAnotherCookiePair._1))
     }
 
     "failure message for response withoout cookies will print that the response did not contain any cookies" in new ctx {
-      receivedCookieWith(cookie._1).apply( aRequestWithNoCookies ).failureMessage should
+      receivedCookieWith(cookiePair._1).apply( aRequestWithNoCookies ).failureMessage should
         include("Request did not contain any Cookie headers.")
     }
 
-    "allow to compose matcher with custom cookie matcher" in new ctx {
-      aRequestWithCookies(cookie) should receivedCookieThat(must = cookieWith(cookie._2))
+    "allow to compose matcher with custom cookiePair matcher" in new ctx {
+      aRequestWithCookies(cookiePair) should receivedCookieThat(must = cookieWith(cookiePair._2))
     }
   }
 }

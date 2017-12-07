@@ -13,7 +13,6 @@ class ResponseCookiesMatchersTest extends Spec with MatchersTestSupport {
 
   trait ctx extends Scope with HttpResponseTestSupport
 
-
   "ResponseCookiesMatchers" should {
 
     "match if cookie with name is found" in new ctx {

@@ -3,13 +3,13 @@ package com.wix.e2e.http.matchers.internal
 import akka.http.scaladsl.model.ContentTypes._
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
-import com.wix.e2e.http.matchers.drivers.{HttpResponseTestSupport, MatchersTestSupport}
-import org.scalatest.WordSpec
+import com.wix.e2e.http.matchers.drivers.{HttpMessageTestSupport, MatchersTestSupport}
 import org.scalatest.Matchers._
+import org.scalatest.WordSpec
 
 class RequestContentTypeMatchersTest extends WordSpec with MatchersTestSupport {
 
-  trait ctx extends HttpResponseTestSupport
+  trait ctx extends HttpMessageTestSupport
 
   "RequestContentTypeMatchers" should {
 

@@ -1,18 +1,18 @@
 package com.wix.e2e.http.matchers.internal
 
+import com.wix.e2e.http.api.Marshaller.Implicits.marshaller
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
 import com.wix.e2e.http.matchers.drivers.HttpResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
-import com.wix.e2e.http.matchers.drivers.{HttpResponseTestSupport, MatchersTestSupport}
+import com.wix.e2e.http.matchers.drivers.{HttpMessageTestSupport, MatchersTestSupport}
 import org.scalatest.Matchers._
 import org.scalatest._
 
 
 class ResponseBodyAndStatusMatchersTest extends WordSpec with MatchersTestSupport {
-  import com.wix.e2e.http.api.Marshaller.Implicits.marshaller
 
-  trait ctx extends HttpResponseTestSupport
+  trait ctx extends HttpMessageTestSupport
 
   "ResponseBodyAndStatusMatchers" should {
 
@@ -81,7 +81,7 @@ class ResponseBodyAndStatusMatchersTest extends WordSpec with MatchersTestSuppor
       aSuccessfulResponseWithCookies(cookie) should not( beSuccessfulWithCookie(anotherCookie.name) )
     }
 
-    "match successful request with cookie matcher" in new ctx {
+    "match successful request with cookiePair matcher" in new ctx {
       aSuccessfulResponseWithCookies(cookie) should beSuccessfulWithCookieThat(must = cookieWith(cookie.value))
       aSuccessfulResponseWithCookies(cookie) should not( beSuccessfulWithCookieThat(must = cookieWith(anotherCookie.value)) )
     }

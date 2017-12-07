@@ -24,6 +24,10 @@ package object random {
     from + Random.nextInt(math.max(to - from, 1))
   }
 
-
   def randomPort = randomInt(0, 65535)
+
+  def randomPath = "/" + Seq.fill(5)(randomStr).mkString("/")
+  def randomParameter = randomStr -> randomStr
+  def randomHeader = randomStr -> randomStr
+
 }

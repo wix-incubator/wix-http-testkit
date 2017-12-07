@@ -37,7 +37,7 @@ class ResponseContentLengthMatchersTest extends Spec with MatchersTestSupport {
         s"Expected content length [$length] but response did not contain `content-length` header."
     }
 
-    "failure message should reflect that content length header was not found" in new ctx {
+    "failure message should reflect that content length header exists while trying to match against a content length that doesn't exists" in new ctx {
       failureMessageFor(haveNoContentLength, matchedOn = aResponseWith(contentWith(length = length))) must_===
         s"Expected no `content-length` header but response did contain `content-length` header with size [$length]."
     }

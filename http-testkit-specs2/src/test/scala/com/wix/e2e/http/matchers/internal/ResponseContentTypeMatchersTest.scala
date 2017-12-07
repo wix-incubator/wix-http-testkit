@@ -59,7 +59,5 @@ class ResponseContentTypeMatchersTest extends Spec with MatchersTestSupport {
         """`Content-Type` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
           |Use `haveContentType` matcher instead (or `beJsonResponse`, `beTextPlainResponse`, `beFormUrlEncodedResponse`).""".stripMargin
     }
-
-
   }
 }

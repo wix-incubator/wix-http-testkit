@@ -4,14 +4,14 @@ import com.wix.e2e.http.exceptions.MarshallerErrorException
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
-import com.wix.e2e.http.matchers.drivers.{CustomMarshallerProvider, HttpResponseTestSupport, MarshallerTestSupport, MatchersTestSupport}
+import com.wix.e2e.http.matchers.drivers.{CustomMarshallerProvider, HttpMessageTestSupport, MarshallerTestSupport, MatchersTestSupport}
 import org.scalatest.Matchers._
 import org.scalatest._
 
 
 class RequestBodyMatchersTest extends WordSpec with MatchersTestSupport {
 
-  trait ctx extends HttpResponseTestSupport with MarshallerTestSupport with CustomMarshallerProvider
+  trait ctx extends HttpMessageTestSupport with MarshallerTestSupport with CustomMarshallerProvider
 
   "ResponseBodyMatchers" should {
 
