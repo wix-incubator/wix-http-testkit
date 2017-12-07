@@ -5,8 +5,8 @@ import com.wix.e2e.http.matchers.internal._
 trait ResponseMatchers extends ResponseStatusMatchers
                           with ResponseCookiesMatchers
                           with ResponseHeadersMatchers
-                          with ResponseSpecialHeadersMatchers
                           with ResponseBodyMatchers
+                          with ResponseSpecialHeadersMatchers
                           with ResponseBodyAndStatusMatchers
                           with ResponseStatusAndHeaderMatchers
 

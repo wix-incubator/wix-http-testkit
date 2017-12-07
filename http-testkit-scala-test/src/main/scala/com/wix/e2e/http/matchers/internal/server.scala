@@ -26,12 +26,12 @@ trait RequestMethodMatchers {
   def beConnect: RequestMatcher = beRequestWith( CONNECT )
 
   private def beRequestWith(method: HttpMethod): RequestMatcher =
-    be( method ) compose { (_: HttpRequest).method /*aka "request method"*/ }
+    be( method ) compose { (_: HttpRequest).method }
 }
 
 trait RequestUrlMatchers {
   def havePath(path: String): RequestMatcher = havePathThat(must = be( path ) )
-  def havePathThat(must: Matcher[String]): RequestMatcher = must compose { (_: HttpRequest).uri.path.toString /*aka "request path"*/}
+  def havePathThat(must: Matcher[String]): RequestMatcher = must compose { (_: HttpRequest).uri.path.toString }
 
   def haveAnyParamOf(params: (String, String)*): RequestMatcher =
     haveParameterInternal(params, _.identical.nonEmpty,
@@ -75,8 +75,8 @@ trait RequestUrlMatchers {
       requestParameter match {
         case None if requestParameters.isEmpty => MatchResult(matches = false, "Request did not contain any parameters.", "not-ok")
         case None => MatchResult(matches = false, s"Request contain parameter names: [${requestParameters.map( _._1 ).mkString(", ")}] which did not contain: [$withParamName]", "not-ok")
-        case Some(value) if must.apply(value).matches => MatchResult(matches = true, "ok", "not-ok")
-        case Some(value) => MatchResult(matches = false, s"Request parameter [$withParamName], did not match { ${must.apply(value).failureMessage} }", "not-ok")
+        case Some(v) if must.apply(v).matches => MatchResult(matches = true, "ok", "not-ok")
+        case Some(v) => MatchResult(matches = false, s"Request parameter [$withParamName], did not match { ${must.apply(v).failureMessage} }", "not-ok")
       }
 
     }
@@ -146,7 +146,7 @@ trait RequestHeadersMatchers {
 }
 
 trait RequestCookiesMatchers {
-  def receivedCookieWith(name: String): RequestMatcher = receivedCookieThat(must = be(name) compose { (_: HttpCookiePair).name /*aka "cookie name"*/ })
+  def receivedCookieWith(name: String): RequestMatcher = receivedCookieThat(must = be(name) compose { (_: HttpCookiePair).name })
 
   def receivedCookieThat(must: Matcher[HttpCookiePair]): RequestMatcher = new RequestMatcher {
 
@@ -192,8 +192,8 @@ trait RequestBodyMatchers {
     }
   }
 
-  private def httpRequestAsString = (r: HttpRequest) => waitFor( Unmarshal(r.entity).to[String] ) //aka "Body content as string"
-  private def httpRequestAsBinary = (r: HttpRequest) => waitFor( Unmarshal(r.entity).to[Array[Byte]] ) //aka "Body content as bytes"
+  private def httpRequestAsString = (r: HttpRequest) => waitFor( Unmarshal(r.entity).to[String] )
+  private def httpRequestAsBinary = (r: HttpRequest) => waitFor( Unmarshal(r.entity).to[Array[Byte]] )
 }
 
 trait RequestRecorderMatchers {
@@ -274,7 +274,7 @@ trait RequestContentTypeMatchers {
 
 
   private def haveContent(contentType: ContentType): RequestMatcher =
-    be(contentType) compose { (_: HttpRequest).entity.contentType /*aka "content type"*/}
+    be(contentType) compose { (_: HttpRequest).entity.contentType }
   private def haveMediaType(mediaType: MediaType): RequestMatcher =
-    be(mediaType) compose { (_: HttpRequest).entity.contentType.mediaType.withParams(Map.empty) /*aka "content type"*/}
+    be(mediaType) compose { (_: HttpRequest).entity.contentType.mediaType.withParams(Map.empty) }
 }

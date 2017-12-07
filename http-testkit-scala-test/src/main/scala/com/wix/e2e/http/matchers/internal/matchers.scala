@@ -6,18 +6,15 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import com.wix.e2e.http.api.Marshaller
-import com.wix.e2e.http.exceptions.{ConnectionRefusedException, MarshallerErrorException, MissingMarshallerException}
+import com.wix.e2e.http.exceptions.{MarshallerErrorException, MissingMarshallerException}
 import com.wix.e2e.http.matchers.ResponseMatcher
 import com.wix.e2e.http.utils._
 import com.wix.e2e.http.{HttpResponse, WixHttpTestkitResources}
 import org.scalatest.Matchers._
 import org.scalatest.matchers.{MatchResult, Matcher}
 
-//import org.specs2.matcher.Matchers._
-//import org.specs2.matcher.{Expectable, MatchResult, Matcher}
-
-import scala.util.{Failure, Try}
 import scala.util.control.Exception.handling
+import scala.util.{Failure, Try}
 
 trait ResponseStatusMatchers {
 
@@ -56,12 +53,12 @@ trait ResponseStatusMatchers {
 
 
   private def haveStatus(status: StatusCode): ResponseMatcher = be(status) compose httpResponseStatus
-  private def httpResponseStatus = (_: HttpResponse).status /*aka "Response status"*/
+  private def httpResponseStatus = (_: HttpResponse).status
 }
 
 
 trait ResponseCookiesMatchers {
-  def receivedCookieWith(name: String): ResponseMatcher = receivedCookieThat(must = be(name) compose { (_: HttpCookie).name /*aka "cookie name"*/ })
+  def receivedCookieWith(name: String): ResponseMatcher = receivedCookieThat(must = be(name) compose { (_: HttpCookie).name })
   def receivedCookieThat(must: Matcher[HttpCookie]): ResponseMatcher = new ResponseMatcher {
     def apply(response: HttpResponse): MatchResult = {
       val cookies = response.headers
@@ -135,8 +132,8 @@ trait ResponseHeadersMatchers {
       responseHeader match {
         case None if headers.isEmpty => MatchResult(matches = false, "Response did not contain any headers.", "not-ok")
         case None => MatchResult(matches = false, s"Response contain header names: [${headers.map( _.name ).mkString(", ")}] which did not contain: [$withHeaderName]", "not-ok")
-        case Some(value) if must.apply(value).matches => MatchResult(matches = true, "ok", "not-ok")
-        case Some(value) => MatchResult(matches = false, s"Response header [$withHeaderName], did not match { ${must.apply(value).failureMessage} }", "not-ok")
+        case Some(v) if must.apply(v).matches => MatchResult(matches = true, "ok", "not-ok")
+        case Some(v) => MatchResult(matches = false, s"Response header [$withHeaderName], did not match { ${must.apply(v).failureMessage} }", "not-ok")
       }
     }
   }
@@ -174,8 +171,8 @@ trait ResponseBodyMatchers {
     }
   }
 
-  private def httpResponseAsString = (r: HttpResponse) => waitFor( Unmarshal(r.entity).to[String] ) /*aka "Body content as string"*/
-  private def httpResponseAsBinary = (r: HttpResponse) => waitFor( Unmarshal(r.entity).to[Array[Byte]] ) /*aka "Body content as bytes"*/
+  private def httpResponseAsString = (r: HttpResponse) => waitFor( Unmarshal(r.entity).to[String] )
+  private def httpResponseAsBinary = (r: HttpResponse) => waitFor( Unmarshal(r.entity).to[Array[Byte]] )
 }
 
 trait ResponseBodyAndStatusMatchers { self: ResponseBodyMatchers with ResponseStatusMatchers with ResponseHeadersMatchers with ResponseCookiesMatchers =>
