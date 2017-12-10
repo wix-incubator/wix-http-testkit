@@ -220,5 +220,5 @@ lazy val root =
   (project in file("."))
     .settings(Seq(name:= "Wix Http Testkit Modules") ++ baseSettings ++ noPublish)
     .aggregate(httpTestkitTestCommons,
-               httpTestkitCore, httpTestkitClient, httpTestkitServer, httpTestkitSpecs2, /*httpTestkitScalaTest,*/ httpTestkit, httpTestkitMarshallerJackson,
+               httpTestkitCore, httpTestkitClient, httpTestkitServer, httpTestkitSpecs2, httpTestkitScalaTest, httpTestkit, httpTestkitMarshallerJackson,
                contractTests)
