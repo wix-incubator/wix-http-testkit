@@ -74,11 +74,10 @@ class RequestRecorderMatchersTest extends WordSpec with MatchersTestSupport {
             |added requests found:
             |1: $yetAnotherRequest""".stripMargin
 
-      // todo: fix this
-//      failureMessageFor(not( receivedTheSameRequestsAs(request, anotherRequest) ), matchedOn = aRequestRecorderWith(request, anotherRequest)) shouldBe
-//        s"""Requests are identical, requests found:
-//            |1: $request
-//            |2: $anotherRequest""".stripMargin
+      failureMessageFor(not( receivedTheSameRequestsAs(request, anotherRequest) ), matchedOn = aRequestRecorderWith(request, anotherRequest)) shouldBe
+        s"""Requests are identical, requests found:
+            |1: $request,
+            |2: $anotherRequest""".stripMargin
     }
 
     "if no recorded requests were found, error message returned will be 'no requests' message" in new ctx {
@@ -110,6 +109,12 @@ class RequestRecorderMatchersTest extends WordSpec with MatchersTestSupport {
       failureMessageFor(receivedAnyRequestThat(must = be(anotherRequest)), matchedOn = aRequestRecorderWith(request)) shouldBe
         s"""Could not find any request that matches:
            |1: ${ be(anotherRequest).apply(request).failureMessage}""".stripMargin
+
+      failureMessageFor(not( receivedAnyRequestThat(must = be(anotherRequest)) ), matchedOn = aRequestRecorderWith(request, anotherRequest)) shouldBe
+        s"""Requests contain a request that matches:
+           |1: $anotherRequest""".stripMargin
+
+
       failureMessageFor(receivedAnyRequestThat(must = AlwaysMatcher()), matchedOn = anEmptyRequestRecorder) shouldBe
         "Server did not receive any requests."
     }

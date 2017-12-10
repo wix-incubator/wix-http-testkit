@@ -245,12 +245,15 @@ trait RequestRecorderMatchers {
                             res => s"""Requests are identical, requests found:
                                        |${requestsToStr(requests)}""".stripMargin)
 
-  private def receivedRequestsInternal[T <: RequestRecordSupport](requests: Seq[HttpRequest], comparator: RequestComparisonResult => Boolean, errorMessage: RequestComparisonResult => String, negateErrorMessage: RequestComparisonResult => String): Matcher[T] = new Matcher[T] {
+  private def receivedRequestsInternal[T <: RequestRecordSupport](requests: Seq[HttpRequest],
+                                                                  comparator: RequestComparisonResult => Boolean,
+                                                                  errorMessage: RequestComparisonResult => String,
+                                                                  negateErrorMessage: RequestComparisonResult => String): Matcher[T] = new Matcher[T] {
     def apply(recorder: T): MatchResult = {
       val recordedRequests = recorder.recordedRequests
       val comparisonResult = compare(requests, recordedRequests)
 
-      if ( comparator(comparisonResult) ) MatchResult(matches = true, "ok", "ok")
+      if ( comparator(comparisonResult) ) MatchResult(matches = true, "ok", negateErrorMessage(comparisonResult))
       else if (recordedRequests.isEmpty) MatchResult(matches = false, "Server did not receive any requests.", "Server did not receive any requests.")
       else MatchResult(matches = false, errorMessage(comparisonResult), negateErrorMessage(comparisonResult))
     }
@@ -274,7 +277,9 @@ trait RequestRecorderMatchers {
 
       results match {
         case Nil => MatchResult(matches = false, "Server did not receive any requests.", "Server did not receive any requests.")
-        case rs if rs.exists( _.matches ) => MatchResult(matches = true, "ok", "ok")
+        case rs if rs.exists( _.matches ) => MatchResult(matches = true, "ok",
+                                                         s"""Requests contain a request that matches:
+                                                            |${requestsToStr(recordedRequests.filter( must.apply(_).matches ))}""".stripMargin)
         case rs => MatchResult(matches = false, s"""Could not find any request that matches:
                                                    |${rs.zipWithIndex.map { case (r, i) => s"${i + 1}: ${r.failureMessage.replaceAll("\n", "")}" }.mkString(",\n") }""".stripMargin, "not-ok")
       }
