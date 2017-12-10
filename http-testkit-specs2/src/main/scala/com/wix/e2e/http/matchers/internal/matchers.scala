@@ -163,6 +163,8 @@ trait ResponseBodyMatchers {
     def apply[S <: HttpResponse](t: Expectable[S]): MatchResult[S] = failure("Matcher misuse: `haveBodyWith` received a matcher to match against, please use `haveBodyWithEntityThat` instead.",t)
   }
   def haveBodyWith[T <: AnyRef : Manifest](entity: T)(implicit marshaller: Marshaller): ResponseMatcher = haveBodyWithEntityThat[T]( must = be_===(entity) )
+  @deprecated("use `haveBodyEntityThat`", since = "Dec10, 2017")
+  def haveBodyWith[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): ResponseMatcher = haveBodyWithEntityThat[T](must)
   def haveBodyWithEntityThat[T <: AnyRef : Manifest](must: Matcher[T])(implicit marshaller: Marshaller): ResponseMatcher = new ResponseMatcher {
 
     def apply[S <: HttpResponse](t: Expectable[S]): MatchResult[S] = {
