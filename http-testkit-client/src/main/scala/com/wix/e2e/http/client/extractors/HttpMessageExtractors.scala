@@ -10,13 +10,13 @@ import scala.concurrent.duration._
 
 trait HttpMessageExtractors {
   implicit class HttpMessageExtractorsOps[M <: HttpMessage](message: M) {
-    def extractAs[T : Manifest](implicit marshaller: Marshaller, atMost: FiniteDuration = 5.seconds): T = message.entity.extractAs[T]
+    def extractAs[T : Manifest](implicit marshaller: Marshaller = Marshaller.Implicits.marshaller, atMost: FiniteDuration = 5.seconds): T = message.entity.extractAs[T]
     def extractAsString(implicit atMost: FiniteDuration = 5.seconds): String = message.entity.extractAsString
     def extractAsBytes(implicit atMost: FiniteDuration = 5.seconds): Array[Byte] = message.entity.extractAsBytes
   }
 
   implicit class HttpEntityExtractorsOps[E <: HttpEntity](entity: E) {
-    def extractAs[T : Manifest](implicit marshaller: Marshaller, atMost: FiniteDuration = 5.seconds): T = marshaller.unmarshall[T](extract[String])
+    def extractAs[T : Manifest](implicit marshaller: Marshaller = Marshaller.Implicits.marshaller, atMost: FiniteDuration = 5.seconds): T = marshaller.unmarshall[T](extract[String])
     def extractAsString(implicit atMost: FiniteDuration = 5.seconds): String = extract[String]
     def extractAsBytes(implicit atMost: FiniteDuration = 5.seconds): Array[Byte] = extract[Array[Byte]]
 

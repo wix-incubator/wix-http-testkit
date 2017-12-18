@@ -43,11 +43,15 @@ trait HttpClientRequestHeadersTransformers {
 }
 
 trait HttpClientRequestBodyTransformers extends HttpClientContentTypes {
-  def withPayload(body: String, contentType: ContentType = TextPlain): RequestTransformer = setBody(HttpEntity(contentType, ByteString(body)))
+  @deprecated("use `withTextPayload`", since = "Dec18, 2017")
+  def withPayload(body: String, contentType: ContentType = TextPlain): RequestTransformer = withPayload(ByteString(body).toByteBuffer.array, contentType)
+  def withTextPayload(body: String, contentType: ContentType = TextPlain): RequestTransformer = withPayload(ByteString(body).toByteBuffer.array, contentType)
   def withPayload(bytes: Array[Byte], contentType: ContentType): RequestTransformer = setBody(HttpEntity(contentType, bytes))
   def withPayload(xml: Node): RequestTransformer = setBody(HttpEntity(XmlContent, WixHttpTestkitResources.xmlPrinter.format(xml)))
 
-  def withPayload(entity: AnyRef)(implicit marshaller: Marshaller): RequestTransformer = setBody(HttpEntity(JsonContent, marshaller.marshall(entity)))
+  // todo: enable default marshaller when deprecated `withPayload` is removed
+  def withPayload(entity: AnyRef)(implicit marshaller: Marshaller/* = Marshaller.Implicits.marshaller*/): RequestTransformer =
+    withTextPayload(marshaller.marshall(entity), JsonContent)
 
   def withFormData(formParams: (String, String)*): RequestTransformer = setBody(FormData(formParams.toMap).toEntity)
 
