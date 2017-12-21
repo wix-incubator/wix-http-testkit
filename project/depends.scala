@@ -2,7 +2,6 @@ import sbt._
 
 object depends {
 
-  private val Specs2Version = "4.0.1"
   private val JacksonVersion = "2.9.1"
 
   def specs2(scalaVersion: String) = specs2DepsFor(specs2VersionFor(scalaVersion))
