@@ -91,7 +91,7 @@ lazy val httpTestkitCore =
   (project in file("http-testkit-core"))
     .settings(Seq(
       name := "http-testkit-core",
-      libraryDependencies ++= joda ++ specs2Test(scalaVersion.value) :+ akkaHttp(scalaVersion.value) :+ scalaXml :+ reflections :+ jsr305 :+ slf4jApi,
+      libraryDependencies ++= joda ++ specs2Test(scalaVersion.value) ++ akkaHttp(scalaVersion.value) :+ scalaXml :+ reflections :+ jsr305 :+ slf4jApi,
       description := "Commonly used util code also client and server interfaces"
     ) ++ baseSettings)
     .dependsOn(httpTestkitTestCommons % Test)
