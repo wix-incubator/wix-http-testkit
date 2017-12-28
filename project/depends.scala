@@ -3,7 +3,7 @@ import sbt._
 object depends {
 
   private val JacksonVersion = "2.9.1"
-  private val AkkaHttpVersion = "10.0.11"
+  private val AkkaHttpVersion = "10.1.0-RC1"
   private val AkkaVersion = "2.5.8"
 
   def specs2(scalaVersion: String) = specs2DepsFor(specs2VersionFor(scalaVersion))
