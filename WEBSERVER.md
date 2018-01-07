@@ -38,7 +38,7 @@ For example, a server that listens to requests on `/somePath` and responds with 
 A server can handle one or more handlers and it will use the first handler that is defined for the incoming request.
 
 ```scala
-    val okHandler = { case r: HttpRequest if r.uri.path.toString.endsWith("somePath") => HttpResponse("OK!!!") }
+    val okHandler = { case r: HttpRequest if r.uri.path.toString.endsWith("somePath") => HttpResponse(entity = "OK!!!") }
 ```
 
 ### Stub Server
