@@ -1,9 +1,11 @@
 package com.wix.e2e.http.matchers.internal
 
+import com.wix.e2e.http.api.Marshaller
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
 import com.wix.e2e.http.matchers.drivers.{CustomMarshallerProvider, HttpMessageTestSupport, MarshallerTestSupport, MatchersTestSupport}
+import org.specs2.matcher.CaseClassDiffs._
 import org.specs2.matcher.ResultMatchers._
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
@@ -11,7 +13,9 @@ import org.specs2.specification.Scope
 
 class RequestBodyMatchersTest extends Spec with MatchersTestSupport {
 
-  trait ctx extends Scope with HttpMessageTestSupport with MarshallerTestSupport with CustomMarshallerProvider
+  trait ctxNoMarshaller extends Scope with HttpMessageTestSupport with MarshallerTestSupport
+  trait ctx extends ctxNoMarshaller with CustomMarshallerProvider
+
 
   "ResponseBodyMatchers" should {
 
@@ -50,7 +54,7 @@ class RequestBodyMatchersTest extends Spec with MatchersTestSupport {
       givenUnmarshallerWith[SomeCaseClass](someObject, forContent = content)
 
       failureMessageFor(haveBodyEntityThat(must = be_===(anotherObject)), matchedOn = aRequestWith(content)) must_===
-        s"Failed to match: ['$someObject' is not equal to '$anotherObject'] with content: [$content]"
+        s"Failed to match: [SomeCaseClass(s: '${someObject.s}' != '${anotherObject.s}',              i: ${someObject.i} != ${anotherObject.i})] with content: [$content]"
     }
 
     "provide a proper message to user sent a matcher to an entity matcher" in new ctx {
@@ -69,6 +73,10 @@ class RequestBodyMatchersTest extends Spec with MatchersTestSupport {
 
       aRequestWith(content) must haveBodyEntityThat(must = be_===(someObject))
       aRequestWith(content) must not( haveBodyEntityThat(must = be_===(anotherObject)) )
+    }
+
+    "provide a default json marshaller in case no marshaller is specified" in new ctxNoMarshaller {
+      aRequestWith(Marshaller.Implicits.marshaller.marshall(someObject)) must haveBodyWith(someObject)
     }
   }
 }

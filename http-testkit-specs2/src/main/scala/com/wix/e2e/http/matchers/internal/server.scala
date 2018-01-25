@@ -9,6 +9,7 @@ import com.wix.e2e.http.api.{Marshaller, RequestRecordSupport}
 import com.wix.e2e.http.exceptions.{MarshallerErrorException, MissingMarshallerException}
 import com.wix.e2e.http.matchers.RequestMatcher
 import com.wix.e2e.http.utils._
+import org.specs2.matcher.CaseClassDiffs._
 import org.specs2.matcher.Matchers._
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 
