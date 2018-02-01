@@ -99,7 +99,7 @@ libraryDependencies += "com.wix" %% "http-testkit" % "0.1.17"
 <dependencies>
   <dependency>
     <groupId>com.wix</groupId>
-    <artifactId>http-testkit_${scala.tools.version}</artifactId>
+    <artifactId>http-testkit_${scala.dependencies.version}</artifactId>
     <version>0.1.17</version>
   </dependency>
 </dependencies>
