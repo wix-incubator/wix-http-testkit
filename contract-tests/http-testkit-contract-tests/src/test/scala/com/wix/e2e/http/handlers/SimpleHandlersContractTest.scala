@@ -12,27 +12,24 @@ import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 class SimpleHandlersContractTest extends Spec {
-  sequential
-
-  val server = aMockWebServer.build.start()
 
   trait ctx extends Scope {
-    val validStringResponse = "Hello world"
-
-    server.replaceWith()
+    val server = aMockWebServer.build.start()
 
     val okHandler: RequestHandler = { case _ => HttpResponse(status = StatusCodes.OK) }
   }
 
   "Simple handler" should {
     "allow to return string response on any request" in new ctx {
+      val validStringResponse = "Hello world"
+
       server.appendAll(stringHandler(validStringResponse))
 
       get("/")(server.baseUri) must beSuccessfulWith(validStringResponse)
     }
 
     "allow to apply path matcher on handlers" in new ctx {
-      server.appendAll(okHandler matchWith pathMatcher("/hello/world"))
+      server.appendAll(okHandler matchWith havePath("/hello/world"))
 
       get("/hello/world")(server.baseUri) must beSuccessful
       get("/hello/world/")(server.baseUri) must beSuccessful
@@ -41,7 +38,7 @@ class SimpleHandlersContractTest extends Spec {
     }
 
     "support wildcard in path matcher" in new ctx {
-      server.appendAll(okHandler matchWith pathMatcher("*/world/*"))
+      server.appendAll(okHandler matchWith havePath("*/world/*"))
 
       get("/hello/world/!")(server.baseUri) must beSuccessful
       get("/bye-bye/world/!")(server.baseUri) must beSuccessful
@@ -49,14 +46,14 @@ class SimpleHandlersContractTest extends Spec {
     }
 
     "allow to apply query param matcher on handlers" in new ctx {
-      server.appendAll(queryParamMatcher("a" -> "b", "c" -> "d") handleWith okHandler)
+      server.appendAll(haveQueryParams("a" -> "b", "c" -> "d") handleWith okHandler)
 
       get("/", but = withParams("a" -> "b", "c" -> "d", "x" -> "y"))(server.baseUri) must beSuccessful
       get("/", but = withParam("c" -> "d"))(server.baseUri) must beNotFound
     }
 
     "allow to apply both path matcher and query param matcher on handlers" in new ctx {
-      server.appendAll(queryParamMatcher("a" -> "b", "c" -> "d") && pathMatcher("ololo") handleWith okHandler)
+      server.appendAll(haveQueryParams("a" -> "b", "c" -> "d") && havePath("ololo") handleWith okHandler)
 
       get("/ololo", but = withParams("a" -> "b", "c" -> "d", "x" -> "y"))(server.baseUri) must beSuccessful
       get("/", but = withParams("a" -> "b", "c" -> "d", "x" -> "y"))(server.baseUri) must beNotFound

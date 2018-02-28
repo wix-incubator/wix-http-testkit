@@ -2,7 +2,7 @@ package com.wix.e2e.http.matchers
 
 import com.wix.e2e.http.RequestMatcher
 
-object queryParamMatcher {
+object haveQueryParams {
 
   def apply(param: (String, String), params: (String, String)*): RequestMatcher = { rq =>
     val requestedQueryParams = rq.uri.query().toMap

@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.model.Uri.Path.{Empty, Segment, Slash}
 import com.wix.e2e.http.RequestMatcher
 
-object pathMatcher {
+object havePath {
 
   def apply(path: String): RequestMatcher = { rq =>
     val expectedPath = toList(Path(path))
