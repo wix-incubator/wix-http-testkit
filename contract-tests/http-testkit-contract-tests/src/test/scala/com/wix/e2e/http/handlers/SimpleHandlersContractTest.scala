@@ -17,6 +17,10 @@ class SimpleHandlersContractTest extends Spec {
     val server = aMockWebServer.build.start()
     implicit val baseUri = server.baseUri
     implicit val marshaller: Marshaller = new JsonJacksonMarshaller
+
+    val privetResponse = SimpleEntityResponse("privet!")
+    val pakaResponse = SimpleEntityResponse("paka!")
+
   }
 
   "Simple handler" should {
@@ -68,6 +72,23 @@ class SimpleHandlersContractTest extends Spec {
       get("/arbitrary/path") must beSuccessfulWith(response)
     }
 
+    "allow to match via body" in new ctx {
+      server.appendAll(haveBody(beTypedEqualTo(privetResponse)) respond ok())
+
+      post("/arbitrary/path", but = withPayload(privetResponse)) must beSuccessful
+      post("/arbitrary/path", but = withPayload(pakaResponse)) must beNotFound
+    }
+
+    "allow to apply all together" in new ctx {
+      server.appendAll(havePath("/users/*") and haveQueryParams("a" -> "x") and haveBody(beTypedEqualTo(privetResponse)) respond ok())
+
+      post("/users/1", but = withPayload(privetResponse) and withParam("a" -> "x")) must beSuccessful
+      post("/users/1", but = withPayload(privetResponse)) must beNotFound
+      post("/users/1", but = withParam("a" -> "x")) must beNotFound
+      get("/users/1", but = withParam("a" -> "x")) must beNotFound
+      post("/users", but = withPayload(privetResponse) and withParam("a" -> "x")) must beNotFound
+      post("/users/1", but = withPayload(pakaResponse) and withParam("a" -> "x")) must beNotFound
+    }
   }
 }
 
