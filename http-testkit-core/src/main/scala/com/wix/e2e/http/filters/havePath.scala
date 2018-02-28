@@ -1,12 +1,12 @@
-package com.wix.e2e.http.matchers
+package com.wix.e2e.http.filters
 
 import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.model.Uri.Path.{Empty, Segment, Slash}
-import com.wix.e2e.http.RequestMatcher
+import com.wix.e2e.http.RequestFilter
 
 object havePath {
 
-  def apply(path: String): RequestMatcher = { rq =>
+  def apply(path: String): RequestFilter = { rq =>
     val expectedPath = toList(Path(path))
     val requestedPath = toList(rq.uri.path)
 

@@ -1,4 +1,4 @@
-package com.wix.e2e.http.matchers
+package com.wix.e2e.http.filters
 
 import akka.http.scaladsl.model.{HttpRequest, Uri}
 import org.specs2.mutable.Spec

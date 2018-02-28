@@ -1,7 +1,7 @@
-package com.wix.e2e.http.matchers
+package com.wix.e2e.http.filters
 
 import akka.http.scaladsl.unmarshalling.Unmarshal
-import com.wix.e2e.http.RequestMatcher
+import com.wix.e2e.http.RequestFilter
 import com.wix.e2e.http.WixHttpTestkitResources._
 import com.wix.e2e.http.api.Marshaller
 
@@ -11,7 +11,7 @@ import scala.util.Try
 
 object haveBody {
 
-  def apply[T: Manifest](matcher: BodyMatcher[T])(implicit marshaller: Marshaller): RequestMatcher = { rq =>
+  def apply[T: Manifest](matcher: BodyMatcher[T])(implicit marshaller: Marshaller): RequestFilter = { rq =>
     val str = Await.result(Unmarshal(rq.entity).to[String], 5.seconds)
 
     Try {

@@ -1,5 +1,6 @@
 package com.wix.e2e.http
 
+import com.wix.e2e.http.filters.BodyMatcher
 import org.scalatest.matchers.Matcher
 
 package object matchers {

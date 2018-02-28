@@ -3,8 +3,9 @@ package com.wix.e2e.http.handlers
 import akka.http.scaladsl.model.HttpResponse
 import com.wix.e2e.http.api.Marshaller
 import com.wix.e2e.http.client.sync._
+import com.wix.e2e.http.filters
 import com.wix.e2e.http.json.JsonJacksonMarshaller
-import com.wix.e2e.http.matchers.Matchers._
+import com.wix.e2e.http.filters._
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers._
 import com.wix.e2e.http.server.WebServerFactory.aMockWebServer
@@ -80,7 +81,7 @@ class SimpleHandlersContractTest extends Spec {
     }
 
     "allow to apply all together" in new ctx {
-      server.appendAll(havePath("/users/*") and haveQueryParams("a" -> "x") and haveBody(beTypedEqualTo(privetResponse)) respond ok())
+      server.appendAll(havePath("/users/*") and haveQueryParams("a" -> "x") and filters.haveBody(beTypedEqualTo(privetResponse)) respond ok())
 
       post("/users/1", but = withPayload(privetResponse) and withParam("a" -> "x")) must beSuccessful
       post("/users/1", but = withPayload(privetResponse)) must beNotFound

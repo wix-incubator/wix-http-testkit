@@ -1,8 +1,9 @@
 package com.wix.e2e.http
 
-
-import org.specs2.matcher.{Expectable, MatchSuccess, Matcher}
+import com.wix.e2e.http.filters.BodyMatcher
 import org.specs2.matcher.MustExpectations._
+import org.specs2.matcher.{MatchSuccess, Matcher}
+
 package object matchers {
   type ResponseMatcher = Matcher[HttpResponse]
   type RequestMatcher = Matcher[HttpRequest]
