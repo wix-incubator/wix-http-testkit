@@ -1,9 +1,9 @@
 package com.wix.e2e.http.handlers
 
 import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
-import com.wix.e2e.http.RequestHandler
+import com.wix.e2e.http.api.Marshaller
 import com.wix.e2e.http.client.sync._
-import com.wix.e2e.http.handlers.Handlers.stringHandler
+import com.wix.e2e.http.json.JsonJacksonMarshaller
 import com.wix.e2e.http.matchers.Matchers._
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers._
@@ -15,50 +15,63 @@ class SimpleHandlersContractTest extends Spec {
 
   trait ctx extends Scope {
     val server = aMockWebServer.build.start()
+    implicit val baseUri = server.baseUri
+    implicit val marshaller: Marshaller = new JsonJacksonMarshaller
 
-    val okHandler: RequestHandler = { case _ => HttpResponse(status = StatusCodes.OK) }
+    val ok: HttpResponse = HttpResponse(status = StatusCodes.OK)
   }
+
 
   "Simple handler" should {
     "allow to return string response on any request" in new ctx {
-      val validStringResponse = "Hello world"
+      private val validStringResponse = "Hello world"
 
-      server.appendAll(stringHandler(validStringResponse))
+      server.appendAll(HttpResponse(entity = validStringResponse))
 
-      get("/")(server.baseUri) must beSuccessfulWith(validStringResponse)
+      get("/") must beSuccessfulWith(validStringResponse)
     }
 
     "allow to apply path matcher on handlers" in new ctx {
-      server.appendAll(okHandler matchWith havePath("/hello/world"))
+      server.appendAll(havePath("/hello/world") respond ok)
 
-      get("/hello/world")(server.baseUri) must beSuccessful
-      get("/hello/world/")(server.baseUri) must beSuccessful
-      get("hello/world/")(server.baseUri) must beSuccessful
-      get("/hello")(server.baseUri) must beNotFound
+      get("/hello/world") must beSuccessful
+      get("/hello/world/") must beSuccessful
+      get("hello/world/") must beSuccessful
+      get("/hello") must beNotFound
     }
 
     "support wildcard in path matcher" in new ctx {
-      server.appendAll(okHandler matchWith havePath("*/world/*"))
+      server.appendAll(havePath("*/world/*") respond ok)
 
-      get("/hello/world/!")(server.baseUri) must beSuccessful
-      get("/bye-bye/world/!")(server.baseUri) must beSuccessful
-      get("/world")(server.baseUri) must beNotFound
+      get("/hello/world/!") must beSuccessful
+      get("/bye-bye/world/!") must beSuccessful
+      get("/world") must beNotFound
     }
 
     "allow to apply query param matcher on handlers" in new ctx {
-      server.appendAll(haveQueryParams("a" -> "b", "c" -> "d") handleWith okHandler)
+      server.appendAll(haveQueryParams("a" -> "b", "c" -> "d") respond ok)
 
-      get("/", but = withParams("a" -> "b", "c" -> "d", "x" -> "y"))(server.baseUri) must beSuccessful
-      get("/", but = withParam("c" -> "d"))(server.baseUri) must beNotFound
+      get("/", but = withParams("a" -> "b", "c" -> "d", "x" -> "y")) must beSuccessful
+      get("/", but = withParam("c" -> "d")) must beNotFound
     }
 
     "allow to apply both path matcher and query param matcher on handlers" in new ctx {
-      server.appendAll(haveQueryParams("a" -> "b", "c" -> "d") && havePath("ololo") handleWith okHandler)
+      server.appendAll(haveQueryParams("a" -> "b", "c" -> "d") and havePath("ololo") respond ok)
 
-      get("/ololo", but = withParams("a" -> "b", "c" -> "d", "x" -> "y"))(server.baseUri) must beSuccessful
-      get("/", but = withParams("a" -> "b", "c" -> "d", "x" -> "y"))(server.baseUri) must beNotFound
-      get("/ololo", but = withParam("c" -> "d"))(server.baseUri) must beNotFound
+      get("/ololo", but = withParams("a" -> "b", "c" -> "d", "x" -> "y")) must beSuccessful
+      get("/", but = withParams("a" -> "b", "c" -> "d", "x" -> "y")) must beNotFound
+      get("/ololo", but = withParam("c" -> "d")) must beNotFound
+    }
+
+    "allow to respond with case class" in new ctx {
+      val response = SimpleEntityResponse("privet!")
+
+      server.appendAll(forAnyRequest respondEntity response)
+
+      get("/arbitrary/path") must beSuccessfulWith(response)
     }
 
   }
 }
+
+case class SimpleEntityResponse(response: String)
