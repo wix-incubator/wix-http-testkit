@@ -1,6 +1,6 @@
 package com.wix.e2e.http.handlers
 
-import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
+import akka.http.scaladsl.model.HttpResponse
 import com.wix.e2e.http.api.Marshaller
 import com.wix.e2e.http.client.sync._
 import com.wix.e2e.http.json.JsonJacksonMarshaller
@@ -13,14 +13,11 @@ import org.specs2.specification.Scope
 
 class SimpleHandlersContractTest extends Spec {
 
-  trait ctx extends Scope {
+  trait ctx extends Scope with Responses {
     val server = aMockWebServer.build.start()
     implicit val baseUri = server.baseUri
     implicit val marshaller: Marshaller = new JsonJacksonMarshaller
-
-    val ok: HttpResponse = HttpResponse(status = StatusCodes.OK)
   }
-
 
   "Simple handler" should {
     "allow to return string response on any request" in new ctx {
@@ -32,7 +29,7 @@ class SimpleHandlersContractTest extends Spec {
     }
 
     "allow to apply path matcher on handlers" in new ctx {
-      server.appendAll(havePath("/hello/world") respond ok)
+      server.appendAll(havePath("/hello/world") respond ok())
 
       get("/hello/world") must beSuccessful
       get("/hello/world/") must beSuccessful
@@ -41,7 +38,7 @@ class SimpleHandlersContractTest extends Spec {
     }
 
     "support wildcard in path matcher" in new ctx {
-      server.appendAll(havePath("*/world/*") respond ok)
+      server.appendAll(havePath("*/world/*") respond ok())
 
       get("/hello/world/!") must beSuccessful
       get("/bye-bye/world/!") must beSuccessful
@@ -49,14 +46,14 @@ class SimpleHandlersContractTest extends Spec {
     }
 
     "allow to apply query param matcher on handlers" in new ctx {
-      server.appendAll(haveQueryParams("a" -> "b", "c" -> "d") respond ok)
+      server.appendAll(haveQueryParams("a" -> "b", "c" -> "d") respond ok())
 
       get("/", but = withParams("a" -> "b", "c" -> "d", "x" -> "y")) must beSuccessful
       get("/", but = withParam("c" -> "d")) must beNotFound
     }
 
     "allow to apply both path matcher and query param matcher on handlers" in new ctx {
-      server.appendAll(haveQueryParams("a" -> "b", "c" -> "d") and havePath("ololo") respond ok)
+      server.appendAll(haveQueryParams("a" -> "b", "c" -> "d") and havePath("ololo") respond ok())
 
       get("/ololo", but = withParams("a" -> "b", "c" -> "d", "x" -> "y")) must beSuccessful
       get("/", but = withParams("a" -> "b", "c" -> "d", "x" -> "y")) must beNotFound
@@ -66,7 +63,7 @@ class SimpleHandlersContractTest extends Spec {
     "allow to respond with case class" in new ctx {
       val response = SimpleEntityResponse("privet!")
 
-      server.appendAll(forAnyRequest respondEntity response)
+      server.appendAll(forAnyRequest respond ok(response))
 
       get("/arbitrary/path") must beSuccessfulWith(response)
     }

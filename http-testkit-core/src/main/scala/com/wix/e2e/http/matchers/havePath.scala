@@ -9,13 +9,18 @@ object havePath {
   def apply(path: String): RequestMatcher = { rq =>
     val expectedPath = toList(Path(path))
     val requestedPath = toList(rq.uri.path)
-    val matchSegments: ((Segment, Segment)) => Boolean = { case (expectedSegment, requestedSegment) ⇒
-      expectedSegment.head == "*" ||
-        expectedSegment.head == requestedSegment.head
-    }
 
-    expectedPath.lengthCompare(requestedPath.length) == 0 &&
-      expectedPath.zip(requestedPath).forall(matchSegments)
+    matchPath(expectedPath, requestedPath)
+  }
+
+  private def matchPath(expected: List[Segment], actual: List[Segment]): Boolean = {
+    if (expected.isEmpty && actual.isEmpty) true
+    else if (expected.isEmpty || actual.isEmpty) false
+    else expected.head.head match {
+      case "*"     => matchPath(expected.tail, actual.tail)
+      case "**"    => matchPath(expected, actual.tail) || matchPath(expected.tail, actual.tail)
+      case segment => segment == actual.head.head && matchPath(expected.tail, actual.tail)
+    }
   }
 
   private def toList(path: Path): List[Segment] = path match {
