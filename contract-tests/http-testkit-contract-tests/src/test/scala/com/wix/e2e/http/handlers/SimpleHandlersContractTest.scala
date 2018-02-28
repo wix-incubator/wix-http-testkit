@@ -49,10 +49,18 @@ class SimpleHandlersContractTest extends Spec {
     }
 
     "allow to apply query param matcher on handlers" in new ctx {
-      server.appendAll(okHandler matchWith queryParamMatcher("a" -> "b", "c" -> "d"))
+      server.appendAll(queryParamMatcher("a" -> "b", "c" -> "d") handleWith okHandler)
 
       get("/", but = withParams("a" -> "b", "c" -> "d", "x" -> "y"))(server.baseUri) must beSuccessful
       get("/", but = withParam("c" -> "d"))(server.baseUri) must beNotFound
+    }
+
+    "allow to apply both path matcher and query param matcher on handlers" in new ctx {
+      server.appendAll(queryParamMatcher("a" -> "b", "c" -> "d") && pathMatcher("ololo") handleWith okHandler)
+
+      get("/ololo", but = withParams("a" -> "b", "c" -> "d", "x" -> "y"))(server.baseUri) must beSuccessful
+      get("/", but = withParams("a" -> "b", "c" -> "d", "x" -> "y"))(server.baseUri) must beNotFound
+      get("/ololo", but = withParam("c" -> "d"))(server.baseUri) must beNotFound
     }
 
   }
