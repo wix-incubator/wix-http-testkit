@@ -4,15 +4,24 @@ import com.wix.e2e.http.{HttpRequest, RequestHandler, RequestMatcher}
 
 object Matchers {
 
-  implicit class Matchers(val handler: RequestHandler) extends AnyVal {
+  implicit class HandlerOps(val handler: RequestHandler) extends AnyVal {
 
-    def withPathMatcher(path: String): RequestHandler =
-      handlerWithMatcher(pathMatcher(path))
-
-    def withQueryParamMatcher(param: (String, String), params: (String, String)*): RequestHandler =
-      handlerWithMatcher(queryParamMatcher(param +: params))
-
-    private def handlerWithMatcher(matcher: RequestMatcher): RequestHandler =
+    def matchWith(matcher: RequestMatcher): RequestHandler =
       { case rq: HttpRequest if matcher(rq) => handler(rq) }
+
+    def &&(matcher: RequestMatcher): RequestHandler = matchWith(matcher)
   }
+
+  implicit class MatcherOps(val thisMatcher: RequestMatcher) extends AnyVal {
+
+    def handleWith(handler: RequestHandler): RequestHandler =
+      handler matchWith thisMatcher
+
+    def &&(thatMatcher: RequestMatcher): RequestMatcher =
+      (rq: HttpRequest) => thisMatcher(rq) && thatMatcher(rq)
+
+    def ||(thatMatcher: RequestMatcher): RequestMatcher =
+      (rq: HttpRequest) => thisMatcher(rq) || thatMatcher(rq)
+  }
+
 }
