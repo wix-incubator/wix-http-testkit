@@ -4,9 +4,9 @@ import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.model.Uri.Path.{Empty, Segment, Slash}
 import com.wix.e2e.http.RequestFilter
 
-object havePath {
+trait PathFilters {
 
-  def apply(path: String): RequestFilter = { rq =>
+  def forPath(path: String): RequestFilter = { rq =>
     val expectedPath = toList(Path(path))
     val requestedPath = toList(rq.uri.path)
 

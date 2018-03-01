@@ -3,8 +3,7 @@ package com.wix.e2e.http.filters
 import akka.http.scaladsl.model.{HttpRequest, Uri}
 import org.specs2.mutable.Spec
 
-class HavePathSpec extends Spec {
-
+class PathFiltersSpec extends Spec with PathFilters {
 
   "havePath" should {
     "match two exact paths" in {
@@ -34,6 +33,6 @@ class HavePathSpec extends Spec {
 
   def matchPaths(actual: String, expected: String): Boolean = {
     val req = HttpRequest(uri = Uri(actual))
-    havePath(expected)(req)
+    forPath(expected)(req)
   }
 }

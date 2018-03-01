@@ -2,9 +2,9 @@ package com.wix.e2e.http.filters
 
 import com.wix.e2e.http.RequestFilter
 
-object haveQueryParams {
+trait QueryParamFilters {
 
-  def apply(param: (String, String), params: (String, String)*): RequestFilter = { rq =>
+  def forQueryParams(param: (String, String), params: (String, String)*): RequestFilter = { rq =>
     val requestedQueryParams = rq.uri.query().toMap
     val expectedQueryParams = (param +: params).toMap
 

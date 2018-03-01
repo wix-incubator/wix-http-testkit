@@ -9,15 +9,12 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Try
 
-object haveBody {
+trait BodyFilters {
 
-  def apply[T: Manifest](matcher: BodyMatcher[T])(implicit marshaller: Marshaller): RequestFilter = { rq =>
+  def forBody[T: Manifest](matcher: BodyMatcher[T])(implicit marshaller: Marshaller): RequestFilter = { rq =>
     val str = Await.result(Unmarshal(rq.entity).to[String], 5.seconds)
 
-    Try {
-      val entity = marshaller.unmarshall[T](str)
-      matcher.matches(entity)
-    } getOrElse false
+    Try(marshaller.unmarshall[T](str)) map matcher.matches getOrElse false
   }
 }
 
