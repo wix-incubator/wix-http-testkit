@@ -14,13 +14,13 @@ trait Responses {
   implicit def `Marshaller -> Writer[T]`[T: Manifest](implicit marshaller: Marshaller): Writer[T] =
     (t: T) => marshaller.marshall(t)
 
-  implicit def `RequestFilter -> RequestFilterOps`(filter: RequestFilter) = new Respond(filter)
+  implicit def `RequestFilter -> RequestHandler`(filter: RequestFilter) = new `RequestFilter -> RequestHandler`(filter)
 
 }
 
 object Responses extends Responses
 
-class Respond(val filter: RequestFilter) extends AnyVal {
+class `RequestFilter -> RequestHandler`(val filter: RequestFilter) extends AnyVal {
   import Responses._
 
   def respondOk[T: Writer](body: T = ""): RequestHandler = respond(body, StatusCodes.OK)
