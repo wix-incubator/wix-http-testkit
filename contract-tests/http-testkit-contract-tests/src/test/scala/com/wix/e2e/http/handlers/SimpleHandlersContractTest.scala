@@ -71,7 +71,14 @@ class SimpleHandlersContractTest extends Spec {
     }
 
     "allow to match via body" in new ctx {
-      server.appendAll(forBody(beTypedEqualTo(privetResponse)) respondOk())
+      server.appendAll(forBodyWith(privetResponse) respondOk())
+
+      post("/arbitrary/path", but = withPayload(privetResponse)) must beSuccessful
+      post("/arbitrary/path", but = withPayload(pakaResponse)) must beNotFound
+    }
+
+    "allow to match via body with matcher" in new ctx {
+      server.appendAll(forBodyThat(be_===(privetResponse)) respondOk())
 
       post("/arbitrary/path", but = withPayload(privetResponse)) must beSuccessful
       post("/arbitrary/path", but = withPayload(pakaResponse)) must beNotFound
@@ -99,7 +106,7 @@ class SimpleHandlersContractTest extends Spec {
         forPath("/users/*") and
         forQueryParams("a" -> "x") and
         forHeaders("b" -> "y") and
-        forBody(beTypedEqualTo(privetResponse)) respondOk()
+        forBodyThat(beTypedEqualTo(privetResponse)) respondOk()
       server.appendAll(handler)
 
       post("/users/1", but = withPayload(privetResponse) and withParam("a" -> "x") and withHeader("b" -> "y")) must beSuccessful

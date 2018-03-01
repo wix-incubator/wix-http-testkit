@@ -13,7 +13,10 @@ import scala.util.Try
 trait BodyFilters {
   private val log = LoggerFactory.getLogger(this.getClass)
 
-  def forBody[T: Manifest](matcher: BodyMatcher[T])(implicit marshaller: Marshaller): RequestFilter = { rq =>
+  def forBodyWith[T <: AnyRef: Manifest](expected: T)(implicit marshaller: Marshaller): RequestFilter =
+    forBodyThat((t: T) => t == expected)
+
+  def forBodyThat[T <: AnyRef : Manifest](matcher: BodyMatcher[T])(implicit marshaller: Marshaller): RequestFilter = { rq =>
     val str = Await.result(Unmarshal(rq.entity).to[String], 5.seconds)
 
     Try(marshaller.unmarshall[T](str)) map matcher.matches recover {
