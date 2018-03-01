@@ -33,6 +33,6 @@ class PathFiltersSpec extends Spec with PathFilters {
 
   def matchPaths(actual: String, expected: String): Boolean = {
     val req = HttpRequest(uri = Uri(actual))
-    forPath(expected)(req)
+    whenPathIs(expected)(req)
   }
 }

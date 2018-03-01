@@ -4,7 +4,7 @@ import com.wix.e2e.http.RequestFilter
 
 trait QueryParamFilters {
 
-  def forQueryParams(param: (String, String), params: (String, String)*): RequestFilter = { rq =>
+  def whenParamsContain(param: (String, String), params: (String, String)*): RequestFilter = { rq =>
     val requestedQueryParams = rq.uri.query().toMap
     val expectedQueryParams = (param +: params).toMap
 

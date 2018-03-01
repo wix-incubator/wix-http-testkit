@@ -6,7 +6,7 @@ import com.wix.e2e.http.RequestFilter
 
 trait PathFilters {
 
-  def forPath(path: String): RequestFilter = { rq =>
+  def whenPathIs(path: String): RequestFilter = { rq =>
     val expectedPath = toList(Path(path))
     val requestedPath = toList(rq.uri.path)
 

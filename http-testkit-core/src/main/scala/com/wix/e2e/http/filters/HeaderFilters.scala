@@ -4,7 +4,7 @@ import com.wix.e2e.http.RequestFilter
 
 trait HeaderFilters {
 
-  def forHeaders(header: (String, String), headers: (String, String)*): RequestFilter = { rq =>
+  def whenHeadersContain(header: (String, String), headers: (String, String)*): RequestFilter = { rq =>
     val requested = rq.headers.map(h => h.name() -> h.value()).toMap
     val expected = (header +: headers).toMap
 

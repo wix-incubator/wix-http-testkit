@@ -32,7 +32,7 @@ class SimpleHandlersContractTest extends Spec {
     }
 
     "allow to apply path matcher on handlers" in new ctx {
-      server.appendAll(forPath("/hello/world") respondOk())
+      server.appendAll(whenPathIs("/hello/world") respondOk())
 
       get("/hello/world") must beSuccessful
       get("/hello/world/") must beSuccessful
@@ -41,7 +41,7 @@ class SimpleHandlersContractTest extends Spec {
     }
 
     "support wildcard in path matcher" in new ctx {
-      server.appendAll(forPath("*/world/*") respondOk())
+      server.appendAll(whenPathIs("*/world/*") respondOk())
 
       get("/hello/world/!") must beSuccessful
       get("/bye-bye/world/!") must beSuccessful
@@ -49,13 +49,13 @@ class SimpleHandlersContractTest extends Spec {
     }
 
     "allow to apply query param matcher on handlers" in new ctx {
-      server.appendAll(forQueryParams("a" -> "b", "c" -> "d") respondOk())
+      server.appendAll(whenParamsContain("a" -> "b", "c" -> "d") respondOk())
       get("/", but = withParams("a" -> "b", "c" -> "d", "x" -> "y")) must beSuccessful
       get("/", but = withParam("c" -> "d")) must beNotFound
     }
 
     "allow to apply both path matcher and query param matcher on handlers" in new ctx {
-      server.appendAll(forQueryParams("a" -> "b", "c" -> "d") and forPath("ololo") respondOk())
+      server.appendAll(whenParamsContain("a" -> "b", "c" -> "d") and whenPathIs("ololo") respondOk())
 
       get("/ololo", but = withParams("a" -> "b", "c" -> "d", "x" -> "y")) must beSuccessful
       get("/", but = withParams("a" -> "b", "c" -> "d", "x" -> "y")) must beNotFound
@@ -71,21 +71,21 @@ class SimpleHandlersContractTest extends Spec {
     }
 
     "allow to match via body" in new ctx {
-      server.appendAll(forBodyWith(privetResponse) respondOk())
+      server.appendAll(whenBodyIs(privetResponse) respondOk())
 
       post("/arbitrary/path", but = withPayload(privetResponse)) must beSuccessful
       post("/arbitrary/path", but = withPayload(pakaResponse)) must beNotFound
     }
 
     "allow to match via body with matcher" in new ctx {
-      server.appendAll(forBodyThat(be_===(privetResponse)) respondOk())
+      server.appendAll(whenBodyMatches(be_===(privetResponse)) respondOk())
 
       post("/arbitrary/path", but = withPayload(privetResponse)) must beSuccessful
       post("/arbitrary/path", but = withPayload(pakaResponse)) must beNotFound
     }
 
     "allow to match via http method" in new ctx {
-      server.appendAll(forGet or forDelete respondOk())
+      server.appendAll(whenGet or whenDelete respondOk())
 
       get("/arbitrary/path") must beSuccessful
       delete("/arbitrary/path") must beSuccessful
@@ -95,18 +95,18 @@ class SimpleHandlersContractTest extends Spec {
     }
 
     "allow to match via headers" in new ctx {
-      server.appendAll(forHeaders("a" -> "b", "c" -> "d") respondOk())
+      server.appendAll(whenHeadersContain("a" -> "b", "c" -> "d") respondOk())
 
       get("/", but = withHeaders("a" -> "b", "c" -> "d", "x" -> "y")) must beSuccessful
       get("/", but = withHeader("c" -> "d")) must beNotFound
     }
 
     "allow to apply all together" in new ctx {
-      val handler = forPost and
-        forPath("/users/*") and
-        forQueryParams("a" -> "x") and
-        forHeaders("b" -> "y") and
-        forBodyThat(beTypedEqualTo(privetResponse)) respondOk()
+      val handler = whenPost and
+        whenPathIs("/users/*") and
+        whenParamsContain("a" -> "x") and
+        whenHeadersContain("b" -> "y") and
+        whenBodyMatches(beTypedEqualTo(privetResponse)) respondOk()
       server.appendAll(handler)
 
       post("/users/1", but = withPayload(privetResponse) and withParam("a" -> "x") and withHeader("b" -> "y")) must beSuccessful
