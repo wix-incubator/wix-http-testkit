@@ -77,10 +77,34 @@ class SimpleHandlersContractTest extends Spec {
       post("/arbitrary/path", but = withPayload(pakaResponse)) must beNotFound
     }
 
-    "allow to apply all together" in new ctx {
-      server.appendAll(forPath("/users/*") and forQueryParams("a" -> "x") and forBody(beTypedEqualTo(privetResponse)) respondOk())
+    "allow to match via http method" in new ctx {
+      server.appendAll(forGet or forDelete respondOk())
 
-      post("/users/1", but = withPayload(privetResponse) and withParam("a" -> "x")) must beSuccessful
+      get("/arbitrary/path") must beSuccessful
+      delete("/arbitrary/path") must beSuccessful
+      post("/arbitrary/path") must beNotFound
+      put("/arbitrary/path") must beNotFound
+      patch("/arbitrary/path") must beNotFound
+    }
+
+    "allow to match via headers" in new ctx {
+      server.appendAll(forHeaders("a" -> "b", "c" -> "d") respondOk())
+
+      get("/", but = withHeaders("a" -> "b", "c" -> "d", "x" -> "y")) must beSuccessful
+      get("/", but = withHeader("c" -> "d")) must beNotFound
+    }
+
+    "allow to apply all together" in new ctx {
+      val handler = forPost and
+        forPath("/users/*") and
+        forQueryParams("a" -> "x") and
+        forHeaders("b" -> "y") and
+        forBody(beTypedEqualTo(privetResponse)) respondOk()
+      server.appendAll(handler)
+
+      post("/users/1", but = withPayload(privetResponse) and withParam("a" -> "x") and withHeader("b" -> "y")) must beSuccessful
+      post("/users/1", but = withPayload(privetResponse) and withParam("a" -> "x")) must beNotFound
+      put("/users/1", but = withPayload(privetResponse) and withParam("a" -> "x")) must beNotFound
       post("/users/1", but = withPayload(privetResponse)) must beNotFound
       post("/users/1", but = withParam("a" -> "x")) must beNotFound
       get("/users/1", but = withParam("a" -> "x")) must beNotFound

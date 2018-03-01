@@ -5,7 +5,7 @@ import org.specs2.mutable.Spec
 
 class PathFiltersSpec extends Spec with PathFilters {
 
-  "havePath" should {
+  "forPath" should {
     "match two exact paths" in {
       matchPaths("/api/users/123423/remove", "/api/users/123423/remove") must beTrue
       matchPaths("api/users/123423/remove", "/api/users/123423/remove") must beTrue

@@ -5,6 +5,8 @@ import com.wix.e2e.http.{HttpRequest, HttpResponse, RequestFilter, RequestHandle
 trait Filters extends BodyFilters
               with PathFilters
               with QueryParamFilters
+              with MethodFilters
+              with HeaderFilters
               with Responses {
 
   val always: RequestFilter = _ => true
