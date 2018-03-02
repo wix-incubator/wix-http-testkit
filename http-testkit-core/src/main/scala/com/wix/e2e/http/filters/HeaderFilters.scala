@@ -10,4 +10,10 @@ trait HeaderFilters {
 
     expected forall { case (k, v) => requested.get(k).contains(v) }
   }
+
+  def whenHeadersMatch(matcher: CanMatch[Map[String, String]]): RequestFilter = { rq =>
+    val requested = rq.headers.map(h => h.name() -> h.value()).toMap
+
+    matcher.doMatch(requested)
+  }
 }

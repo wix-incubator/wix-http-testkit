@@ -7,12 +7,13 @@ import com.wix.e2e.http.filters.Filters._
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers._
 import com.wix.e2e.http.server.WebServerFactory.aMockWebServer
+import org.specs2.matcher.MustThrownMatchers
 import org.specs2.mutable.Spec
 import org.specs2.specification.Scope
 
 class SimpleHandlersContractTest extends Spec {
 
-  trait ctx extends Scope {
+  trait ctx extends Scope with MustThrownMatchers {
     val server = aMockWebServer.build.start()
     implicit val baseUri = server.baseUri
     implicit val marshaller: Marshaller = new JsonJacksonMarshaller
@@ -62,6 +63,12 @@ class SimpleHandlersContractTest extends Spec {
       get("/ololo", but = withParam("c" -> "d")) must beNotFound
     }
 
+    "allow to apply specs matcher for query param on handlers" in new ctx {
+      server.appendAll(whenParamsMatch(havePairs("a" -> "b", "c" -> "d")) respondOk())
+      get("/", but = withParams("a" -> "b", "c" -> "d", "x" -> "y")) must beSuccessful
+      get("/", but = withParam("c" -> "d")) must beNotFound
+    }
+
     "allow to respond with case class" in new ctx {
       val response = SimpleEntityResponse("privet!")
 
@@ -96,6 +103,13 @@ class SimpleHandlersContractTest extends Spec {
 
     "allow to match via headers" in new ctx {
       server.appendAll(whenHeadersContain("a" -> "b", "c" -> "d") respondOk())
+
+      get("/", but = withHeaders("a" -> "b", "c" -> "d", "x" -> "y")) must beSuccessful
+      get("/", but = withHeader("c" -> "d")) must beNotFound
+    }
+
+    "allow to use specs2 matcher forheaders" in new ctx {
+      server.appendAll(whenHeadersMatch(havePairs("a" -> "b", "c" -> "d")) respondOk())
 
       get("/", but = withHeaders("a" -> "b", "c" -> "d", "x" -> "y")) must beSuccessful
       get("/", but = withHeader("c" -> "d")) must beNotFound

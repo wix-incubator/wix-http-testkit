@@ -24,7 +24,7 @@ class BodyFiltersTest extends Spec with BodyFilters {
       override def unmarshall[T: Manifest](jsonStr: String): T =
         if (!emulateUnmarshallFailure) actual.asInstanceOf[T] else throw new IllegalArgumentException("Can't unmarshall")
     }
-    val filter = whenBodyMatches({ _ == expected }: BodyMatcher[SomeData])
+    val filter = whenBodyMatches({ _ == expected }: CanMatch[SomeData])
     filter(HttpRequest(entity = HttpEntity(ContentTypes.`text/plain(UTF-8)`, actual.toString)))
   }
 }

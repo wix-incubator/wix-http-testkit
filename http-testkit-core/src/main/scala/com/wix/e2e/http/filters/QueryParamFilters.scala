@@ -10,4 +10,10 @@ trait QueryParamFilters {
 
     expectedQueryParams forall { case (k, v) => requestedQueryParams.get(k).contains(v) }
   }
+
+  def whenParamsMatch(matcher: CanMatch[Map[String, String]]): RequestFilter = { rq =>
+    val requestedQueryParams = rq.uri.query().toMap
+
+    matcher.doMatch(requestedQueryParams)
+  }
 }

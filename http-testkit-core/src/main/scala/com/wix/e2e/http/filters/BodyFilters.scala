@@ -16,17 +16,13 @@ trait BodyFilters {
   def whenBodyIs[T <: AnyRef: Manifest](expected: T)(implicit marshaller: Marshaller): RequestFilter =
     whenBodyMatches((t: T) => t == expected)
 
-  def whenBodyMatches[T <: AnyRef : Manifest](matcher: BodyMatcher[T])(implicit marshaller: Marshaller): RequestFilter = { rq =>
+  def whenBodyMatches[T <: AnyRef : Manifest](matcher: CanMatch[T])(implicit marshaller: Marshaller): RequestFilter = { rq =>
     val str = Await.result(Unmarshal(rq.entity).to[String], 5.seconds)
 
-    Try(marshaller.unmarshall[T](str)) map matcher.matches recover {
+    Try(marshaller.unmarshall[T](str)) map matcher.doMatch recover {
       case e: Exception =>
         log.warn(s"WARNING! Request body: $str, can't be unmarshalled with provided Marshaller")
         throw e
     } getOrElse false
   }
-}
-
-trait BodyMatcher[T] {
-  def matches(t: T): Boolean
 }
