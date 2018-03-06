@@ -1,7 +1,8 @@
-package com.wix.e2e.http.filters
+package com.wix.e2e.http.filters.internal
 
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, Uri}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest}
 import com.wix.e2e.http.api.Marshaller
+import com.wix.e2e.http.filters.CanMatch
 import org.specs2.mutable.Spec
 
 class BodyFiltersTest extends Spec with BodyFilters {

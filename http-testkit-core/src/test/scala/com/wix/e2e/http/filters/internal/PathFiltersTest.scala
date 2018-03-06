@@ -1,9 +1,9 @@
-package com.wix.e2e.http.filters
+package com.wix.e2e.http.filters.internal
 
 import akka.http.scaladsl.model.{HttpRequest, Uri}
 import org.specs2.mutable.Spec
 
-class PathFiltersSpec extends Spec with PathFilters {
+class PathFiltersTest extends Spec with PathFilters {
 
   "forPath" should {
     "match two exact paths" in {
