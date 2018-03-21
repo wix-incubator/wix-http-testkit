@@ -3,13 +3,13 @@ import sbt._
 object depends {
 
   private val JacksonVersion = "2.9.4"
-  private val AkkaHttpVersion = "10.0.11"
-  private val AkkaVersion = "2.5.10"
-
+  private val AkkaHttpVersion = "10.1.0"
+  private val AkkaVersion = "2.5.11"
+//M3
   def specs2(scalaVersion: String) = specs2DepsFor(specs2VersionFor(scalaVersion))
   def specs2Test(scalaVersion: String) = specs2(scalaVersion).map(_ % Test)
 
-  val scalaTest = "org.scalatest" %% "scalatest" % "3.0.5"
+  val scalaTest = "org.scalatest" %% "scalatest" % "3.0.5"//-M1
 
   val scalaMock = "org.scalamock" %% "scalamock" % "4.1.0" % Test
 
@@ -18,11 +18,11 @@ object depends {
         "org.specs2" %% "specs2-junit" % version,
         "org.specs2" %% "specs2-mock" % version )
 
-  private def specs2VersionFor(scalaVersion: String) = if ( scalaVersion.startsWith("2.13") ) "4.0.3" else "3.8.6"
+  private def specs2VersionFor(scalaVersion: String) = "4.0.3"
 
 
   def akkaHttp(scalaVersion: String) =
-    Seq("com.typesafe.akka" %% "akka-http" % AkkaHttpVersion, // missing 2.13
+    Seq("com.typesafe.akka" %% "akka-http" % AkkaHttpVersion,
         "com.typesafe.akka" %% "akka-actor" % AkkaVersion,
         "com.typesafe.akka" %% "akka-stream" % AkkaVersion)
 
