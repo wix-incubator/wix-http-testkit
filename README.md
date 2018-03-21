@@ -1,6 +1,4 @@
 [![Build Status](https://travis-ci.org/wix/wix-http-testkit.svg?branch=master)](https://travis-ci.org/wix/wix-http-testkit)
-[![Maven Central (2.12)](https://maven-badges.herokuapp.com/maven-central/com.wix/http-testkit_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.wix/http-testkit_2.12)
-[![Maven Central (2.11)](https://maven-badges.herokuapp.com/maven-central/com.wix/http-testkit_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.wix/http-testkit_2.11)
 
 # HTTP Testkit
 
@@ -85,13 +83,13 @@ For more info see [Web Server Documentation](./WEBSERVER.md) and [Request Matche
 
 ## Usage 
 
-HTTP-testkit version '0.1.17' is available on Maven Central Repository. Scala versions 2.11.x and 2.12.x are supported.
+HTTP-testkit version '0.1.18' is available on Maven Central Repository. Scala versions 2.11.x and 2.12.x are supported.
 
 ### SBT
 Simply add the *wix-http-testkit* module to your build settings:
 
 ```sbt
-libraryDependencies += "com.wix" %% "http-testkit" % "0.1.17"
+libraryDependencies += "com.wix" %% "http-testkit" % "0.1.18"
 ```
 ### Maven
 
@@ -100,7 +98,7 @@ libraryDependencies += "com.wix" %% "http-testkit" % "0.1.17"
   <dependency>
     <groupId>com.wix</groupId>
     <artifactId>http-testkit_${scala.dependencies.version}</artifactId>
-    <version>0.1.17</version>
+    <version>0.1.18</version>
   </dependency>
 </dependencies>
 
