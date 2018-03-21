@@ -37,9 +37,14 @@ class ResponseStatusAndHeaderMatchersTest extends WordSpec with MatchersTestSupp
 
     "match will fail for different host and port" in new ctx {
       aRedirectResponseTo(s"http://example.com") should not( beRedirectedTo(s"http://example.org") )
-      aRedirectResponseTo(s"http://example.com:80") should not( beRedirectedTo(s"http://example.com") )
+      aRedirectResponseTo(s"http://example.com:99") should not( beRedirectedTo(s"http://example.com:81") )
       aPermanentlyRedirectResponseTo(s"http://example.com") should not( bePermanentlyRedirectedTo(s"http://example.org") )
-      aPermanentlyRedirectResponseTo(s"http://example.com:80") should not( bePermanentlyRedirectedTo(s"http://example.com") )
+      aPermanentlyRedirectResponseTo(s"http://example.com:99") should not( bePermanentlyRedirectedTo(s"http://example.com:81") )
+    }
+
+    "port 80 is removed by akka http" in new ctx {
+      aRedirectResponseTo(s"http://example.com:80") should beRedirectedTo(s"http://example.com")
+      aPermanentlyRedirectResponseTo(s"http://example.com:80") should bePermanentlyRedirectedTo(s"http://example.com")
     }
 
     "match will fail for different path" in new ctx {
