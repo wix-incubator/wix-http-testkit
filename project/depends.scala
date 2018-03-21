@@ -5,7 +5,7 @@ object depends {
   private val JacksonVersion = "2.9.4"
   private val AkkaHttpVersion = "10.1.0"
   private val AkkaVersion = "2.5.11"
-//M3
+
   def specs2(scalaVersion: String) = specs2DepsFor(specs2VersionFor(scalaVersion))
   def specs2Test(scalaVersion: String) = specs2(scalaVersion).map(_ % Test)
 
@@ -16,6 +16,7 @@ object depends {
   private def specs2DepsFor(version: String) =
     Seq("org.specs2" %% "specs2-core" % version,
         "org.specs2" %% "specs2-junit" % version,
+        "org.specs2" %% "specs2-shapeless" % version,
         "org.specs2" %% "specs2-mock" % version )
 
   private def specs2VersionFor(scalaVersion: String) = "4.0.3"

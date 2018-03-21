@@ -10,11 +10,12 @@ import com.wix.e2e.http.exceptions.{ConnectionRefusedException, MarshallerErrorE
 import com.wix.e2e.http.matchers.ResponseMatcher
 import com.wix.e2e.http.utils._
 import com.wix.e2e.http.{HttpResponse, WixHttpTestkitResources}
+import org.specs2.matcher.CaseClassDiffs._
 import org.specs2.matcher.Matchers._
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 
-import scala.util.{Failure, Try}
 import scala.util.control.Exception.handling
+import scala.util.{Failure, Try}
 
 trait ResponseStatusMatchers {
 
