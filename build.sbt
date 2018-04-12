@@ -125,7 +125,7 @@ lazy val httpTestkitSpecs2 =
 lazy val httpTestkitScalaTest =
   (project in file("http-testkit-scala-test"))
     .settings(Seq(
-      name := "http-testkit-scala-test",
+      name := "http-testkit-scalatest",
       libraryDependencies ++= Seq(scalaTest) :+ scalaMock,
       description := "Scala Test Matcher suites - Request and Response."
     ) ++ baseSettings)
