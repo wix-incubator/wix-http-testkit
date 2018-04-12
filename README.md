@@ -83,13 +83,13 @@ For more info see [Web Server Documentation](./WEBSERVER.md) and [Request Matche
 
 ## Usage 
 
-HTTP-testkit version '0.1.18' is available on Maven Central Repository. Scala versions 2.11.x and 2.12.x are supported.
+HTTP-testkit version '0.1.19' is available on Maven Central Repository. Scala versions 2.11.x and 2.12.x are supported.
 
 ### SBT
 Simply add the *wix-http-testkit* module to your build settings:
 
 ```sbt
-libraryDependencies += "com.wix" %% "http-testkit" % "0.1.18"
+libraryDependencies += "com.wix" %% "http-testkit" % "0.1.19"
 ```
 ### Maven
 
@@ -98,7 +98,7 @@ libraryDependencies += "com.wix" %% "http-testkit" % "0.1.18"
   <dependency>
     <groupId>com.wix</groupId>
     <artifactId>http-testkit_${scala.dependencies.version}</artifactId>
-    <version>0.1.18</version>
+    <version>0.1.19</version>
   </dependency>
 </dependencies>
 
