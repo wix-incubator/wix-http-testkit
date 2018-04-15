@@ -193,6 +193,15 @@ lazy val httpTestkitContractTestsMalformedMarshaller =
     ) ++ baseSettings ++ noPublish)
     .dependsOn(httpTestkitCore)
 
+lazy val httpTestkitExamples =
+  (project in file("examples"))
+    .settings(Seq(
+      name := "http-testkit-examples",
+      libraryDependencies ++= specs2Test(scalaVersion.value),
+      description := "Testkit Examples"
+    ) ++ baseSettings ++ noPublish)
+    .dependsOn(httpTestkit)
+
 //lazy val httpTestkitExamples =
 //  Project(
 //    id = "examples",
@@ -221,4 +230,5 @@ lazy val root =
     .settings(Seq(name:= "Wix Http Testkit Modules") ++ baseSettings ++ noPublish)
     .aggregate(httpTestkitTestCommons,
                httpTestkitCore, httpTestkitClient, httpTestkitServer, httpTestkitSpecs2, httpTestkitScalaTest, httpTestkit, httpTestkitMarshallerJackson,
-               contractTests)
+               contractTests,
+               httpTestkitExamples)
