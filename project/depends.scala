@@ -2,9 +2,9 @@ import sbt._
 
 object depends {
 
-  private val JacksonVersion = "2.9.4"
-  private val AkkaHttpVersion = "10.1.0"
-  private val AkkaVersion = "2.5.11"
+  private val JacksonVersion = "2.9.5"
+  private val AkkaHttpVersion = "10.1.1"
+  private val AkkaVersion = "2.5.12"
 
   def specs2(scalaVersion: String) = specs2DepsFor(specs2VersionFor(scalaVersion))
   def specs2Test(scalaVersion: String) = specs2(scalaVersion).map(_ % Test)
@@ -19,7 +19,7 @@ object depends {
         "org.specs2" %% "specs2-shapeless" % version,
         "org.specs2" %% "specs2-mock" % version )
 
-  private def specs2VersionFor(scalaVersion: String) = "4.0.3"
+  private def specs2VersionFor(scalaVersion: String) = "4.1.0"
 
 
   def akkaHttp(scalaVersion: String) =
@@ -40,7 +40,7 @@ object depends {
   val joda = Seq("joda-time" % "joda-time" % "2.9.9",
                  "org.joda" % "joda-convert" % "1.9.2" )
 
-  val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
+  val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.1.0"
 
   val reflections = "org.reflections" % "reflections" % "0.9.10"
 
