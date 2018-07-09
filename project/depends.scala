@@ -19,7 +19,7 @@ object depends {
         "org.specs2" %% "specs2-shapeless" % version,
         "org.specs2" %% "specs2-mock" % version )
 
-  private def specs2VersionFor(scalaVersion: String) = "4.1.0"
+  private def specs2VersionFor(scalaVersion: String) = "4.3.1"
 
 
   def akkaHttp(scalaVersion: String) =
