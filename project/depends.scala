@@ -2,9 +2,9 @@ import sbt._
 
 object depends {
 
-  private val JacksonVersion = "2.9.6"
-  private val AkkaHttpVersion = "10.1.3"
-  private val AkkaVersion = "2.5.13"
+  private val JacksonVersion = "2.9.7"
+  private val AkkaHttpVersion = "10.1.5"
+  private val AkkaVersion = "2.5.17"
 
   def specs2(scalaVersion: String) = specs2DepsFor(specs2VersionFor(scalaVersion))
   def specs2Test(scalaVersion: String) = specs2(scalaVersion).map(_ % Test)
@@ -19,7 +19,8 @@ object depends {
         "org.specs2" %% "specs2-shapeless" % version,
         "org.specs2" %% "specs2-mock" % version )
 
-  private def specs2VersionFor(scalaVersion: String) = "4.3.1"
+  private def specs2VersionFor(scalaVersion: String) =
+    if (scalaVersion.startsWith("2.13.0")) "4.2.0" else "4.3.4"
 
 
   def akkaHttp(scalaVersion: String) =
