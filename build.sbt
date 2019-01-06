@@ -25,8 +25,8 @@ lazy val publishSettings = Seq(
 )
 
 lazy val compileOptions = Seq(
-  scalaVersion := "2.12.7",
-  crossScalaVersions := Seq("2.11.12", "2.12.7"),
+  scalaVersion := "2.12.8",
+  crossScalaVersions := Seq("2.11.12", "2.12.8"),
   scalacOptions ++= Seq(
     "-deprecation",                      // Emit warning and location for usages of deprecated APIs.
     "-encoding", "utf-8",                // Specify character encoding used by source files.

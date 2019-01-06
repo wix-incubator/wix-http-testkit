@@ -90,7 +90,7 @@ trait HttpMessageTestSupport {
         BadRequest, Unauthorized, PaymentRequired, Forbidden, NotFound, MethodNotAllowed, NotAcceptable,
         ProxyAuthenticationRequired, RequestTimeout, Conflict, Gone, LengthRequired, PreconditionFailed,
         RequestEntityTooLarge, RequestUriTooLong, UnsupportedMediaType, RequestedRangeNotSatisfiable,
-        ExpectationFailed, EnhanceYourCalm, UnprocessableEntity, Locked, FailedDependency, UnorderedCollection,
+        ExpectationFailed, EnhanceYourCalm, UnprocessableEntity, Locked, FailedDependency,
         UpgradeRequired, PreconditionRequired, TooManyRequests, RequestHeaderFieldsTooLarge, RetryWith,
         BlockedByParentalControls, UnavailableForLegalReasons, InternalServerError, NotImplemented, BadGateway,
         ServiceUnavailable, GatewayTimeout, HTTPVersionNotSupported, VariantAlsoNegotiates, InsufficientStorage,
