@@ -45,7 +45,7 @@ class ResponseContentTypeMatchersTest extends Spec with MatchersTestSupport {
 
     "failure message in case no content type for body should be handled" in new ctx {
       failureMessageFor(haveContentType(contentType), matchedOn = aResponseWithoutBody) must_===
-        "Request body does not have a set content type"
+        "Response body does not have a set content type"
     }
 
     "failure message if someone tries to match content-type in headers matchers" in new ctx {

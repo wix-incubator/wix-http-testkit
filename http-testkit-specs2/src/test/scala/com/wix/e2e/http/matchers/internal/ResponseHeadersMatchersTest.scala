@@ -40,7 +40,7 @@ class ResponseHeadersMatchersTest extends Spec with MatchersTestSupport {
 
     "haveTheSameHeadersAs matcher will return a message stating what was found, and what is missing from header list" in new ctx {
       failureMessageFor(haveTheSameHeadersAs(header, anotherHeader), matchedOn = aResponseWithHeaders(yetAnotherHeader, header)) must_===
-        s"Request header is not identical, missing headers from request: [${anotherHeader._1}], request contained extra headers: [${yetAnotherHeader._1}]."
+        s"Response header is not identical, missing headers from response: [${anotherHeader._1}], response contained extra headers: [${yetAnotherHeader._1}]."
     }
 
     "header name compare should be case insensitive" in new ctx {
@@ -54,7 +54,7 @@ class ResponseHeadersMatchersTest extends Spec with MatchersTestSupport {
       aResponseWithHeaders(header) must not( haveTheSameHeadersAs(header.copy(_2 = header._2.toUpperCase)) )
     }
     
-    "request with no headers will show a 'no headers' message" in new ctx {
+    "response with no headers will show a 'no headers' message" in new ctx {
       failureMessageFor(haveAnyHeadersOf(header), matchedOn = aResponseWithNoHeaders ) must_===
         "Response did not contain any headers."
 
