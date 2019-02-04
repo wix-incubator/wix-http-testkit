@@ -91,7 +91,7 @@ trait ResponseHeadersMatchers {
 
   def haveTheSameHeadersAs(headers: (String, String)*): ResponseMatcher =
     haveHeaderInternal( headers, r => r.extra.isEmpty && r.missing.isEmpty,
-                        res => s"Request header is not identical, missing headers from request: [${res.missing.map(_._1).mkString(", ")}], request contained extra headers: [${res.extra.map(_._1).mkString(", ")}]." )
+                        res => s"Response header is not identical, missing headers from response: [${res.missing.map(_._1).mkString(", ")}], response contained extra headers: [${res.extra.map(_._1).mkString(", ")}]." )
 
   private def haveHeaderInternal(headers: Seq[(String, String)], comparator: HeaderComparisonResult => Boolean, errorMessage: HeaderComparisonResult => String): ResponseMatcher = new ResponseMatcher {
 
@@ -260,7 +260,7 @@ trait ResponseContentTypeMatchers {
       val expected = ContentType.parse(contentType)
 
       (actual, expected) match {
-        case (a, _) if a == NoContentType => failure("Request body does not have a set content type", t)
+        case (a, _) if a == NoContentType => failure("Response body does not have a set content type", t)
         case (_, Left(_)) => failure(s"Cannot match against a malformed content type: $contentType", t)
         case (a, Right(e)) if a == e => success("ok", t)
         case (a, Right(e)) if a != e => failure(s"Expected content type [$e] does not match actual content type [$a]", t)
