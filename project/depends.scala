@@ -4,14 +4,12 @@ object depends {
 
   private val JacksonVersion = "2.9.8"
   private val AkkaHttpVersion = "10.1.7"
-  private val AkkaVersion = "2.5.19"
+  private val AkkaVersion = "2.5.20"
 
   def specs2(scalaVersion: String) = specs2DepsFor(specs2VersionFor(scalaVersion))
   def specs2Test(scalaVersion: String) = specs2(scalaVersion).map(_ % Test)
 
-  val scalaTest = "org.scalatest" %% "scalatest" % "3.0.5"//-M1 //3.0.6-SNAP2 (M4)
-
-  val scalaMock = "org.scalamock" %% "scalamock" % "4.1.0" % Test // no 2.13
+  val scalaTest = "org.scalatest" %% "scalatest" % "3.0.6-SNAP6"
 
   private def specs2DepsFor(version: String) =
     Seq("org.specs2" %% "specs2-core" % version,
@@ -19,10 +17,10 @@ object depends {
         "org.specs2" %% "specs2-shapeless" % version,
         "org.specs2" %% "specs2-mock" % version )
 
-  private def specs2VersionFor(scalaVersion: String) = "4.3.6"
+  private def specs2VersionFor(scalaVersion: String) = "4.4.1"
 
   def akkaHttp(scalaVersion: String) =
-    Seq("com.typesafe.akka" %% "akka-http" % AkkaHttpVersion, // only M3 support 
+    Seq("com.typesafe.akka" %% "akka-http" % AkkaHttpVersion,
         "com.typesafe.akka" %% "akka-actor" % AkkaVersion,
         "com.typesafe.akka" %% "akka-stream" % AkkaVersion)
 
