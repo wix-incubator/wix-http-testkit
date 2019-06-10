@@ -67,7 +67,7 @@ trait HttpMessageTestSupport {
   val malformedUrl = "http://www.example.com/name with spaces/"
   val anotherUrl = "http://example.com/another/path"
 
-  val `application/x-www-form-urlencoded` = MediaTypes.`application/x-www-form-urlencoded`.withCharset(HttpCharsets.`UTF-8`)
+  val `application/x-www-form-urlencoded` = MediaTypes.`application/x-www-form-urlencoded`
   val `multipart/form-data` = MediaTypes.`multipart/form-data`
 
   def randomStatusThatIsNot(status: StatusCode): StatusCode =
@@ -126,7 +126,10 @@ object HttpResponseFactory {
   def aResponseWithoutBody = HttpResponse()
   def aResponseWithContentType(contentType: String) = {
     val r = aResponseWithoutBody
-    aResponseWithoutBody.copy(entity = r.entity.withContentType(ContentType.parse(contentType).right.get))
+    aResponseWithoutBody.copy(entity = r.entity.withContentType(ContentType.parse(contentType) match {
+      case Right(c) => c
+      case Left(_) => throw new IllegalArgumentException(contentType)
+    }))
   }
 
   def aChunkedResponse = 

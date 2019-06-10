@@ -1,4 +1,5 @@
 import depends._
+import compiler_helper._
 
 lazy val publishSettings = Seq(
   publishTo := {
@@ -25,49 +26,10 @@ lazy val publishSettings = Seq(
 )
 
 lazy val compileOptions = Seq(
-  scalaVersion := "2.12.8",
-  crossScalaVersions := Seq("2.11.12", "2.12.8"),
-  scalacOptions ++= Seq(
-    "-deprecation",                      // Emit warning and location for usages of deprecated APIs.
-    "-encoding", "utf-8",                // Specify character encoding used by source files.
-    "-explaintypes",                     // Explain type errors in more detail.
-    "-feature",                          // Emit warning and location for usages of features that should be imported explicitly.
-    "-language:implicitConversions",     // Allow definition of implicit functions called views
-    "-unchecked",                        // Enable additional warnings where generated code depends on assumptions.
-    "-Xcheckinit",                       // Wrap field accessors to throw an exception on uninitialized access.
-    "-Xfatal-warnings",                  // Fail the compilation if there are any warnings.
-    "-Xfuture",                          // Turn on future language features.
-    "-Xlint:adapted-args",               // Warn if an argument list is modified to match the receiver.
-    "-Xlint:by-name-right-associative",  // By-name parameter of right associative operator.
-//    "-Xlint:constant",                   // Evaluation of a constant arithmetic expression results in an error.
-    "-Xlint:delayedinit-select",         // Selecting member of DelayedInit.
-    "-Xlint:inaccessible",               // Warn about inaccessible types in method signatures.
-    "-Xlint:infer-any",                  // Warn when a type argument is inferred to be `Any`.
-    "-Xlint:missing-interpolator",       // A string literal appears to be missing an interpolator id.
-    "-Xlint:nullary-override",           // Warn when non-nullary `def f()' overrides nullary `def f'.
-    "-Xlint:nullary-unit",               // Warn when nullary methods return Unit.
-    "-Xlint:option-implicit",            // Option.apply used implicit view.
-    "-Xlint:package-object-classes",     // Class or object defined in package object.
-    "-Xlint:poly-implicit-overload",     // Parameterized overloaded implicit methods are not visible as view bounds.
-    "-Xlint:private-shadow",             // A private field (or class parameter) shadows a superclass field.
-    "-Xlint:stars-align",                // Pattern sequence wildcard must align with sequence component.
-    "-Xlint:type-parameter-shadow",      // A local type parameter shadows a type already in scope.
-    "-Xlint:unsound-match",              // Pattern match may not be typesafe.
-    "-Yno-adapted-args",                 // Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.
-    "-Ypartial-unification",             // Enable partial unification in type constructor inference
-    "-Ywarn-dead-code",                  // Warn when dead code is identified.
-//    "-Ywarn-extra-implicit",             // Warn when more than one implicit parameter section is defined.
-    "-Ywarn-inaccessible",               // Warn about inaccessible types in method signatures.
-    "-Ywarn-infer-any",                  // Warn when a type argument is inferred to be `Any`.
-    "-Ywarn-nullary-override",           // Warn when non-nullary `def f()' overrides nullary `def f'.
-    "-Ywarn-nullary-unit"               // Warn when nullary methods return Unit.
-//    "-Ywarn-unused:imports",             // Warn if an import selector is not referenced.
-//    "-Ywarn-unused:locals",              // Warn if a local definition is unused.
-//    "-Ywarn-unused:patvars",             // Warn if a variable bound in a pattern is unused.
-//    "-Ywarn-unused:privates"            // Warn if a private member is unused.
-  )
+  scalaVersion := "2.13.0-RC3",
+  crossScalaVersions := Seq("2.11.12", "2.13.0-RC3"),
+  scalacOptions ++= compilerFlagsFor(scalaVersion.value),
 )
-
 
 lazy val noPublish = Seq( publish := {}, publishLocal := {}, publishArtifact := false )
 
@@ -89,10 +51,11 @@ lazy val httpTestkitTestCommons =
 
 lazy val httpTestkitCore =
   (project in file("http-testkit-core"))
+    .settings(crossBuildMultipleSourcesOptions)
     .settings(Seq(
       name := "http-testkit-core",
-      libraryDependencies ++= joda ++ specs2Test(scalaVersion.value) ++ akkaHttp(scalaVersion.value) :+ scalaXml :+ reflections :+ jsr305 :+ slf4jApi,
-      description := "Commonly used util code also client and server interfaces"
+      libraryDependencies ++= joda ++ specs2Test ++ akkaHttp :+ scalaXml :+ reflections :+ jsr305 :+ slf4jApi,
+      description := "Commonly used util code also client and server interfaces",
     ) ++ baseSettings)
     .dependsOn(httpTestkitTestCommons % Test)
 
@@ -100,7 +63,7 @@ lazy val httpTestkitClient =
   (project in file("http-testkit-client"))
     .settings(Seq(
       name := "http-testkit-client",
-      libraryDependencies ++= specs2(scalaVersion.value) ,
+      libraryDependencies ++= specs2 ,
       description := "All code related to REST client, blocking and non-blocking"
     ) ++ baseSettings)
     .dependsOn(httpTestkitCore, httpTestkitSpecs2, httpTestkitTestCommons % Test, httpTestkitMarshallerJackson % Test)
@@ -117,7 +80,7 @@ lazy val httpTestkitSpecs2 =
   (project in file("http-testkit-specs2"))
     .settings(Seq(
       name := "http-testkit-specs2",
-      libraryDependencies ++= specs2(scalaVersion.value),
+      libraryDependencies ++= specs2,
       description := "Specs2 Matcher suites - Request and Response."
     ) ++ baseSettings)
     .dependsOn(httpTestkitCore, httpTestkitTestCommons % Test, httpTestkitMarshallerJackson % Test)
@@ -135,7 +98,7 @@ lazy val httpTestkitMarshallerJackson =
   (project in file("http-testkit-marshaller-jackson"))
     .settings(Seq(
       name := "http-testkit-marshaller-jackson",
-      libraryDependencies ++= jackson(scalaVersion.value) ++ specs2(scalaVersion.value),
+      libraryDependencies ++= jackson ++ specs2,
       description := "Marshaller implementation - jackson"
     ) ++ baseSettings)
     .dependsOn(httpTestkitCore, httpTestkitTestCommons % Test)
@@ -150,9 +113,10 @@ lazy val httpTestkit =
 
 lazy val httpTestkitContractTests =
   (project in file("contract-tests/http-testkit-contract-tests"))
+    .settings(crossBuildMultipleSourcesOptions)
     .settings(Seq(
       name := "http-testkit-contract-tests",
-      libraryDependencies ++= specs2Test(scalaVersion.value),
+      libraryDependencies ++= specs2Test,
       description := "Contract tests for both client and server"
     ) ++ baseSettings ++ noPublish)
     .dependsOn(httpTestkit, httpTestkitMarshallerJackson, httpTestkitTestCommons % Test)
@@ -161,7 +125,7 @@ lazy val httpTestkitContractTestsCustomMarshaller =
   (project in file("contract-tests/marshaller-contract-tests/http-testkit-contract-tests-custom-marshaller"))
     .settings(Seq(
       name := "http-testkit-contract-tests-custom-marshaller",
-      libraryDependencies ++= specs2Test(scalaVersion.value),
+      libraryDependencies ++= specs2Test,
       description := "Contract tests for marshaller: cover cases which custom marshaller exists on classpath"
     ) ++ baseSettings ++ noPublish)
     .dependsOn(httpTestkit, httpTestkitTestCommons % Test)
@@ -170,7 +134,7 @@ lazy val httpTestkitContractTestsNoCustomMarshaller =
   (project in file("contract-tests/marshaller-contract-tests/http-testkit-contract-tests-no-custom-marshaller"))
     .settings(Seq(
       name := "http-testkit-contract-tests-no-custom-marshaller",
-      libraryDependencies ++= specs2Test(scalaVersion.value),
+      libraryDependencies ++= specs2Test,
       description := "Contract tests for marshaller: cover cases which no custom marshaller exists on classpath"
     ) ++ baseSettings ++ noPublish)
     .dependsOn(httpTestkit, httpTestkitTestCommons % Test)
@@ -179,7 +143,7 @@ lazy val httpTestkitContractTestsDualMarshallers =
   (project in file("contract-tests/marshaller-contract-tests/http-testkit-contract-tests-dual-marshallers"))
     .settings(Seq(
       name := "http-testkit-contract-tests-dual-marshallers",
-      libraryDependencies ++= specs2Test(scalaVersion.value),
+      libraryDependencies ++= specs2Test,
       description := "Contract tests for marshaller: cover cases which custom marshaller and default marshaller exists on classpath"
     ) ++ baseSettings ++ noPublish)
     .dependsOn(httpTestkit, httpTestkitMarshallerJackson, httpTestkitTestCommons % Test)
@@ -188,7 +152,7 @@ lazy val httpTestkitContractTestsMalformedMarshaller =
   (project in file("contract-tests/marshaller-contract-tests/http-testkit-contract-tests-malformed-marshaller"))
     .settings(Seq(
       name := "http-testkit-contract-tests-malformed-marshaller",
-      libraryDependencies ++= specs2Test(scalaVersion.value),
+      libraryDependencies ++= specs2Test,
       description := "Contract tests for marshaller"
     ) ++ baseSettings ++ noPublish)
     .dependsOn(httpTestkitCore)
@@ -197,7 +161,7 @@ lazy val httpTestkitExamples =
   (project in file("examples"))
     .settings(Seq(
       name := "http-testkit-examples",
-      libraryDependencies ++= specs2Test(scalaVersion.value),
+      libraryDependencies ++= specs2Test,
       description := "Testkit Examples"
     ) ++ baseSettings ++ noPublish)
     .dependsOn(httpTestkit)

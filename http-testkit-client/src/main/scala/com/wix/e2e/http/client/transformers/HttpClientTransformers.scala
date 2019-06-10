@@ -16,8 +16,8 @@ trait HttpClientContentTypes {
   val TextPlain = ContentTypes.`text/plain(UTF-8)`
   val JsonContent = ContentTypes.`application/json`
   val XmlContent = ContentType(MediaTypes.`application/xml`, HttpCharsets.`UTF-8`)
-  val BinaryStream = ContentType(MediaTypes.`application/octet-stream`)
-  val FormUrlEncoded = ContentType(MediaTypes.`application/x-www-form-urlencoded`, HttpCharsets.`UTF-8`)
+  val BinaryStream = ContentTypes.`application/octet-stream`
+  val FormUrlEncoded = ContentTypes.`application/x-www-form-urlencoded`
 }
 
 object HttpClientContentTypes extends HttpClientContentTypes

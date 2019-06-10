@@ -2,31 +2,28 @@ import sbt._
 
 object depends {
 
-  private val JacksonVersion = "2.9.8"
-  private val AkkaHttpVersion = "10.1.7"
-  private val AkkaVersion = "2.5.20"
+  private val JacksonVersion = "2.9.9"
+  private val AkkaHttpVersion = "10.1.8"
+  private val AkkaVersion = "2.5.23"
+  private val Specs2Version = "4.5.1"
 
-  def specs2(scalaVersion: String) = specs2DepsFor(specs2VersionFor(scalaVersion))
-  def specs2Test(scalaVersion: String) = specs2(scalaVersion).map(_ % Test)
+  val specs2 =
+    Seq("org.specs2" %% "specs2-core" % Specs2Version,
+        "org.specs2" %% "specs2-junit" % Specs2Version,
+        "org.specs2" %% "specs2-shapeless" % Specs2Version,
+        "org.specs2" %% "specs2-mock" % Specs2Version )
+  val specs2Test = specs2.map(_ % Test)
 
-  val scalaTest = "org.scalatest" %% "scalatest" % "3.0.6-SNAP6"
+  val scalaTest = "org.scalatest" %% "scalatest" % "3.1.0-SNAP12"
 
-  private def specs2DepsFor(version: String) =
-    Seq("org.specs2" %% "specs2-core" % version,
-        "org.specs2" %% "specs2-junit" % version,
-        "org.specs2" %% "specs2-shapeless" % version,
-        "org.specs2" %% "specs2-mock" % version )
-
-  private def specs2VersionFor(scalaVersion: String) = "4.4.1"
-
-  def akkaHttp(scalaVersion: String) =
+  val akkaHttp =
     Seq("com.typesafe.akka" %% "akka-http" % AkkaHttpVersion,
         "com.typesafe.akka" %% "akka-actor" % AkkaVersion,
         "com.typesafe.akka" %% "akka-stream" % AkkaVersion)
 
-
-  def jackson(scalaVersion: String) = jacksonFor(JacksonVersion, scalaVersion)
-  def jacksonFor(version: String, scalaVersion: String) =
+  val jackson = jacksonFor(JacksonVersion)
+  
+  private def jacksonFor(version: String) =
     Seq("com.fasterxml.jackson.core" % "jackson-databind" % version,
         "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % version,
         "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % version,
@@ -34,14 +31,14 @@ object depends {
         "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % version,
         "com.fasterxml.jackson.module" %% "jackson-module-scala" % version ) 
 
-  val joda = Seq("joda-time" % "joda-time" % "2.10.1",
-                 "org.joda" % "joda-convert" % "2.1.2" )
+  val joda = Seq("joda-time" % "joda-time" % "2.10.2",
+                 "org.joda" % "joda-convert" % "2.2.1" )
 
-  val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.1.1"
+  val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.2.0"
 
   val reflections = "org.reflections" % "reflections" % "0.9.11"
 
   val jsr305 = "com.google.code.findbugs" % "jsr305" % "3.0.2"
 
-  val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.25"
+  val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.26"
 }

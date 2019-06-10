@@ -18,10 +18,12 @@ trait HttpClientRequestUrlTransformers {
   def withParam(param: (String, String)): RequestTransformer = withParams(param)
   def withParams(params: (String, String)*): RequestTransformer = r =>
     r.copy(uri = r.uri
-      .withQuery( Query(r.uri.rawQueryString
-        .map( Query(_).toSeq )
-        .getOrElse(Nil)
-        ++ params: _*)) )
+                  .withQuery( Query(currentParams(r) ++ params: _*)) )
+
+  private def currentParams(r: HttpRequest): Seq[(String, String)] =
+    r.uri.rawQueryString
+     .map( Query(_).toSeq )
+     .getOrElse( Seq.empty )
 }
 
 trait HttpClientRequestHeadersTransformers {

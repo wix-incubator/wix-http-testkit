@@ -276,7 +276,7 @@ trait RequestRecorderMatchers {
 trait RequestContentTypeMatchers {
   def haveJsonBody: RequestMatcher = haveContent(ContentTypes.`application/json`)
   def haveTextPlainBody: RequestMatcher = haveContent(ContentTypes.`text/plain(UTF-8)`)
-  def haveFormUrlEncodedBody: RequestMatcher = haveContent(MediaTypes.`application/x-www-form-urlencoded`.withCharset(HttpCharsets.`UTF-8`))
+  def haveFormUrlEncodedBody: RequestMatcher = haveContent(MediaTypes.`application/x-www-form-urlencoded`)
   def haveMultipartFormBody: RequestMatcher = haveMediaType(MediaTypes.`multipart/form-data`)
 
 

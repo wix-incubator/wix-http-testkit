@@ -11,8 +11,8 @@ class StubAkkaHttpMockWebServer(initialHandlers: Seq[RequestHandler], specificPo
   with StubWebServer {
 
 
-  def recordedRequests = this.synchronized {
-    requests
+  def recordedRequests: Seq[HttpRequest] = this.synchronized {
+    requests.toSeq
   }
 
   def clearRecordedRequests() = this.synchronized {
@@ -52,7 +52,7 @@ trait AdjustableServerBehaviorSupport extends AdjustableServerBehavior {
   def initialHandlers: Seq[RequestHandler]
 
   def currentHandlers: Seq[RequestHandler] = this.synchronized {
-    localHandlers
+    localHandlers.toSeq
   }
 
   def appendAll(handlers: RequestHandler*) = this.synchronized {

@@ -1,10 +1,7 @@
 package com.wix.e2e.http.api
 
-import com.wix.e2e.http.api.DefaultMarshaller.HttpTestkitBundledMarshallers
 import com.wix.e2e.http.exceptions.MissingMarshallerException
-import org.reflections.Reflections
 
-import scala.collection.JavaConverters._
 import scala.util.control.Exception.handling
 
 trait Marshaller {
@@ -52,14 +49,6 @@ object DefaultMarshaller {
     } catch {
       case _: Exception => None
     }
-}
-
-object ExternalMarshaller {
-  def lookup: Seq[Class[_]] = {
-    new Reflections().getSubTypesOf(classOf[Marshaller]).asScala
-                     .filterNot( c => HttpTestkitBundledMarshallers.contains(c.getName) )
-                     .toSeq
-  }
 }
 
 class NopMarshaller extends Marshaller {
