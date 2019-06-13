@@ -11,20 +11,16 @@ script:
   - sbt "++$TRAVIS_SCALA_VERSION clean" "++$TRAVIS_SCALA_VERSION test"
 
 after_success:
-  # Snapshot publishing via Travis courtesy of Jan Machacek, thanks!
-  # http://www.cakesolutions.net/teamblogs/publishing-artefacts-to-oss-sonatype-nexus-using-sbt-and-travis-ci
-  - '[[ $TRAVIS_BRANCH == "master" ]] && { sbt "++$TRAVIS_SCALA_VERSION publish"; };'
+  - "[[ \"$TRAVIS_REPO_SLUG\" == \"wix/wix-http-testkit\" ]] && [[ \"$TRAVIS_BRANCH\" == \"master\" ]] && { sbt \"++$TRAVIS_SCALA_VERSION publish\"; };"
 
 jdk:
   - oraclejdk8
 
 env:
   global:
-    - secure: X6x/fmQpVWUFKQi2Dz+SZZ4ZJm+qRGTmogNWQjvr8fXoc46FFdkqRXjdGaKqh6mceKSCMVASWhSY+J7LjQHQZSpGhpKlMmrmZv8W7GnuG3AqSQq1c4BANWepZQFcx5I/gbVqS5v/IG4v24KFXX/Cybl47A2Gz3UBL6Ze7D4t3Ll+jyfFkeg8pwUpNyWxDdtdHE51kh0WvRI4B2t3XcYFLmyt+GttDE8SzaampBdYfTJFwJz0nkwyr6xo7WcNI7z8grrbGUiHkCKk3TTb9cSIPFwsrDUSYemytByP5JgtlDm80lEcGry023O5c+F1gfRm4pbzdXusHbSkgVBv7UIyHebKvZ7/XxbXPvOmIOD2zZ4Z55gGJbKowaD8lpu1s+/yhp0GbHux8edZkQL7OmrSIG4h4mOzx/TpPSC4uY2xWomv0/rwo6oioJgXNIj58ZPvDZ27/MT/+yk0Ngpr6yhWkmGcMnsRK3NjTpuOjumvmAsw+Yg0cMRA/hhA1Da6rhOnYUDaVEpB4q1ZmJcRuFS+K1sUaeTOYmHIlnbbmAl9Z59xy39UQ4oMYOcXZM8onyK7gUrR+Tc4cVcm6KWJHj+US7hh7PIQGhqrammKY06+R836ZLDly1SVduDpNcNEPsmS2SQOzDh11bObF799CV0pJriBWa3O0rCu0ARui4VJKE4=
-    - secure: A48o60w1j0ClsqggP4pWkYl8Pef2EPotVR57Yq3ekKpnmxBZpkI1+N2Lxscv4gl5ZC5O8WZyvPZi+o+bIMhkG+MCE0f+uiu0aZ13DCuv2jj8Kwqe7tT4+iUtxOdeWxxbvvK2cBRWQNlYVeNjwnvmWbu7CaPaxzesjtb6NDPZLMRJEKWSc/xqU/HFpoFUoIniIfNJVtg0S+OtkKXgqyvH0DXtrd9B6DgocATXIAZC9YUU0fF/91nWeKpb456wCTM38F4vDB/+oFhiILQwQGWFOF41rUgzAmy87wMtyiI0M/HagWAgT3tiySiSYEPSkgTFD5yKPk9hsllgdEWWmUlgJaI1R878dfm+LIFf2xthECu7rhDXKGsryv/WjJyP89Zn6UJW76Ysb7lOmr1o09nwMHcZCeugymEO//3T7sglpzVYybLHa9oFpN0FlO4Z8ze0nulAMV0q3wxeO+31qOuml4FXAf8fa6HNDxIF5M1Rf/xviitCD0X0RLKZ+g6sHIgfzZWGn36xDgwrrl5n4pFIuYthDSEp6QaeH3womBERdfBklZWBbigtwMk/G7igkKslGwNzKY2F7VCNFtf7iOAOmU8P4SclFpPoiThByblhZgzp3IUm/45798iiMoQrrAB0Ggwr8HbBDUwL6VbUv1Rj9oOYElpNiCcdUhTHOL7g5Zo=
+  - secure: naUSlGUX60zmIJv3+Vevk0+2UppS091KywKn1Dzdc9+cWoX1D2hqbFclRgDaekKrN79UsT/PxUOYCK87Xm9MHAd+jwlAnRxdaSpVKYjButKbZOa+SnLyrv/kKt50rJouOPJ1V1aQ0c4NxCYQrmevQDG/bqOoPucoqUpo/MTizbeQ1mvxz0441RR3it1tBaL6JY4XtH9iJylGqhVVlguH8JLssJrGhUqjQo6yg2Jjg8m17oxbZ5kRlnrxWJKe8X0k5w9QgZIgOLBGZcppSTqE1BmR0U18Flpm+y8NeTpfziEZ39SQv0Yg9fu0mJDi0Q2327X+2fqXIPC2GHVelpLz7d5w1QgPQQMeqJcuMEqe9hO4HeFP+B9Nk6gBfXcWqXklgAc9ipmm/4sGvYMMW1oemmt5pHAoIpVv5R2ubW1coOrKRv3Vacl2uPU1tLp0NL2oI68YM2UYSAmTI2zgpiyJ191QDGMXAqocTBOuNDA68F3CJylZg1emyxcrNzjSdXF7jQqUmJjCbcyyv0OEYE9ORyw1nO++vGBbRs9jUC8ZxDKrfYxJyIk1J8a+idjLAvuNWqshD+QYT/J2tTVjv8XRDwi/OoQDXFCwg0CK7sVYqtQeSn/eN+5oNVlqrhq+0Chl01y+CDKCzGSKSOXmAf9I1nnGA8usr3rUfBrC/EwJGWw=
+  - secure: NLKwnydKd/aXoJAwxvKGS0Jp+4LhZubV7clrqnakEdzYBXox+d8GiEp1ev5za7weo4Z2hH+CZcbJY7/JcPpNNIsLayBDyaTQso5HrUxBj5GEc1GNF0BTS547boDMGqzrtayxFQ1sztnYbdh0mk+sM7Dba28r/ZDOMDiWKyM+PUbT8mXmOWmN2nNyw88bpGSB3DWKj5Pv4t3tBEKgWfpgN8365xNfvbQfu8t8KEGvb0IsMdlUwuUyAqK7S+WQLWxjk2VeI9sfbsCF9ICs3nbN7OZnQ3VKqnHFK1BDnNag+eBGSqSpGwxoN4M9kTCkofVXixC7ymtbEQSzM03xSNQIWa2JHq3qUZxUwEe+3nm9Pyi4s1PkZKhyal2+DFH6H3byQQOYuArYee8N9KeJKeHLe9to539XYI/HLA/rGdD41PwLnXV8IytT3Lt3AFqQ66W2UtN2fikpN99PbmcIciAlvOxEAI+cY6jZtDI+QbAwDBez+5IidDsSdvKwW3PNLSLDNv1WYdVDvyBJA/c4R9rM8BsWG77JA0dCMntO7pt3jN/j7qXFzAyU74BzNrVlpZsPoMTxgYqQRPhW+XapN0XFjM0bVwn2G4J0WDBY103vzAUY0pxebrrzPu85k+JsVHvoOkTHdrocmYHRTut2YA+m611Kv1u/8ArnhMHfOnyE9ME=
 
-# Cache bootstrap and dependency files for (hopefully) faster builds, per recommendation in
-# http://www.scala-sbt.org/0.13/docs/Travis-CI-with-sbt.html
 cache:
   directories:
     - "$HOME/.ivy2/cache"
