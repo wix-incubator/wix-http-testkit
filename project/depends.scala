@@ -14,7 +14,7 @@ object depends {
         "org.specs2" %% "specs2-mock" % Specs2Version )
   val specs2Test = specs2.map(_ % Test)
 
-  val scalaTest = "org.scalatest" %% "scalatest" % "3.1.0-SNAP12"
+  val scalaTest = "org.scalatest" %% "scalatest" % "3.0.8"
 
   val akkaHttp =
     Seq("com.typesafe.akka" %% "akka-http" % AkkaHttpVersion,
