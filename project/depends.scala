@@ -2,10 +2,10 @@ import sbt._
 
 object depends {
 
-  private val JacksonVersion = "2.9.9"
-  private val AkkaHttpVersion = "10.1.9"
-  private val AkkaVersion = "2.5.23"
-  private val Specs2Version = "4.7.0"
+  private val JacksonVersion = "2.10.0"
+  private val AkkaHttpVersion = "10.1.10"
+  private val AkkaVersion = "2.5.26"
+  private val Specs2Version = "4.8.0"
 
   val specs2 =
     Seq("org.specs2" %% "specs2-core" % Specs2Version,
@@ -24,14 +24,14 @@ object depends {
   val jackson = jacksonFor(JacksonVersion)
   
   private def jacksonFor(version: String) =
-    Seq("com.fasterxml.jackson.core" % "jackson-databind" % s"$version.3",
+    Seq("com.fasterxml.jackson.core" % "jackson-databind" % version,
         "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % version,
         "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % version,
         "com.fasterxml.jackson.module" % "jackson-module-parameter-names" % version,
         "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % version,
         "com.fasterxml.jackson.module" %% "jackson-module-scala" % version ) 
 
-  val joda = Seq("joda-time" % "joda-time" % "2.10.3",
+  val joda = Seq("joda-time" % "joda-time" % "2.10.4",
                  "org.joda" % "joda-convert" % "2.2.1" )
 
   val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.2.0"
