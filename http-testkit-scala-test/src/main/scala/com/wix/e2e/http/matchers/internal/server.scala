@@ -9,7 +9,7 @@ import com.wix.e2e.http.api.{Marshaller, RequestRecordSupport}
 import com.wix.e2e.http.exceptions.{MarshallerErrorException, MissingMarshallerException}
 import com.wix.e2e.http.matchers.RequestMatcher
 import com.wix.e2e.http.utils._
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest.matchers.{MatchResult, Matcher}
 
 import scala.util.control.Exception._

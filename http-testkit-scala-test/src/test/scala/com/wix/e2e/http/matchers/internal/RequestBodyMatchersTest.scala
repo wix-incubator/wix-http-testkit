@@ -5,11 +5,11 @@ import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
 import com.wix.e2e.http.matchers.drivers.{CustomMarshallerProvider, HttpMessageTestSupport, MarshallerTestSupport, MatchersTestSupport}
-import org.scalatest.Matchers._
-import org.scalatest._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.wordspec.AnyWordSpec
 
 
-class RequestBodyMatchersTest extends WordSpec with MatchersTestSupport {
+class RequestBodyMatchersTest extends AnyWordSpec with MatchersTestSupport {
 
   trait ctx extends HttpMessageTestSupport with MarshallerTestSupport with CustomMarshallerProvider
 

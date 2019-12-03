@@ -1,7 +1,7 @@
 package com.wix.e2e.http.matchers.drivers
 
 import akka.http.scaladsl.model.headers.HttpCookiePair
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest.matchers.{MatchResult, Matcher}
 
 trait MatchersTestSupport {

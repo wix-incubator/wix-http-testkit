@@ -6,11 +6,11 @@ import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
 import com.wix.e2e.http.matchers.drivers.HttpResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
 import com.wix.e2e.http.matchers.drivers.{HttpMessageTestSupport, MatchersTestSupport}
-import org.scalatest.Matchers._
-import org.scalatest._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.wordspec.AnyWordSpec
 
 
-class ResponseBodyAndStatusMatchersTest extends WordSpec with MatchersTestSupport {
+class ResponseBodyAndStatusMatchersTest extends AnyWordSpec with MatchersTestSupport {
 
   trait ctx extends HttpMessageTestSupport
 

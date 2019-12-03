@@ -2,12 +2,12 @@ package com.wix.e2e.http.matchers.internal
 
 import akka.http.scaladsl.model.StatusCodes._
 import com.wix.e2e.http.matchers.ResponseMatchers._
-import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
 import com.wix.e2e.http.matchers.drivers.HttpMessageTestSupport
-import org.scalatest.Matchers._
-import org.scalatest.WordSpec
+import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.wordspec.AnyWordSpec
 
-class ResponseStatusMatchersTest extends WordSpec {
+class ResponseStatusMatchersTest extends AnyWordSpec {
 
   trait ctx extends HttpMessageTestSupport
 

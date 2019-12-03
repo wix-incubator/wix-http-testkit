@@ -4,7 +4,7 @@ object depends {
 
   private val JacksonVersion = "2.10.0"
   private val AkkaHttpVersion = "10.1.10"
-  private val AkkaVersion = "2.5.26"
+  private val AkkaVersion = "2.6.0"
   private val Specs2Version = "4.8.0"
 
   val specs2 =
@@ -14,7 +14,7 @@ object depends {
         "org.specs2" %% "specs2-mock" % Specs2Version )
   val specs2Test = specs2.map(_ % Test)
 
-  val scalaTest = "org.scalatest" %% "scalatest" % "3.0.8"
+  val scalaTest = "org.scalatest" %% "scalatest" % "3.1.0"
 
   val akkaHttp =
     Seq("com.typesafe.akka" %% "akka-http" % AkkaHttpVersion,

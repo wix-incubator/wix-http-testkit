@@ -4,10 +4,10 @@ import akka.http.scaladsl.model.ContentTypes._
 import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpRequestFactory._
 import com.wix.e2e.http.matchers.drivers.{HttpMessageTestSupport, MatchersTestSupport}
-import org.scalatest.Matchers._
-import org.scalatest.WordSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.wordspec.AnyWordSpec
 
-class RequestContentTypeMatchersTest extends WordSpec with MatchersTestSupport {
+class RequestContentTypeMatchersTest extends AnyWordSpec with MatchersTestSupport {
 
   trait ctx extends HttpMessageTestSupport
 

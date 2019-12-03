@@ -9,8 +9,8 @@ import akka.http.scaladsl.model.headers._
 import akka.stream.scaladsl.Source
 import com.wix.e2e.http.matchers.drivers.MarshallingTestObjects.SomeCaseClass
 import com.wix.test.random._
-import org.scalatest.Matchers._
 import org.scalatest.matchers.Matcher
+import org.scalatest.matchers.should.Matchers._
 
 import scala.collection.immutable
 import scala.util.Random

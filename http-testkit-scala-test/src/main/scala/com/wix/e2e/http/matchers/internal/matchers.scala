@@ -10,7 +10,7 @@ import com.wix.e2e.http.exceptions.{MarshallerErrorException, MissingMarshallerE
 import com.wix.e2e.http.matchers.ResponseMatcher
 import com.wix.e2e.http.utils._
 import com.wix.e2e.http.{HttpResponse, WixHttpTestkitResources}
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest.matchers.{MatchResult, Matcher}
 
 import scala.util.control.Exception.handling

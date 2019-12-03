@@ -4,11 +4,11 @@ import com.wix.e2e.http.matchers.RequestMatchers._
 import com.wix.e2e.http.matchers.drivers.CommonTestMatchers._
 import com.wix.e2e.http.matchers.drivers.RequestRecorderFactory._
 import com.wix.e2e.http.matchers.drivers.{MatchersTestSupport, RequestRecordTestSupport}
-import org.scalatest.Matchers._
-import org.scalatest.WordSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.wordspec.AnyWordSpec
 
 
-class RequestRecorderMatchersTest extends WordSpec with MatchersTestSupport {
+class RequestRecorderMatchersTest extends AnyWordSpec with MatchersTestSupport {
 
   trait ctx extends RequestRecordTestSupport
 

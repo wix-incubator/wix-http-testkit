@@ -5,11 +5,11 @@ import akka.http.scaladsl.model.TransferEncodings._
 import com.wix.e2e.http.matchers.ResponseMatchers._
 import com.wix.e2e.http.matchers.drivers.HttpResponseFactory._
 import com.wix.e2e.http.matchers.drivers.{HttpMessageTestSupport, MatchersTestSupport}
-import org.scalatest.Matchers._
-import org.scalatest.WordSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.wordspec.AnyWordSpec
 
 
-class ResponseTransferEncodingMatchersTest extends WordSpec with MatchersTestSupport {
+class ResponseTransferEncodingMatchersTest extends AnyWordSpec with MatchersTestSupport {
 
   trait ctx extends HttpMessageTestSupport
 
