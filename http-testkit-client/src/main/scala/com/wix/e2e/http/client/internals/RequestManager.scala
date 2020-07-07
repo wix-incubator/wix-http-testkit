@@ -12,6 +12,7 @@ import com.wix.e2e.http.utils._
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.util.control.NonFatal
 
 
 trait RequestManager[R] {
@@ -60,7 +61,15 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
 class BlockingRequestManager(request: HttpRequest) extends RequestManager[HttpResponse] {
 
   def apply(path: String, but: RequestTransformer, withTimeout: FiniteDuration)(implicit baseUri: BaseUri): HttpResponse =
-    waitFor(nonBlockingRequestManager(path, but, withTimeout))(withTimeout + 1.second)
+    try
+      waitFor(nonBlockingRequestManager(path, but, withTimeout))(withTimeout + 1.second)
+    catch {
+      // Akka exceptions don't have a stacktrace, but we can do better in the blocking client
+      case NonFatal(e) => throw new HttpRequestFailed(path, e)
+    }
 
   private val nonBlockingRequestManager = new NonBlockingRequestManager(request)
 }
+
+class HttpRequestFailed(path: String, cause: Throwable) extends
+  RuntimeException(s"HTTP request to $path failed with ${cause.getClass.getName}: ${cause.getMessage}", cause)
