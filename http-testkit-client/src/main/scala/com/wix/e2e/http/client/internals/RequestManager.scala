@@ -63,13 +63,26 @@ class BlockingRequestManager(request: HttpRequest) extends RequestManager[HttpRe
   def apply(path: String, but: RequestTransformer, withTimeout: FiniteDuration)(implicit baseUri: BaseUri): HttpResponse =
     try
       waitFor(nonBlockingRequestManager(path, but, withTimeout))(withTimeout + 1.second)
-    catch {
-      // Akka exceptions don't have a stacktrace, but we can do better in the blocking client
-      case NonFatal(e) => throw new HttpRequestFailed(path, e)
-    }
+    catch BlockingRequestManager.handleException
 
   private val nonBlockingRequestManager = new NonBlockingRequestManager(request)
 }
 
-class HttpRequestFailed(path: String, cause: Throwable) extends
-  RuntimeException(s"HTTP request to $path failed with ${cause.getClass.getName}: ${cause.getMessage}", cause)
+object BlockingRequestManager {
+  private [internals] val transformException: PartialFunction[Throwable, Throwable] = {
+    case NonFatal(e) =>
+      if(e.getStackTrace.nonEmpty) {
+        e.addSuppressed(new OriginalExceptionStack(e.getStackTrace))
+      }
+      val currentStackTrace = Thread.currentThread().getStackTrace
+      e.setStackTrace(currentStackTrace)
+      e
+  }
+
+  private [internals] val handleException = transformException.andThen(throw _)
+
+  class OriginalExceptionStack(stackTrace: Array[StackTraceElement]) extends RuntimeException {
+    this.setStackTrace(stackTrace)
+  }
+}
+
