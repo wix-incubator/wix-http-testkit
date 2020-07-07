@@ -5,6 +5,7 @@ import java.lang.reflect.{ParameterizedType, Type}
 import com.fasterxml.jackson.core.`type`.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS
+import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.joda.JodaModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -19,11 +20,12 @@ class JsonJacksonMarshaller extends Marshaller {
 
   def configure: ObjectMapper = objectMapper
 
-  private val objectMapper = new ObjectMapper()
-                                    .registerModule(new Jdk8Module().configureAbsentsAsNulls(true))
-                                    .registerModules(new JodaModule, new ParameterNamesModule, new JavaTimeModule) // time modules
-                                    .registerModule(new DefaultScalaModule)
-                                    .disable( WRITE_DATES_AS_TIMESTAMPS )
+  private val objectMapper = JsonMapper.builder
+                                       .addModule(new Jdk8Module().configureAbsentsAsNulls(true))
+                                       .addModules(new JodaModule, new ParameterNamesModule, new JavaTimeModule)
+                                       .addModule(new DefaultScalaModule)
+                                       .disable( WRITE_DATES_AS_TIMESTAMPS )
+                                       .build()
 
   private def typeReference[T: Manifest] = new TypeReference[T] {
     override def getType = typeFromManifest(manifest[T])

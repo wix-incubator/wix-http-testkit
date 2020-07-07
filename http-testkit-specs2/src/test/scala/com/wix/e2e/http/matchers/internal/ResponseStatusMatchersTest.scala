@@ -20,7 +20,7 @@ class ResponseStatusMatchersTest extends Spec {
           Found -> beRedirect, MovedPermanently -> bePermanentlyRedirect, //3xx
 
           // 4xx
-          Forbidden -> beRejected, NotFound -> beNotFound, BadRequest -> beInvalid, RequestEntityTooLarge -> beRejectedTooLarge,
+          Forbidden -> beRejected, NotFound -> beNotFound, BadRequest -> beInvalid, PayloadTooLarge -> beRejectedTooLarge,
           Unauthorized -> beUnauthorized, MethodNotAllowed -> beNotSupported, Conflict -> beConflict, PreconditionFailed -> bePreconditionFailed,
           UnprocessableEntity -> beUnprocessableEntity, PreconditionRequired -> bePreconditionRequired, TooManyRequests -> beTooManyRequests,
 

@@ -2,10 +2,10 @@ import sbt._
 
 object depends {
 
-  private val JacksonVersion = "2.10.1"
-  private val AkkaHttpVersion = "10.1.10"
-  private val AkkaVersion = "2.6.0"
-  private val Specs2Version = "4.8.1"
+  private val JacksonVersion = "2.11.1"
+  private val AkkaHttpVersion = "10.1.12"
+  private val AkkaVersion = "2.6.6"
+  private val Specs2Version = "4.10.0"
 
   val specs2 =
     Seq("org.specs2" %% "specs2-core" % Specs2Version,
@@ -14,7 +14,7 @@ object depends {
         "org.specs2" %% "specs2-mock" % Specs2Version )
   val specs2Test = specs2.map(_ % Test)
 
-  val scalaTest = "org.scalatest" %% "scalatest" % "3.1.0"
+  val scalaTest = "org.scalatest" %% "scalatest" % "3.2.0"
 
   val akkaHttp =
     Seq("com.typesafe.akka" %% "akka-http" % AkkaHttpVersion,
@@ -31,14 +31,14 @@ object depends {
         "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % version,
         "com.fasterxml.jackson.module" %% "jackson-module-scala" % version ) 
 
-  val joda = Seq("joda-time" % "joda-time" % "2.10.5",
+  val joda = Seq("joda-time" % "joda-time" % "2.10.6",
                  "org.joda" % "joda-convert" % "2.2.1" )
 
-  val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.2.0"
+  val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.3.0"
 
-  val reflections = "org.reflections" % "reflections" % "0.9.11"
+  val reflections = "org.reflections" % "reflections" % "0.9.12"
 
   val jsr305 = "com.google.code.findbugs" % "jsr305" % "3.0.2"
 
-  val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.29"
+  val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.30"
 }
