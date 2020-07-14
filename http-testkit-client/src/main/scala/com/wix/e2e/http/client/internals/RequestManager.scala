@@ -48,9 +48,12 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
   private def settingsWith(timeout: FiniteDuration) = {
     val settings = ConnectionPoolSettings(WixHttpTestkitResources.system)
     settings.withConnectionSettings( settings.connectionSettings
-                                             .withConnectingTimeout(timeout)
                                              .withIdleTimeout(timeout)
-                                             .withUserAgentHeader(Some(`User-Agent`(ProductVersion("client-http-testkit", HttpTestkitVersion)))) )
+                                             .withUserAgentHeader(Some(`User-Agent`(ProductVersion("client-http-testkit", HttpTestkitVersion))))
+                                             .withConnectingTimeout(timeout)
+                                             .withParserSettings( settings.connectionSettings
+                                                                          .parserSettings //maxHeaderValueLength
+                                                                          .withMaxHeaderValueLength(32 * 1024) ) )
             .withMaxConnections(32)
             .withPipeliningLimit(4)
             .withMaxRetries(0)

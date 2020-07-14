@@ -21,6 +21,7 @@ class ResponseStatusMatchersTest extends AnyWordSpec {
           Forbidden -> beRejected, NotFound -> beNotFound, BadRequest -> beInvalid, PayloadTooLarge -> beRejectedTooLarge,
           Unauthorized -> beUnauthorized, MethodNotAllowed -> beNotSupported, Conflict -> beConflict, PreconditionFailed -> bePreconditionFailed,
           UnprocessableEntity -> beUnprocessableEntity, PreconditionRequired -> bePreconditionRequired, TooManyRequests -> beTooManyRequests,
+          RequestHeaderFieldsTooLarge -> beRejectedRequestTooLarge,
 
           ServiceUnavailable -> beUnavailable, InternalServerError -> beInternalServerError, NotImplemented -> beNotImplemented // 5xx
          ).foreach { case (status, matcherForStatus) =>

@@ -191,5 +191,12 @@ class BlockingHttpClientContractTest extends Spec {
 
       get(path)(server.baseUri) must ResponseMatchers.haveTransferEncodings("compress")
     }
+
+    "header size is 32k" in new ctx {
+      get("/somePath", withHeader(thirtyTwoKHeader)) must ResponseMatchers.beSuccessful
+
+      get("/somePath", withHeader(thirtyTwoKHeaderPlus)) must ResponseMatchers.beRejectedRequestTooLarge
+    }
+
   }
 }

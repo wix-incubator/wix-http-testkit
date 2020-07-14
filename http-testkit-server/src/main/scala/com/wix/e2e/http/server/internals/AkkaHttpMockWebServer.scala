@@ -47,7 +47,11 @@ abstract class AkkaHttpMockWebServer(specificPort: Option[Int], val initialHandl
   private var serverBinding: Option[ServerBinding] = None
   private val AllocateDynamicPort = 0
   private val TransformToStrictAndHandle: HttpRequest => Future[HttpResponse] = _.toStrict(1.minutes).map( serverBehavior )
-  private def customSettings =
-    ServerSettings(system).withTransparentHeadRequests(false)
-                          .withServerHeader( Some(Server(ProductVersion("server-http-testkit", HttpTestkitVersion))) )
+  private def customSettings = {
+    val settings = ServerSettings(system)
+    settings.withTransparentHeadRequests(false)
+            .withParserSettings( settings.parserSettings
+                                         .withMaxHeaderValueLength(32 * 1024) )
+            .withServerHeader( Some(Server(ProductVersion("server-http-testkit", HttpTestkitVersion))) )
+  }
 }

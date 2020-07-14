@@ -36,6 +36,7 @@ trait ResponseStatusMatchers {
   def beNotFound: ResponseMatcher = haveStatus(NotFound)
   def beInvalid: ResponseMatcher = haveStatus(BadRequest)
   def beRejectedTooLarge: ResponseMatcher = haveStatus(PayloadTooLarge)
+  def beRejectedRequestTooLarge: ResponseMatcher = haveStatus(RequestHeaderFieldsTooLarge)
   def beUnauthorized: ResponseMatcher = haveStatus(Unauthorized)
   def beNotSupported: ResponseMatcher = haveStatus(MethodNotAllowed)
   def beConflict: ResponseMatcher = haveStatus(Conflict)

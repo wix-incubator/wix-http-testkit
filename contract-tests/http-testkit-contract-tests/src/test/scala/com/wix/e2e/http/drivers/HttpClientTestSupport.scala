@@ -32,6 +32,9 @@ trait HttpClientTestSupport {
 
   val requestData = ListBuffer.empty[String]
 
+  val thirtyTwoKHeader = "h" -> Seq.fill(32 * 1024)('a').mkString
+  val thirtyTwoKHeaderPlus = "h" -> Seq.fill(32 * 1024 + 1)('a').mkString
+
 
   val bigResponse = 1024 * 1024
 
