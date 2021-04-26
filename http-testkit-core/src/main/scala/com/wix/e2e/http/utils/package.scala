@@ -6,7 +6,7 @@ import scala.util.Try
 
 package object utils {
 
-  val DefaultTimeout: FiniteDuration = Option(System.getProperty("com.wix.e2e.http.util.DefaultTimeout"))
+  val DefaultTimeout: FiniteDuration = Option(System.getProperty("com.wix.e2e.http.utils.DefaultTimeout"))
     .flatMap(timeoutStr => Try { FiniteDuration(timeoutStr.toLong, SECONDS) }.toOption)
     .getOrElse(5.seconds)
 
