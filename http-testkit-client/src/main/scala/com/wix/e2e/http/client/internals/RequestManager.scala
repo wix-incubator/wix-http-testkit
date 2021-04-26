@@ -15,7 +15,7 @@ import scala.concurrent.duration._
 
 
 trait RequestManager[R] {
-  def apply(path: String, but: RequestTransformer = identity, withTimeout: FiniteDuration = DefaultDuration)(implicit baseUri: BaseUri): R
+  def apply(path: String, but: RequestTransformer = identity, withTimeout: FiniteDuration = DefaultTimeout)(implicit baseUri: BaseUri): R
 }
 
 class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Future[HttpResponse]] {
