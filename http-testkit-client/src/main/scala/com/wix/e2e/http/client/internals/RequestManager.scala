@@ -6,6 +6,7 @@ import akka.http.scaladsl.model.headers.{ProductVersion, `Transfer-Encoding`, `U
 import akka.http.scaladsl.settings.ConnectionPoolSettings
 import akka.stream.StreamTcpException
 import com.wix.e2e.http._
+import com.wix.e2e.http.config.Config.DefaultTimeout
 import com.wix.e2e.http.exceptions.ConnectionRefusedException
 import com.wix.e2e.http.info.HttpTestkitVersion
 import com.wix.e2e.http.utils._

@@ -4,6 +4,7 @@ import akka.http.scaladsl.model.{HttpEntity, HttpMessage}
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import com.wix.e2e.http.WixHttpTestkitResources
 import com.wix.e2e.http.api.Marshaller
+import com.wix.e2e.http.config.Config.DefaultTimeout
 import com.wix.e2e.http.utils._
 
 import scala.concurrent.duration._
