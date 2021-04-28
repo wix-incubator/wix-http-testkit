@@ -33,7 +33,7 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
   }
 
   private def composeUrlFor(baseUri: BaseUri, path: String): RequestTransformer =
-    _.copy(uri = baseUri.asUriWith(path) )
+    _.withUri(uri = baseUri.asUriWith(path) )
 
   private def recreateTransferEncodingHeader(r: HttpResponse) =
     if ( !r.entity.isChunked ) r

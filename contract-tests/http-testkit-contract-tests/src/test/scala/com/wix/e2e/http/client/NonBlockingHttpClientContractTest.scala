@@ -189,11 +189,11 @@ class NonBlockingHttpClientContractTest extends Spec with NonBlockingHttpClientS
       get(path)(server.baseUri) must ResponseMatchers.beChunkedResponse.await
     }
 
-    "properly detect other transfer encoding responses" in new ctx {
-      server.appendAll(alwaysRespondWith(TransferEncodings.compress, path))
-
-      get(path)(server.baseUri) must ResponseMatchers.haveTransferEncodings("compress").await
-    }
+//    "properly detect other transfer encoding responses" in new ctx {
+//      server.appendAll(alwaysRespondWith(TransferEncodings.compress, path))
+//
+//      get(path)(server.baseUri) must ResponseMatchers.haveTransferEncodings("compress").await
+//    }
 
   }
 }

@@ -109,24 +109,24 @@ object HttpResponseFactory {
   def aResponseWithNoHeaders = aResponseWithHeaders()
   def aResponseWithHeaders(headers: (String, String)*) = HttpResponse(headers = immutable.Seq( headers.map{ case (k, v) => RawHeader(k, v) }:_* ) )
 
-  def aSuccessfulResponseWith(body: String) = aResponseWith(body).copy(status = OK)
-  def aSuccessfulResponseWith(binaryBody: Array[Byte]) = aResponseWith(binaryBody).copy(status = OK)
-  def aSuccessfulResponseWith(headers: (String, String)*) = aResponseWithHeaders(headers:_*).copy(status = OK)
-  def aSuccessfulResponseWithCookies(cookies: HttpCookie*) = aResponseWithCookies(cookies:_*).copy(status = OK)
+  def aSuccessfulResponseWith(body: String) = aResponseWith(body).withStatus(OK)
+  def aSuccessfulResponseWith(binaryBody: Array[Byte]) = aResponseWith(binaryBody).withStatus(OK)
+  def aSuccessfulResponseWith(headers: (String, String)*) = aResponseWithHeaders(headers:_*).withStatus(OK)
+  def aSuccessfulResponseWithCookies(cookies: HttpCookie*) = aResponseWithCookies(cookies:_*).withStatus(OK)
 
   def aResponseWith(status: StatusCode) = HttpResponse(status)
 
   def aRedirectResponseTo(url: String) = HttpResponse(status = Found, headers = immutable.Seq( Location(Uri(url)) ) )
   def aRedirectResponseWithoutLocationHeader = aRedirectResponseTo("http://example.com").removeHeader("Location")
-  def aPermanentlyRedirectResponseTo(url: String) = aRedirectResponseTo(url).copy(status = MovedPermanently)
-  def aPermanentlyRedirectResponseWithoutLocationHeader = aRedirectResponseWithoutLocationHeader.copy(status = MovedPermanently)
+  def aPermanentlyRedirectResponseTo(url: String) = aRedirectResponseTo(url).withStatus(MovedPermanently)
+  def aPermanentlyRedirectResponseWithoutLocationHeader = aRedirectResponseWithoutLocationHeader.withStatus(MovedPermanently)
 
   def aResponseWith(body: String) = HttpResponse(entity = body)
   def aResponseWith(binaryBody: Array[Byte]) = HttpResponse(entity = binaryBody)
   def aResponseWithoutBody = HttpResponse()
   def aResponseWithContentType(contentType: String) = {
     val r = aResponseWithoutBody
-    aResponseWithoutBody.copy(entity = r.entity.withContentType(ContentType.parse(contentType) match {
+    aResponseWithoutBody.withEntity(entity = r.entity.withContentType(ContentType.parse(contentType) match {
       case Right(c) => c
       case Left(_) => throw new IllegalArgumentException(contentType)
     }))
@@ -151,7 +151,7 @@ object HttpResponseFactory {
                                                                                             Source(immutable.Iterable.newBuilder.result()))))
                                    .toEntity)
 
-  def anInvalidResponseWith(body: String) = aResponseWith(body).copy(status = BadRequest)
+  def anInvalidResponseWith(body: String) = aResponseWith(body).withStatus(BadRequest)
 }
 
 object HttpResponseMatchers {

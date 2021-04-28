@@ -252,7 +252,7 @@ trait ResponseContentTypeMatchers {
         case (a, _) if a == NoContentType => MatchResult(matches = false, "Request body does not have a set content type", "not-ok")
         case (_, Left(_)) => MatchResult(matches = false, s"Cannot match against a malformed content type: $contentType", "not-ok")
         case (a, Right(e)) if a == e => MatchResult(matches = true, "ok", "not-ok")
-        case (a, Right(e)) if a != e => MatchResult(matches = false, s"Expected content type [$e] does not match actual content type [$a]", "not-ok")
+        case (a, Right(e)) => MatchResult(matches = false, s"Expected content type [$e] does not match actual content type [$a]", "not-ok")
       }
     }
   }
@@ -268,7 +268,7 @@ trait ResponseContentLengthMatchers {
 
       (actual, expected) match {
         case (Some(a), Some(e)) if a == e => MatchResult(matches = true, "ok", "not-ok")
-        case (Some(a), Some(e)) if a != e => MatchResult(matches = false, s"Expected content length [$e] does not match actual content length [$a]", "not-ok")
+        case (Some(a), Some(e)) /*if a != e*/ => MatchResult(matches = false, s"Expected content length [$e] does not match actual content length [$a]", "not-ok")
         case (None, Some(e)) => MatchResult(matches = false, s"Expected content length [$e] but response did not contain `content-length` header.", "not-ok")
         case (Some(a), None) => MatchResult(matches = false, s"Expected no `content-length` header but response did contain `content-length` header with size [$a].", "not-ok")
         case (None, None) => MatchResult(matches = true, "ok", "not-ok")

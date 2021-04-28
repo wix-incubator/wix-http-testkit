@@ -2,10 +2,10 @@ import sbt._
 
 object depends {
 
-  private val JacksonVersion = "2.11.1"
-  private val AkkaHttpVersion = "10.1.12"
-  private val AkkaVersion = "2.6.6"
-  private val Specs2Version = "4.10.0"
+  private val JacksonVersion = "2.12.3"
+  private val AkkaHttpVersion = "10.2.4"
+  private val AkkaVersion = "2.6.14"
+  private val Specs2Version = "4.11.0"
 
   val specs2 =
     Seq("org.specs2" %% "specs2-core" % Specs2Version,
@@ -14,7 +14,7 @@ object depends {
         "org.specs2" %% "specs2-mock" % Specs2Version )
   val specs2Test = specs2.map(_ % Test)
 
-  val scalaTest = "org.scalatest" %% "scalatest" % "3.2.0"
+  val scalaTest = "org.scalatest" %% "scalatest" % "3.2.8"
 
   val akkaHttp =
     Seq("com.typesafe.akka" %% "akka-http" % AkkaHttpVersion,
@@ -31,7 +31,7 @@ object depends {
         "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % version,
         "com.fasterxml.jackson.module" %% "jackson-module-scala" % version ) 
 
-  val joda = Seq("joda-time" % "joda-time" % "2.10.6",
+  val joda = Seq("joda-time" % "joda-time" % "2.10.10",
                  "org.joda" % "joda-convert" % "2.2.1" )
 
   val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.3.0"

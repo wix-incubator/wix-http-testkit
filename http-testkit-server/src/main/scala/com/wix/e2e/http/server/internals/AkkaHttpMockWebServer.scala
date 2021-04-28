@@ -22,10 +22,10 @@ abstract class AkkaHttpMockWebServer(specificPort: Option[Int], val initialHandl
   protected def serverBehavior: RequestHandler
 
   def start() = this.synchronized {
-    val s = waitFor( Http().bindAndHandleAsync(handler = TransformToStrictAndHandle,
-                                               interface = "localhost",
-                                               settings = customSettings,
-                                               port = specificPort.getOrElse( AllocateDynamicPort )) )
+    val s = waitFor( Http().newServerAt("localhost",
+                                        port = specificPort.getOrElse( AllocateDynamicPort ))
+                           .withSettings( customSettings )
+                           .bind(TransformToStrictAndHandle) )
     serverBinding = Option(s)
     println(s"Web server started on port: ${baseUri.port}.")
     this

@@ -16,13 +16,13 @@ class ResponseStatusAndHeaderMatchersTest extends AnyWordSpec with MatchersTestS
     "match against a response that is temporarily redirected to url" in new ctx {
       aRedirectResponseTo(url) should beRedirectedTo(url)
       aRedirectResponseTo(url) should not( beRedirectedTo(anotherUrl) )
-      aRedirectResponseTo(url).copy(status = randomStatusThatIsNot(Found)) should not( beRedirectedTo(url) )
+      aRedirectResponseTo(url).withStatus(randomStatusThatIsNot(Found)) should not( beRedirectedTo(url) )
     }
 
     "match against a response that is permanently redirected to url" in new ctx {
       aPermanentlyRedirectResponseTo(url) should bePermanentlyRedirectedTo(url)
       aPermanentlyRedirectResponseTo(url) should not( bePermanentlyRedirectedTo(anotherUrl) )
-      aPermanentlyRedirectResponseTo(url).copy(status = randomStatusThatIsNot(MovedPermanently)) should not( bePermanentlyRedirectedTo(url) )
+      aPermanentlyRedirectResponseTo(url).withStatus(randomStatusThatIsNot(MovedPermanently)) should not( bePermanentlyRedirectedTo(url) )
     }
 
     "match against url params even if params has a different order" in new ctx {

@@ -26,8 +26,8 @@ lazy val publishSettings = Seq(
 )
 
 lazy val compileOptions = Seq(
-  scalaVersion := "2.13.3",
-  crossScalaVersions := Seq("2.12.11", "2.13.3"),
+  scalaVersion := "2.13.5",
+  crossScalaVersions := Seq("2.12.13", "2.13.5"),
   scalacOptions ++= compilerFlagsFor(scalaVersion.value),
 )
 

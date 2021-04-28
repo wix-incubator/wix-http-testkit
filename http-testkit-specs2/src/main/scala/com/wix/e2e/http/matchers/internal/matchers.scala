@@ -264,7 +264,7 @@ trait ResponseContentTypeMatchers {
         case (a, _) if a == NoContentType => failure("Response body does not have a set content type", t)
         case (_, Left(_)) => failure(s"Cannot match against a malformed content type: $contentType", t)
         case (a, Right(e)) if a == e => success("ok", t)
-        case (a, Right(e)) if a != e => failure(s"Expected content type [$e] does not match actual content type [$a]", t)
+        case (a, Right(e)) /*if a != e*/ => failure(s"Expected content type [$e] does not match actual content type [$a]", t)
       }
     }
   }
@@ -281,7 +281,7 @@ trait ResponseContentLengthMatchers {
 
       (actual, expected) match {
         case (Some(a), Some(e)) if a == e => success("ok", t)
-        case (Some(a), Some(e)) if a != e => failure(s"Expected content length [$e] does not match actual content length [$a]", t)
+        case (Some(a), Some(e)) /*if a != e*/ => failure(s"Expected content length [$e] does not match actual content length [$a]", t)
         case (None, Some(e)) => failure(s"Expected content length [$e] but response did not contain `content-length` header.", t)
         case (Some(a), None) => failure(s"Expected no `content-length` header but response did contain `content-length` header with size [$a].", t)
         case (None, None) => success("ok", t)

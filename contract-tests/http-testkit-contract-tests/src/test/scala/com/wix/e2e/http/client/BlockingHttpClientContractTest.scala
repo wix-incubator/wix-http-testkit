@@ -186,12 +186,6 @@ class BlockingHttpClientContractTest extends Spec {
       get(path)(server.baseUri) must ResponseMatchers.beChunkedResponse
     }
 
-    "properly detect other transfer encoding responses" in new ctx {
-      server.appendAll(alwaysRespondWith(TransferEncodings.compress, path))
-
-      get(path)(server.baseUri) must ResponseMatchers.haveTransferEncodings("compress")
-    }
-
     "header size is 32k" in new ctx {
       get("/somePath", withHeader(thirtyTwoKHeader)) must ResponseMatchers.beSuccessful
 

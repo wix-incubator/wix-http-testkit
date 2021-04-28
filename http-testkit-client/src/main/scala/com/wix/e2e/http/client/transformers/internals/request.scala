@@ -17,8 +17,8 @@ import scala.xml.Node
 trait HttpClientRequestUrlTransformers {
   def withParam(param: (String, String)): RequestTransformer = withParams(param)
   def withParams(params: (String, String)*): RequestTransformer = r =>
-    r.copy(uri = r.uri
-                  .withQuery( Query(currentParams(r) ++ params: _*)) )
+    r.withUri(uri = r.uri
+                     .withQuery( Query(currentParams(r) ++ params: _*)) )
 
   private def currentParams(r: HttpRequest): Seq[(String, String)] =
     r.uri.rawQueryString
@@ -63,7 +63,7 @@ trait HttpClientRequestBodyTransformers extends HttpClientContentTypes {
     }:_*)
       .toEntity)
 
-  private def setBody(entity: RequestEntity): RequestTransformer = _.copy(entity = entity)
+  private def setBody(entity: RequestEntity): RequestTransformer = _.withEntity(entity = entity)
 }
 
 object RequestPartOps {
