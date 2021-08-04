@@ -98,6 +98,11 @@ class HttpClientTransformersTest extends Spec with HttpClientTransformers {
       withPayload(<element attribute="value"/>)(request) must haveBodyWith("""<element attribute="value"/>""")
     }
 
+    "add path as payload" in new ctx {
+      val f = givenFileWith(someBytes)
+      withPayload(f, ContentTypes.`application/octet-stream`)(request) must haveBodyWith(someBytes)
+    }
+
     "add form url encoded payload" in new ctx {
       withFormData(keyValue1, "escaped-characters" -> escapedCharacters)(request) must
         ( haveFormUrlEncodedBody and haveBodyWith(bodyContent = s"${keyValue1._1}=${keyValue1._2}&escaped-characters=${URLEncoder.encode(escapedCharacters, "UTF-8")}") )

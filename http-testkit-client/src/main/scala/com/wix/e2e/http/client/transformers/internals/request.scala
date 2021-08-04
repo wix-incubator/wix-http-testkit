@@ -1,7 +1,6 @@
 package com.wix.e2e.http.client.transformers.internals
 
 import java.io.File
-
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{Cookie, RawHeader, `User-Agent`}
@@ -12,6 +11,7 @@ import com.wix.e2e.http.client.transformers.internals.RequestPartOps._
 import com.wix.e2e.http.exceptions.UserAgentModificationNotSupportedException
 import com.wix.e2e.http.{RequestTransformer, WixHttpTestkitResources}
 
+import java.nio.file.Path
 import scala.xml.Node
 
 trait HttpClientRequestUrlTransformers {
@@ -49,6 +49,7 @@ trait HttpClientRequestBodyTransformers extends HttpClientContentTypes {
   def withPayload(body: String, contentType: ContentType = TextPlain): RequestTransformer = withPayload(ByteString(body).toByteBuffer.array, contentType)
   def withTextPayload(body: String, contentType: ContentType = TextPlain): RequestTransformer = withPayload(ByteString(body).toByteBuffer.array, contentType)
   def withPayload(bytes: Array[Byte], contentType: ContentType): RequestTransformer = setBody(HttpEntity(contentType, bytes))
+  def withPayload(path: Path, contentType: ContentType): RequestTransformer = setBody(HttpEntity.fromPath(contentType, path))
   def withPayload(xml: Node): RequestTransformer = setBody(HttpEntity(XmlContent, WixHttpTestkitResources.xmlPrinter.format(xml)))
 
   // todo: enable default marshaller when deprecated `withPayload` is removed
