@@ -2,9 +2,9 @@ import sbt._
 
 object depends {
 
-  private val JacksonVersion = "2.12.3"
-  private val AkkaHttpVersion = "10.2.4"
-  private val AkkaVersion = "2.6.14"
+  private val JacksonVersion = "2.12.4"
+  private val AkkaHttpVersion = "10.2.6"
+  private val AkkaVersion = "2.6.16"
   private val Specs2Version = "4.11.0"
 
   val specs2 =
@@ -40,5 +40,5 @@ object depends {
 
   val jsr305 = "com.google.code.findbugs" % "jsr305" % "3.0.2"
 
-  val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.30"
+  val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.32"
 }
