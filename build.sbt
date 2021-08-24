@@ -1,7 +1,10 @@
 import depends._
 import compiler_helper._
 
+ThisBuild / versionScheme := Some("early-semver")
+
 lazy val publishSettings = Seq(
+  publishConfiguration := publishConfiguration.value.withOverwrite(true),
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
     if ( version.value.trim.endsWith( "SNAPSHOT" ) )
@@ -10,7 +13,7 @@ lazy val publishSettings = Seq(
       Some( "releases" at nexus + "service/local/staging/deploy/maven2" )
   },
   publishMavenStyle := true,
-  pomExtra in ThisBuild :=
+  ThisBuild / pomExtra :=
     <scm>
       <url>git@github.com:wix/wix-http-testkit.git</url>
       <connection>scm:git:git@github.com:wix/wix-http-testkit.git</connection>
