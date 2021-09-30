@@ -16,5 +16,5 @@ trait VersionConsistencyTestSupport {
     line.substring( line.indexOf('"') + 1, line.lastIndexOf('"'))
 
   def findLineContainingVersion(line: String) =
-    line.contains("version in ThisBuild")
+    line.contains("ThisBuild / version")
 }
