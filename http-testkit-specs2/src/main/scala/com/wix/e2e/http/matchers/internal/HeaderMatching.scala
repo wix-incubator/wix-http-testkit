@@ -67,7 +67,7 @@ trait HeaderMatching[T <: HttpMessage] {
 
     private def checkSpecialHeaders[S <: T](t: Expectable[S]) =
       expectedHeaders.map(h => h._1.toLowerCase)
-        .collectFirst { case name if specialHeaders.contains(name) => failure(specialHeaders(name.toLowerCase), t) }
+        .collectFirst { case name if specialHeaders.contains(name) => failure(specialHeaders(name), t) }
 
     private def buildHeaderMatchResult[S <: T](t: Expectable[S]) = {
       val actual = t.value
