@@ -33,18 +33,17 @@ class RequestHeadersMatchersTest extends Spec with MatchersTestSupport {
         s"Could not find header [${anotherHeader._1}] but found those: [${header._1}]."
     }
 
-//    "allOf matcher will return a message describing the different contents if the name is correct but the data is different" in new ctx {
-//      val header1Name = randomStr
-//      val header1Content = randomStr
-//      val another1HeaderContent = randomStr
-//      val header2Name = randomStr
-//      val header2Content = randomStr
-//      val another2HeaderContent = randomStr
-//
-//      failureMessageFor(haveAllHeadersOf(header1Name -> header1Content, header2Name -> header2Content),
-//        matchedOn = aRequestWithHeaders(header1Name -> another1HeaderContent, header2Name -> another2HeaderContent)) must_===
-//        s"Found Headers with different content: [$header1Name -> ($header1Content != $another1HeaderContent), $header2Name -> ($header2Content != $another2HeaderContent)]."
-//    }
+    "allOf matcher returns a message describing the different contents if the name is correct but the data is different" in new ctx {
+      failureMessageFor(haveAllHeadersOf(header1Name -> header1Content, header2Name -> header2Content),
+        matchedOn = aRequestWithHeaders(header1Name -> another1HeaderContent, header2Name -> another2HeaderContent)) must_===
+        s"Found headers with different content: [$header1Name -> ($header1Content != $another1HeaderContent), $header2Name -> ($header2Content != $another2HeaderContent)]."
+    }
+
+    "haveAllHeadersOf matcher returns a message describing the different contents and different headers" in new ctx {
+      failureMessageFor(haveAllHeadersOf(header1Name -> header1Content, header),
+        matchedOn = aRequestWithHeaders(header1Name -> another1HeaderContent, anotherHeader)) must_===
+        s"Could not find header [${header._1}] but found those: []. Also found headers with different content: [$header1Name -> ($header1Content != $another1HeaderContent)]."
+    }
 
     "same header as will check if the same headers is present" in new ctx {
       aRequestWithHeaders(header, anotherHeader) must haveTheSameHeadersAs(header, anotherHeader)
@@ -57,8 +56,14 @@ class RequestHeadersMatchersTest extends Spec with MatchersTestSupport {
         s"Request header is not identical, missing headers from request: [${anotherHeader._1}], request contained extra headers: [${yetAnotherHeader._1}]."
     }
 
+    "haveTheSameHeaderAs matcher returns a message describing the different contents if the name is correct but the data is different" in new ctx {
+      failureMessageFor(haveTheSameHeadersAs(header1Name -> header1Content, header),
+        matchedOn = aRequestWithHeaders(header1Name -> another1HeaderContent, anotherHeader)) must_===
+        s"Request header is not identical, missing headers from request: [${header._1}], request contained extra headers: [${anotherHeader._1}]. Also found headers with different content: [$header1Name -> ($header1Content != $another1HeaderContent)]."
+    }
+
     "header name compare should be case insensitive" in new ctx {
-//      aRequestWithHeaders(header) must haveAnyHeadersOf(header.copy(_1 = header._1.toUpperCase))
+      aRequestWithHeaders(header) must haveAnyHeadersOf(header.copy(_1 = header._1.toUpperCase))
       aRequestWithHeaders(header) must not(haveAnyHeadersOf(header.copy(_2 = header._2.toUpperCase)))
     }
 

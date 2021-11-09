@@ -8,44 +8,56 @@ object HeaderComparison {
 
   def compare(expectedHeaders: Seq[(String, String)], actualHeaders: Seq[(String, String)]): HeaderComparisonResult = {
     val identical = expectedHeaders & actualHeaders
-    val missing = expectedHeaders - identical
-    val extra = actualHeaders - identical
+    val baseMissing = expectedHeaders - identical
+    val baseExtra = actualHeaders - identical
 
-    val contentDiff = missing intersectWithSameName extra
+    val contentDiff = baseMissing intersectWithSameName baseExtra
+    val missing = baseMissing.removeNames(contentDiff)
+    val extra = baseExtra.removeNames(contentDiff)
 
     HeaderComparisonResult(identical, missing, extra, contentDiff)
   }
 
-  implicit class `string tuple as header`(header: (String, String)) {
+  implicit class `string tuple as header`(header: (String, _)) {
     def name: String = header._1
-    def value: String = header._2
+    def value: String = header._2.toString
 
-    def sameNameAs(another: (String, String)): Boolean = header.name.equalsIgnoreCase(another.name)
+    def sameNameAs(another: (String, _)): Boolean = header.name.equalsIgnoreCase(another.name)
 
     def sameAs(another: (String, String)): Boolean = header.sameNameAs(another) && header.value == another.value
   }
 
   implicit class `operations for header sequences`(headerSeq: Seq[(String, String)]) {
     def names: String = headerSeq.map(_.name).mkString(", ")
+
     def &(another: Seq[(String, String)]): Seq[(String, String)] = headerSeq.filter(h => another.exists(h.sameAs))
+
     def -(another: Seq[(String, String)]): Seq[(String, String)] = headerSeq.filter(h => !another.exists(h.sameAs))
-    def intersectWithSameName(another: Seq[(String, String)]): Seq[(String, String, String)] =
-      for ( header <- headerSeq;
-            anotherHeader <- another
-            if header.sameNameAs(anotherHeader))
-      yield (header.name, header.value, anotherHeader.value)
+
+    def intersectWithSameName(another: Seq[(String, String)]): Seq[(String, (String, String))] =
+      for (header <- headerSeq;
+           anotherHeader <- another
+           if header.sameNameAs(anotherHeader))
+      yield (header.name, (header.value, anotherHeader.value))
+
+    def removeNames(another: Seq[(String, _)]): Seq[(String, String)] = headerSeq.filterNot(h => another.exists(h.sameNameAs))
 
   }
 
   case class HeaderComparisonResult(identical: Seq[(String, String)],
                                     missing: Seq[(String, String)],
                                     extra: Seq[(String, String)],
-                                    contentDiff: Seq[(String, String, String)])
+                                    contentDiff: Seq[(String, (String, String))]) {
+
+    def formatDiff: String =
+      (for ((name, (value1, value2)) <- contentDiff) yield (s"$name -> ($value1 != $value2)")).mkString(", ")
+  }
 
 }
 
 abstract class HttpMessageType(val name: String) {
   def lowerCaseName: String = name.toLowerCase
+
   def isCookieHeader(header: HttpHeader): Boolean
 }
 
@@ -56,16 +68,21 @@ trait HeaderMatching[T <: HttpMessage] {
   protected def specialHeaders: Map[String, String] = Map.empty
 
   def haveAnyHeadersOf(headers: (String, String)*): Matcher[T] =
-    haveHeaderInternal(headers, _.identical.nonEmpty,
-      res => s"Could not find header [${res.missing.names}] but found those: [${res.extra.names}]")
+    haveHeaderInternal(headers,
+      { case res if res.identical.isEmpty => s"Could not find header [${res.missing.names}] but found those: [${res.extra.names}]" })
 
   def haveAllHeadersOf(headers: (String, String)*): Matcher[T] =
-    haveHeaderInternal(headers, _.missing.isEmpty,
-      res => s"Could not find header [${res.missing.names}] but found those: [${res.identical.names}].")
+    haveHeaderInternal(headers,
+      { case HeaderComparisonResult(identical, missing, extra, _) if missing.nonEmpty => s"Could not find header [${missing.names}] but found those: [${identical.names}]." },
+      { case res if res.contentDiff.nonEmpty => s"found headers with different content: [${res.formatDiff}]." })
 
   def haveTheSameHeadersAs(headers: (String, String)*): Matcher[T] =
-    haveHeaderInternal(headers, r => r.extra.isEmpty && r.missing.isEmpty,
-      res => s"${httpMessageType.name} header is not identical, missing headers from ${httpMessageType.lowerCaseName}: [${res.missing.names}], ${httpMessageType.lowerCaseName} contained extra headers: [${res.extra.names}].")
+    haveHeaderInternal(headers,
+      { case HeaderComparisonResult(_, missing, extra, _) if missing.nonEmpty || extra.nonEmpty =>
+        s"${httpMessageType.name} header is not identical, missing headers from ${httpMessageType.lowerCaseName}: [${missing.names}], ${httpMessageType.lowerCaseName} contained extra headers: [${extra.names}]."
+      },
+      { case res if res.contentDiff.nonEmpty => s"found headers with different content: [${res.formatDiff}]." }
+    )
 
 
   def haveAnyHeaderThat(must: Matcher[String], withHeaderName: String): Matcher[T] = new Matcher[T] {
@@ -86,8 +103,7 @@ trait HeaderMatching[T <: HttpMessage] {
   }
 
   private def haveHeaderInternal(expectedHeaders: Seq[(String, String)],
-                                 comparator: HeaderComparisonResult => Boolean,
-                                 errorMessage: HeaderComparisonResult => String): Matcher[T] = new Matcher[T] {
+                                 failureDetectors: PartialFunction[HeaderComparisonResult, String]*): Matcher[T] = new Matcher[T] {
 
     def apply[S <: T](t: Expectable[S]): MatchResult[S] =
       checkSpecialHeaders(t).getOrElse(buildHeaderMatchResult(t))
@@ -104,9 +120,12 @@ trait HeaderMatching[T <: HttpMessage] {
 
       val comparisonResult = HeaderComparison.compare(expectedHeaders, actualHeaders)
 
-      if (comparator(comparisonResult)) success("ok", t)
+      val result = failureDetectors.flatMap(_.lift(comparisonResult))
+      val formattedResult = result.mkString(" Also ").capitalize
+
+      if (result.isEmpty) success("ok", t)
       else if (actualHeaders.isEmpty) failure(s"${httpMessageType.name} did not contain any headers.", t)
-      else failure(errorMessage(comparisonResult), t)
+      else failure(formattedResult, t)
     }
   }
 }

@@ -31,6 +31,12 @@ trait HttpMessageTestSupport {
   val anotherHeader = randomHeader
   val yetAnotherHeader = randomHeader
   val andAnotherHeader = randomHeader
+  val header1Name = randomStr
+  val header1Content = randomStr
+  val another1HeaderContent = randomStr
+  val header2Name = randomStr
+  val header2Content = randomStr
+  val another2HeaderContent = randomStr
 
   val somePath = randomPath
   val anotherPath = randomPath
