@@ -81,75 +81,26 @@ trait ResponseCookiesMatchers {
   }
 }
 
-trait ResponseHeadersMatchers {
-  def haveAnyHeadersOf(headers: (String, String)*): ResponseMatcher =
-    haveHeaderInternal( headers, _.identical.nonEmpty,
-                        res => s"Could not find header [${res.missing.map(_._1).mkString(", ")}] but found those: [${res.extra.map(_._1).mkString(", ")}]" )
+object Response extends HttpMessageType("Response") {
+  override def isCookieHeader(header: HttpHeader): Boolean = header.isInstanceOf[`Set-Cookie`]
+}
 
-  def haveAllHeadersOf(headers: (String, String)*): ResponseMatcher =
-    haveHeaderInternal( headers, _.missing.isEmpty,
-                        res => s"Could not find header [${res.missing.map(_._1).mkString(", ")}] but found those: [${res.identical.map(_._1).mkString(", ")}]." )
+trait ResponseHeadersMatchers extends HeaderMatching[HttpResponse] {
+  override protected val httpMessageType = Response
 
-  def haveTheSameHeadersAs(headers: (String, String)*): ResponseMatcher =
-    haveHeaderInternal( headers, r => r.extra.isEmpty && r.missing.isEmpty,
-                        res => s"Response header is not identical, missing headers from response: [${res.missing.map(_._1).mkString(", ")}], response contained extra headers: [${res.extra.map(_._1).mkString(", ")}]." )
+  override protected val specialHeaders: Map[String, String] = Map(
+    ("content-type",
+      """`Content-Type` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
+        |Use `haveContentType` matcher instead (or `beJsonResponse`, `beTextPlainResponse`, `beFormUrlEncodedResponse`).""".stripMargin),
+    ("content-length",
+      """`Content-Length` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
+        |Use `haveContentLength` matcher instead.""".stripMargin),
+    ("transfer-encoding",
+      """`Transfer-Encoding` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
+        |Use `beChunkedResponse` or `haveTransferEncodings` matcher instead.""".stripMargin)
 
-  private def haveHeaderInternal(headers: Seq[(String, String)], comparator: HeaderComparisonResult => Boolean, errorMessage: HeaderComparisonResult => String): ResponseMatcher = new ResponseMatcher {
+  )
 
-    def apply[S <: HttpResponse](t: Expectable[S]): MatchResult[S] = {
-      val request = t.value
-      val responseHeaders = request.headers
-                                   .filterNot( _.isInstanceOf[`Set-Cookie`] )
-                                   .map( h => h.name -> h.value )
-      val comparisonResult = compare(headers, responseHeaders)
-
-      if (matchAgainstContentTypeHeader)
-        failure("""`Content-Type` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
-                  |Use `haveContentType` matcher instead (or `beJsonResponse`, `beTextPlainResponse`, `beFormUrlEncodedResponse`).""".stripMargin, t)
-      else if (matchAgainstContentLengthHeader)
-        failure("""`Content-Length` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
-                  |Use `haveContentLength` matcher instead.""".stripMargin, t)
-      else if (matchAgainstTransferEncodingHeader)
-        failure("""`Transfer-Encoding` is a special header and cannot be used in `haveAnyHeadersOf`, `haveAllHeadersOf`, `haveTheSameHeadersAs` matchers.
-                  |Use `beChunkedResponse` or `haveTransferEncodings` matcher instead.""".stripMargin, t)
-      else if ( comparator(comparisonResult) ) success("ok", t)
-      else if (responseHeaders.isEmpty) failure("Response did not contain any headers.", t)
-      else failure(errorMessage(comparisonResult), t)
-    }
-
-    private def compareHeader(header1: (String, String), header2: (String, String)) = header1._1.toLowerCase == header2._1.toLowerCase && header1._2 == header2._2
-
-    private def compare(headers: Seq[(String, String)], requestHeaders: Seq[(String, String)]): HeaderComparisonResult = {
-      val identical = headers.filter( h1 => requestHeaders.exists( h2 => compareHeader(h1, h2) ) )
-      val missing = headers.filter( h1 => !identical.exists( h2 => compareHeader(h1, h2) ) )
-      val extra = requestHeaders.filter( h1 => !identical.exists( h2 => compareHeader(h1, h2) ) )
-
-      HeaderComparisonResult(identical, missing, extra)
-    }
-
-    private def matchAgainstTransferEncodingHeader = headers.exists( h => "transfer-encoding".compareToIgnoreCase(h._1) == 0 )
-    private def matchAgainstContentTypeHeader = headers.exists( h => "content-type".compareToIgnoreCase(h._1) == 0 )
-    private def matchAgainstContentLengthHeader = headers.exists( h => "content-length".compareToIgnoreCase(h._1) == 0 )
-  }
-
-  def haveAnyHeaderThat(must: Matcher[String], withHeaderName: String): ResponseMatcher = new ResponseMatcher {
-    def apply[S <: HttpResponse](t: Expectable[S]): MatchResult[S] = {
-      val request = t.value
-      val headers = request.headers
-                           .filterNot( _.isInstanceOf[`Set-Cookie`] )
-      val responseHeader = headers.find( _.name.toLowerCase == withHeaderName.toLowerCase )
-                                  .map( _.value )
-
-      responseHeader match {
-        case None if headers.isEmpty => failure("Response did not contain any headers.", t)
-        case None => failure(s"Response contain header names: [${headers.map( _.name ).mkString(", ")}] which did not contain: [$withHeaderName]", t)
-        case Some(value) if must.apply(createExpectable(value)).isSuccess => success("ok", t)
-        case Some(value) => failure(s"Response header [$withHeaderName], did not match { ${must.apply(createExpectable(value)).message} }", t)
-      }
-    }
-  }
-
-  private case class HeaderComparisonResult(identical: Seq[(String, String)], missing: Seq[(String, String)], extra: Seq[(String, String)])
 }
 
 trait ResponseBodyMatchers {
