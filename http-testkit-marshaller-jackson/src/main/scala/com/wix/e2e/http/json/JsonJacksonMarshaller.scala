@@ -21,7 +21,7 @@ class JsonJacksonMarshaller extends Marshaller {
   def configure: ObjectMapper = objectMapper
 
   private val objectMapper = JsonMapper.builder
-                                       .addModule(new Jdk8Module().configureAbsentsAsNulls(true))
+                                       .addModule(new Jdk8Module())
                                        .addModules(new JodaModule, new ParameterNamesModule, new JavaTimeModule)
                                        .addModule(new DefaultScalaModule)
                                        .disable( WRITE_DATES_AS_TIMESTAMPS )
