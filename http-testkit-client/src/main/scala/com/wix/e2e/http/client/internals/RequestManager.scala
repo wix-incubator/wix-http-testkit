@@ -13,6 +13,7 @@ import com.wix.e2e.http.utils._
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.util.control.NonFatal
 
 
 trait RequestManager[R] {
@@ -64,7 +65,28 @@ class NonBlockingRequestManager(request: HttpRequest) extends RequestManager[Fut
 class BlockingRequestManager(request: HttpRequest) extends RequestManager[HttpResponse] {
 
   def apply(path: String, but: RequestTransformer, withTimeout: FiniteDuration)(implicit baseUri: BaseUri): HttpResponse =
-    waitFor(nonBlockingRequestManager(path, but, withTimeout))(withTimeout + 1.second)
+    try
+      waitFor(nonBlockingRequestManager(path, but, withTimeout))(withTimeout + 1.second)
+    catch BlockingRequestManager.handleException
 
   private val nonBlockingRequestManager = new NonBlockingRequestManager(request)
 }
+
+object BlockingRequestManager {
+  private [internals] val transformException: PartialFunction[Throwable, Throwable] = {
+    case NonFatal(e) =>
+      if(e.getStackTrace.nonEmpty) {
+        e.addSuppressed(new OriginalExceptionStack(e.getStackTrace))
+      }
+      val currentStackTrace = Thread.currentThread().getStackTrace
+      e.setStackTrace(currentStackTrace)
+      e
+  }
+
+  private [internals] val handleException = transformException.andThen(throw _)
+
+  class OriginalExceptionStack(stackTrace: Array[StackTraceElement]) extends RuntimeException {
+    this.setStackTrace(stackTrace)
+  }
+}
+
